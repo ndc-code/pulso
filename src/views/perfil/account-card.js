@@ -15,6 +15,7 @@ import { escapeHTML } from "../../utils/html.js";
 import { toast } from "../../components/toast/toast.js";
 
 export function mountAccountCard(section) {
+  let loggingOut = false; // ignora toques repetidos mientras cierra
   const paint = async () => {
     const user = currentUser();
     if (!user) {
@@ -43,7 +44,17 @@ export function mountAccountCard(section) {
         toast(error.message);
       }
     }
-    if (event.target.closest("[data-logout]")) await logout();
+    if (event.target.closest("[data-logout]") && !loggingOut) {
+      loggingOut = true;
+      try {
+        await logout();
+      } catch (error) {
+        console.warn("[account]", error);
+        toast("No se pudo cerrar la sesión. Probá de nuevo.");
+      } finally {
+        loggingOut = false;
+      }
+    }
   });
 
   paint();

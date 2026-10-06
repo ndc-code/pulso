@@ -30,6 +30,11 @@ export async function initAccount() {
 export const login = signInWithGoogle;
 
 export async function logout() {
+  // Sin red, signOut puede fallar y la sesión seguiría con los datos ya borrados
+  if (!navigator.onLine) {
+    toast("Necesitás conexión para cerrar sesión.");
+    return;
+  }
   await sync.push();
   const { pending } = await sync.getStatus();
   if (pending > 0 && !confirm("Hay cambios que todavía no se subieron. Si cerrás sesión se pierden. ¿Cerrar igual?")) {

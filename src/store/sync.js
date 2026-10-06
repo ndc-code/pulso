@@ -29,6 +29,7 @@ import {
   latestUpdatedAt,
   cursorWithMargin,
   hasLocalUserData,
+  sameValue,
 } from "../utils/sync.js";
 
 const PAGE = 1000;          // Supabase devuelve como máximo 1000 filas por pedido
@@ -57,21 +58,20 @@ export function isActive() {
 export async function start(session, { confirmReplace }) {
   client = await getClient();
   if (!client) return "error";
-  userId = session.user.id;
+  // userId recién se fija cuando termina el primer login: hasta entonces
+  // isActive() es false y nada se sube a una cuenta que todavía no se revisó
+  const id = session.user.id;
 
   try {
-    if (!(await firstLoginIfNeeded(confirmReplace))) {
-      userId = null;
-      return "cancelled";
-    }
+    if (!(await firstLoginIfNeeded(id, confirmReplace))) return "cancelled";
   } catch (error) {
     console.warn("[sync] no se pudo preparar la cuenta", error);
-    userId = null;
     lastError = error;
     notifyStatus();
     return "error";
   }
 
+  userId = id;
   listenOnce();
   syncNow();
   return "ok";
@@ -88,9 +88,9 @@ export function stop() {
 /* ---------------------------------------- */
 
 // Devuelve false si la persona canceló
-async function firstLoginIfNeeded(confirmReplace) {
+async function firstLoginIfNeeded(id, confirmReplace) {
   const state = await local.read("_sync");
-  if (state?.user_id === userId) return true;
+  if (state?.user_id === id) return true;
 
   if (await isAccountEmpty()) {
     // Primer login de la cuenta: lo de este dispositivo se sube entero
@@ -111,7 +111,7 @@ async function firstLoginIfNeeded(confirmReplace) {
     await mutateOutbox(() => []);
   }
 
-  await local.write("_sync", { user_id: userId, cursors: {} });
+  await local.write("_sync", { user_id: id, cursors: {} });
   return true;
 }
 
@@ -160,7 +160,7 @@ export function push() {
     pushing = null;
     if (pushAgain) {
       pushAgain = false;
-      push();
+      return push(); // se espera: así push() termina con la cola realmente subida
     }
   });
   return pushing;
@@ -251,7 +251,7 @@ async function pull() {
       if (result.deletedIds.length) enqueue(result.deletedIds.map((id) => ({ table, id, op: "delete" })));
     }
 
-    if (JSON.stringify(rows) !== JSON.stringify(before)) {
+    if (!sameValue(rows, before)) {
       await local.write(table, rows);
       changed = true;
     }
@@ -264,7 +264,7 @@ async function pull() {
   for (const doc of docs) {
     if (!DOC_KEYS.includes(doc.key)) continue;
     if (docQueue.some((entry) => entry.table === "user_doc" && entry.id === doc.key)) continue;
-    if (JSON.stringify(await local.read(doc.key)) !== JSON.stringify(doc.value)) {
+    if (!sameValue(await local.read(doc.key), doc.value)) {
       await local.write(doc.key, doc.value);
       changed = true;
     }

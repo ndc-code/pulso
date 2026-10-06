@@ -20,18 +20,38 @@ export const COLLECTION_KEYS = [
 export const DOC_KEYS = ["profile", "objetivos", "lab_range", "entreno_actual"];
 
 /* ---------------------------------------- */
+/* Comparar */
+/* ---------------------------------------- */
+
+// ¿Dos valores JSON son iguales? Ignora el orden de las claves de los objetos
+// (Postgres jsonb no lo guarda, así que lo que baja puede venir reordenado);
+// el orden de los arrays sí cuenta. undefined vale lo mismo que null.
+export function sameValue(a, b) {
+  return stableStringify(a) === stableStringify(b);
+}
+
+function stableStringify(value) {
+  if (value === undefined || value === null) return "null";
+  if (Array.isArray(value)) return `[${value.map(stableStringify).join(",")}]`;
+  if (typeof value === "object") {
+    const keys = Object.keys(value).sort();
+    return `{${keys.map((key) => `${JSON.stringify(key)}:${stableStringify(value[key])}`).join(",")}}`;
+  }
+  return JSON.stringify(value);
+}
+
+/* ---------------------------------------- */
 /* Subida */
 /* ---------------------------------------- */
 
-// Compara dos versiones de una lista por id.
-// Las filas se comparan como JSON: si una igual quedó con las claves en otro
-// orden se sube de más, que no rompe nada.
+// Compara dos versiones de una lista por id (con sameValue, sin importar
+// el orden de las claves).
 export function diffRows(prev, next) {
   const before = new Map((prev ?? []).map((row) => [row.id, row]));
   const after = new Map((next ?? []).map((row) => [row.id, row]));
 
   const upserts = [...after.values()].filter(
-    (row) => !before.has(row.id) || JSON.stringify(before.get(row.id)) !== JSON.stringify(row),
+    (row) => !before.has(row.id) || !sameValue(before.get(row.id), row),
   );
   const deletes = [...before.keys()].filter((id) => !after.has(id));
   return { upserts, deletes };
@@ -46,7 +66,7 @@ export function toRemoteRow(row) {
 // Lo que hay que anotar en la cola cuando el store guarda `next` en `key`
 export function outboxEntriesFor(key, prev, next) {
   if (DOC_KEYS.includes(key)) {
-    if (JSON.stringify(prev) === JSON.stringify(next)) return [];
+    if (sameValue(prev, next)) return [];
     return [{ table: "user_doc", id: key, op: "upsert", value: next }];
   }
   if (!COLLECTION_KEYS.includes(key)) return [];

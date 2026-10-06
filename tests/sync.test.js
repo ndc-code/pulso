@@ -5,6 +5,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
+  sameValue,
   diffRows,
   toRemoteRow,
   outboxEntriesFor,
@@ -21,6 +22,32 @@ import {
 /* ---------------------------------------- */
 /* Subida */
 /* ---------------------------------------- */
+
+test("sameValue: ignora el orden de las claves, también en objetos anidados", () => {
+  assert.equal(sameValue({ a: 1, b: { x: 1, y: 2 } }, { b: { y: 2, x: 1 }, a: 1 }), true);
+});
+
+test("sameValue: el orden de los arrays sí importa", () => {
+  assert.equal(sameValue({ l: [1, 2] }, { l: [2, 1] }), false);
+  assert.equal(sameValue([{ a: 1, b: 2 }], [{ b: 2, a: 1 }]), true);
+});
+
+test("sameValue: null y undefined son iguales; valores distintos no", () => {
+  assert.equal(sameValue(null, undefined), true);
+  assert.equal(sameValue({ a: null }, { a: undefined }), true);
+  assert.equal(sameValue({ a: 1 }, { a: 2 }), false);
+  assert.equal(sameValue({ a: 1 }, { a: 1, b: 2 }), false);
+  assert.equal(sameValue(1, "1"), false);
+});
+
+test("diffRows: una fila con las claves en otro orden no cuenta como cambio", () => {
+  const prev = [{ id: "a", x: 1, y: 2 }];
+  assert.deepEqual(diffRows(prev, [{ y: 2, id: "a", x: 1 }]), { upserts: [], deletes: [] });
+});
+
+test("outboxEntriesFor: un objeto con las claves en otro orden no se sube", () => {
+  assert.deepEqual(outboxEntriesFor("profile", { a: 1, b: 2 }, { b: 2, a: 1 }), []);
+});
 
 test("diffRows: filas nuevas y cambiadas se suben, las iguales no", () => {
   const prev = [{ id: "a", v: 1 }, { id: "b", v: 1 }];
