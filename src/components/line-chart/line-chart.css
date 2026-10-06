@@ -1,0 +1,85 @@
+/* ============================================
+   Components — Line Chart
+   ============================================ */
+
+.line-chart {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+}
+
+/* Área del dibujo. El padding deja lugar a los puntos y al valor del último. */
+.line-chart__plot {
+    position: relative;
+    height: 140px;
+    margin: var(--spacing-xl) var(--spacing-2xl) var(--spacing-sm) var(--spacing-sm);
+}
+
+.line-chart__svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+.line-chart__svg path {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5px;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+}
+
+.line-chart__dot {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: currentColor;
+    transform: translate(-50%, -50%);
+}
+
+.line-chart__dot.is-last {
+    width: 12px;
+    height: 12px;
+    background: var(--color-accent-fill);
+}
+
+/* El valor del último punto, arriba de él */
+.line-chart__value {
+    position: absolute;
+    transform: translate(-50%, calc(-100% - 10px));
+    font-size: var(--font-sm-size);
+    line-height: var(--font-sm-line);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+/* Rango de referencia o meta: línea punteada con su número a la derecha */
+.line-chart__limit {
+    position: absolute;
+    left: 0;
+    right: 0;
+    border-top: 1px dashed var(--color-text-muted);
+}
+
+.line-chart__limit-label {
+    position: absolute;
+    left: calc(100% + var(--spacing-sm));
+    transform: translateY(-50%);
+    font-size: var(--font-xs-size);
+    line-height: var(--font-xs-line);
+    color: var(--color-text-muted);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.line-chart__axis {
+    display: flex;
+    justify-content: space-between;
+    margin-inline: var(--spacing-sm) var(--spacing-2xl);
+    font-size: var(--font-xs-size);
+    line-height: var(--font-xs-line);
+    color: var(--color-text-muted);
+}

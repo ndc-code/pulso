@@ -11,8 +11,7 @@
     /* --- App shell --- */
     --width-app: 720px;          /* columna de contenido */
     --size-header: 64px;
-    --size-nav: 68px;            /* alto de la barra inferior (sin safe area) */
-    --size-fab: 60px;            /* botón central de Hoy */
+    --size-nav: 60px;            /* alto de la barra flotante (sin safe area) */
     --size-rail: 104px;          /* ancho del riel lateral en desktop */
     --size-tap: 44px;            /* área mínima tocable */
 

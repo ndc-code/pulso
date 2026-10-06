@@ -24,6 +24,7 @@ import { RECOMMENDATIONS } from "../../content/recommendations.js";
 import { dataBlock } from "../../components/data-block/data-block.js";
 import { openWorkoutForm } from "../moverse/workout-form.js";
 import { openMealForm } from "../comer/meal-form.js";
+import { openSleepForm } from "../descanso/sleep-form.js";
 import { icon } from "../../utils/icons.js";
 import { escapeHTML } from "../../utils/html.js";
 import { habitCard, updateHabitCard } from "../../components/habit-card/habit-card.js";
@@ -90,7 +91,7 @@ export async function render(root) {
       <div class="hoy-quick">
         <button class="btn btn--ghost" type="button" data-open="meal">${icon("plus")}Comida</button>
         <button class="btn btn--ghost" type="button" data-open="workout">${icon("plus")}Entreno</button>
-        <a class="btn btn--ghost" href="#/descanso">${icon("plus")}Sueño</a>
+        <button class="btn btn--ghost" type="button" data-open="sleep">${icon("plus")}Sueño</button>
       </div>
     </section>
 
@@ -200,14 +201,18 @@ export async function render(root) {
   /* ---------------------------------------- */
 
   root.addEventListener("click", async (event) => {
-    // Registrar entreno o comida: hoja sin salir de Hoy
-    // (los + de Moverme y Verdura, y los accesos de abajo)
+    // Registrar entreno, comida o sueño: hoja sin salir de Hoy
+    // (los + de Moverme, Verdura y Dormir, y los accesos de abajo)
     if (event.target.closest('[data-open="workout"]')) {
       openWorkoutForm();
       return;
     }
     if (event.target.closest('[data-open="meal"]')) {
       openMealForm();
+      return;
+    }
+    if (event.target.closest('[data-open="sleep"]')) {
+      openSleepForm();
       return;
     }
 

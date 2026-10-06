@@ -2,6 +2,180 @@
    Views — Progreso
    ============================================ */
 
+/* --- Resumen de la semana --- */
+.progress-eyebrow {
+    padding-bottom: var(--spacing-sm);
+}
+
+/* --- Calendario de constancia --- */
+.heat {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+}
+
+.heat__months,
+.heat__grid {
+    display: grid;
+    grid-template-columns: repeat(var(--weeks), 1fr);
+    justify-items: center;
+}
+
+.heat__months {
+    justify-items: start;
+    font-size: var(--font-xs-size);
+    line-height: var(--font-xs-line);
+    color: var(--color-text-muted);
+    text-transform: capitalize;
+}
+
+/* Una columna por semana: las 7 filas se llenan de arriba a abajo */
+.heat__grid {
+    grid-template-rows: repeat(7, 12px);
+    grid-auto-flow: column;
+    row-gap: var(--spacing-xs);
+    align-items: center;
+}
+
+/* Niveles en naranja (como components/level): lleno, a medias, aro y gris */
+.heat__cell {
+    width: 9px;
+    height: 9px;
+    border: 1.5px solid var(--color-accent-fill);
+    border-radius: var(--radius-full);
+}
+
+.heat__cell[data-level="good"] {
+    background: var(--color-accent-fill);
+}
+
+.heat__cell[data-level="mid"] {
+    background: linear-gradient(90deg, var(--color-accent-fill) 50%, transparent 50%);
+}
+
+.heat__cell[data-level="none"] {
+    width: 5px;
+    height: 5px;
+    border: none;
+    background: var(--color-divider);
+}
+
+/* Hoy: un aro del color del texto alrededor */
+.heat__cell.is-today {
+    outline: 1.5px solid var(--color-text);
+    outline-offset: 2px;
+}
+
+.heat__cell.is-future {
+    visibility: hidden;
+}
+
+.heat__legend {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: var(--gap-md);
+    font-size: var(--font-xs-size);
+    line-height: var(--font-xs-line);
+    color: var(--color-text-muted);
+}
+
+.heat__key {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--gap-xs);
+}
+
+/* --- Número de una sección (peso, Lp(a)) con texto chico al lado --- */
+.progress-figure {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    column-gap: var(--gap-lg);
+    row-gap: var(--gap-sm);
+}
+
+.progress-figure .label {
+    padding-bottom: var(--spacing-sm);
+}
+
+/* --- Análisis: un dial por indicador, en dos columnas separadas por líneas --- */
+.lab-tiles {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.lab-tile {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xs);
+    padding-block: var(--spacing-lg);
+    border-top: 1px solid var(--color-divider);
+}
+
+.lab-tile:nth-child(odd) {
+    padding-right: var(--spacing-md);
+}
+
+.lab-tile:nth-child(even) {
+    padding-left: var(--spacing-md);
+    border-left: 1px solid var(--color-divider);
+}
+
+.lab-tile__label {
+    font-size: var(--font-sm-size);
+    line-height: var(--font-sm-line);
+    font-weight: var(--font-weight-medium);
+}
+
+.lab-tile .range-dial {
+    margin-block: var(--spacing-xs);
+}
+
+.lab-tile__unit,
+.lab-tile__ref {
+    font-size: var(--font-xs-size);
+    line-height: var(--font-xs-line);
+    color: var(--color-text-muted);
+}
+
+.lab-tile__status {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    font-size: var(--font-sm-size);
+    line-height: var(--font-sm-line);
+}
+
+.lab-chart {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+}
+
+/* --- Hojas: peso, análisis y rangos --- */
+.health-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xl);
+}
+
+.health-form__pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--gap-md);
+}
+
+.health-form__grid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-lg);
+}
+
+.health-form__range {
+    border: none;
+}
+
 /* Aviso fijo de la sección (spec 4.5) */
 .progreso__notice {
     padding-top: var(--spacing-sm);
@@ -9,4 +183,30 @@
     line-height: var(--font-sm-line);
     color: var(--color-text-muted);
     text-align: center;
+}
+
+/* ============================================
+RESPONSIVE
+============================================ */
+
+@media (min-width: 640px) {
+    .lab-tiles {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .lab-tile:nth-child(odd),
+    .lab-tile:nth-child(even) {
+        padding-inline: var(--spacing-md);
+        border-left: 1px solid var(--color-divider);
+    }
+
+    .lab-tile:nth-child(3n + 1) {
+        padding-left: 0;
+        border-left: none;
+    }
+
+    .health-form__grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
 }

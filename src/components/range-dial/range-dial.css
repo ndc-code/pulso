@@ -1,0 +1,39 @@
+/* ============================================
+   Components — Range Dial
+   ============================================ */
+
+.range-dial {
+    flex-shrink: 0;
+    overflow: visible;
+}
+
+.range-dial__track,
+.range-dial__band {
+    fill: none;
+    stroke-width: var(--gauge-width);
+}
+
+.range-dial__track {
+    stroke: var(--color-divider);
+}
+
+/* El rango de referencia: el color del texto, atenuado */
+.range-dial__band {
+    stroke: var(--color-text-muted);
+    opacity: 0.6;
+}
+
+/* En rango: punto naranja lleno. Fuera de rango: aro naranja.
+   El borde del color de fondo lo despega del track. */
+.range-dial__dot {
+    fill: var(--color-accent-fill);
+    stroke: var(--range-dial-halo, var(--color-bg));
+    stroke-width: 3px;
+    paint-order: stroke;
+}
+
+.range-dial__dot:not([data-status="in"]) {
+    fill: var(--range-dial-halo, var(--color-bg));
+    stroke: var(--color-accent-fill);
+    stroke-width: 2.5px;
+}

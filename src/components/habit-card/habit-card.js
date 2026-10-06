@@ -19,12 +19,11 @@ import { escapeHTML } from "../../utils/html.js";
 import { icon } from "../../utils/icons.js";
 
 // Dónde se registra cada hábito automático.
-// `open` abre una hoja sin salir de Hoy; `href` lleva a la sección
-// (sueño pasa a hoja cuando se haga Descanso).
+// `open` abre una hoja sin salir de Hoy; `href` lleva a la sección.
 const LOG_TARGETS = {
   workout_minutes: { open: "workout", label: "Registrar entreno" },
   meal_veggies: { open: "meal", label: "Registrar comida" },
-  sleep: { href: "#/descanso", label: "Registrar sueño" },
+  sleep: { open: "sleep", label: "Registrar sueño" },
 };
 
 export function actionKind(habit) {

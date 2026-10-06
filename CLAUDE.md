@@ -45,12 +45,14 @@ src/
 │   ├── defaults.js     initial value per key + suggested habits
 │   ├── seed.js         first run: saves the suggested habits
 │   ├── habits.js       habit reads/writes (context loader, logs, water, save/archive/reorder)
+│   ├── rest.js         sleep (one per day), mood check-in, breathing → pause habit
+│   ├── health.js       lab results, body weight/waist, lab reference ranges
 │   └── backup.js       JSON export / import
 ├── views/<view>/       one folder per section: <view>.js (+ <view>.css if needed)
 ├── components/<name>/  functions that return HTML strings (+ co-located CSS)
 ├── layout/             app-shell, header, bottom-nav (Hoy as raised center button), grid
 ├── animation/          GSAP reveals, applied per view by the router
-├── utils/              pure logic (dates, habits, streaks, workouts, meals) + html escaping, icons, theme
+├── utils/              pure logic (dates, habits, streaks, workouts, meals, sleep, progress, health) + html escaping, icons, theme
 ├── content/            static copy with sources (science recommendations)
 ├── styles/             tokens → semantic → base → variants
 └── assets/             icons, images, fonts

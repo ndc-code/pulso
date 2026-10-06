@@ -6,6 +6,8 @@
 // Los campos siguen el modelo de datos de la spec (sección 6),
 // más `source` en habit (de dónde sale su valor, ver utils/habits.js).
 
+import { defaultRanges } from "../utils/health.js";
+
 const ALL_DAYS = [0, 1, 2, 3, 4, 5, 6]; // 0 = domingo
 
 export const DEFAULTS = {
@@ -28,6 +30,12 @@ export const DEFAULTS = {
   meal: [],
   sleep: [],
   mood: [],
+  lab_result: [],
+  body: [],
+
+  // Rangos de referencia de los análisis (editables en Progreso).
+  // No es una tabla de la spec: en Supabase va como columna jsonb del perfil o tabla propia.
+  lab_range: defaultRanges(),
 };
 
 // Hábitos sugeridos (spec 4.1). Sin id: se lo pone seed.js al guardarlos.

@@ -73,5 +73,11 @@
     --color-nav-bg: var(--color-bg);
     --color-nav-text: var(--color-text-muted);
     --color-nav-text-active: var(--color-accent);
+    /* Barra flotante de vidrio (como la de Fitness): el fondo deja ver
+       el contenido que pasa por detrás, desenfocado */
+    --color-nav-glass: color-mix(in srgb, var(--color-bg) 72%, transparent);
+    --color-nav-glass-border: color-mix(in srgb, var(--color-text) 12%, transparent);
+    --color-nav-active-bg: color-mix(in srgb, var(--color-text) 15%, transparent);
+    --color-nav-hover-bg: color-mix(in srgb, var(--color-text) 5%, transparent);
 
 }

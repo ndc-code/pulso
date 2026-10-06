@@ -2,17 +2,36 @@
    Layout — Bottom Nav
    ============================================ */
 
-/* Mobile: barra fija abajo, separada por una línea. Cuatro secciones con
-   ícono + label y, en el centro, Hoy como círculo naranja que sobresale.
+/* Mobile: barra flotante de vidrio (como la de Fitness de Apple), separada
+   de los bordes. Cinco secciones con ícono + label; Hoy en el centro como
+   círculo naranja. La sección activa lleva una pill de fondo.
    Desktop (>= 1024): riel vertical fijo a la izquierda. */
 
 .bottom-nav {
     position: fixed;
-    inset: auto 0 0 0;
+    left: var(--spacing-sm);
+    right: var(--spacing-sm);
+    bottom: max(var(--spacing-md), env(safe-area-inset-bottom));
     z-index: var(--z-nav);
-    background: var(--color-nav-bg);
-    border-top: 1px solid var(--color-rule);
-    padding-bottom: env(safe-area-inset-bottom);
+    padding: var(--spacing-xs);
+    border: 1px solid var(--color-nav-glass-border);
+    border-radius: var(--radius-full);
+    background: var(--color-nav-glass);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    backdrop-filter: blur(20px) saturate(180%);
+}
+
+/* Sin desenfoque (navegadores viejos o "reducir transparencia"): fondo sólido */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .bottom-nav {
+        background: var(--color-nav-bg);
+    }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+    .bottom-nav {
+        background: var(--color-nav-bg);
+    }
 }
 
 .bottom-nav__brand {
@@ -20,10 +39,10 @@
 }
 
 .bottom-nav__list {
-    height: var(--size-nav);
+    height: calc(var(--size-nav) - 2 * var(--spacing-xs));
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    align-items: center;
+    align-items: stretch; /* cada ítem (y su pill) ocupa todo el alto de la barra */
 }
 
 .bottom-nav__link {
@@ -32,9 +51,10 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: var(--gap-xs);
+    gap: var(--spacing-2xs); /* el label pegado al ícono, como en Fitness */
+    border-radius: var(--radius-full);
     color: var(--color-nav-text);
-    transition: color var(--transition-fast);
+    transition: color var(--transition-fast), background-color var(--transition-fast);
 }
 
 .bottom-nav__icon {
@@ -43,40 +63,51 @@
     stroke-width: 1.5;
 }
 
+/* Los íconos sueltos (24px) ocupan lo mismo que el círculo de Hoy (28px):
+   el espacio que falta va arriba, así el label queda pegado al ícono
+   y todos los labels a la misma altura */
+.bottom-nav__link > .bottom-nav__icon {
+    margin-top: var(--spacing-xs);
+}
+
+/* Como en Fitness: labels en minúscula, sin mayúsculas forzadas */
 .bottom-nav__label {
     font-size: var(--font-xs-size);
     line-height: var(--font-xs-line);
-    letter-spacing: var(--font-xs-tracking);
     font-weight: var(--font-weight-medium);
-    text-transform: uppercase;
 }
 
-.bottom-nav__link:hover,
+/* Sección activa: pill de fondo y texto naranja, como en Fitness */
 .bottom-nav__link[aria-current="page"] {
+    background: var(--color-nav-active-bg);
     color: var(--color-nav-text-active);
+}
+
+/* Hover solo con mouse (en el celular quedaría pegado después de tocar):
+   una pill más suave y el texto un poco más fuerte, sin naranja */
+@media (hover: hover) {
+    .bottom-nav__link:not([aria-current="page"]):hover {
+        background: var(--color-nav-hover-bg);
+        color: var(--color-text);
+    }
 }
 
 .bottom-nav__link[aria-current="page"] .bottom-nav__icon {
     stroke-width: 2;
 }
 
-/* --- Hoy: botón central elevado --- */
+/* --- Hoy: círculo naranja dentro de la barra --- */
+/* (ícono 28 + label 14 + 2 de separación = 44: deja 4px de aire arriba
+   y abajo dentro de la pill de 52) */
 .bottom-nav__link--main {
-    justify-content: flex-end;
-    padding-bottom: var(--spacing-sm);
     color: var(--color-accent);
 }
 
-
 .bottom-nav__fab {
-    width: var(--size-fab);
-    height: var(--size-fab);
+    width: 28px;
+    height: 28px;
     display: grid;
     place-items: center;
-    /* sube por encima de la barra */
-    margin-top: -28px;
-    /* anillo del color del fondo: lo despega de la línea de la barra */
-    border: 4px solid var(--color-bg);
     border-radius: var(--radius-full);
     background: var(--color-accent-fill);
     color: var(--color-on-accent);
@@ -84,13 +115,14 @@
 }
 
 .bottom-nav__fab .bottom-nav__icon {
-    width: 28px;
-    height: 28px;
+    width: var(--icon-md);
+    height: var(--icon-md);
     stroke-width: 2;
 }
 
-.bottom-nav__link--main:hover .bottom-nav__fab {
-    transform: scale(1.04);
+/* Hoy mantiene su color: el hover de los demás no lo pinta */
+.bottom-nav__link--main:not([aria-current="page"]):hover {
+    color: var(--color-accent);
 }
 
 /* ============================================
@@ -98,6 +130,7 @@ RESPONSIVE
 ============================================ */
 
 @media (min-width: 1024px) {
+    /* Riel: vuelve a ser una columna sólida pegada al borde */
     .bottom-nav {
         inset: 0 auto 0 0;
         width: var(--size-rail);
@@ -105,9 +138,13 @@ RESPONSIVE
         flex-direction: column;
         align-items: center;
         gap: var(--gap-2xl);
-        padding: var(--spacing-xl) 0;
-        border-top: none;
+        padding: var(--spacing-xl) var(--spacing-sm);
+        border: none;
         border-right: 1px solid var(--color-rule);
+        border-radius: 0;
+        background: var(--color-nav-bg);
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
     }
 
     .bottom-nav__brand {
@@ -132,16 +169,9 @@ RESPONSIVE
         height: 76px;
     }
 
-    .bottom-nav__link--main {
-        justify-content: center;
-        padding-bottom: 0;
-    }
-
     .bottom-nav__fab {
         width: 52px;
         height: 52px;
-        margin-top: 0;
-        border: none;
     }
 
     .bottom-nav__fab .bottom-nav__icon {

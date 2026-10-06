@@ -27,7 +27,8 @@ export function field({
   const extra = Object.entries(attrs)
     .map(([key, val]) => (val === true ? ` ${escapeHTML(key)}` : ` ${escapeHTML(key)}="${escapeHTML(val)}"`))
     .join("");
-  const inputmode = type === "number" ? ' inputmode="numeric"' : "";
+  // Los números abren el teclado numérico (attrs.inputmode: "decimal" para tener coma)
+  const inputmode = type === "number" && !attrs.inputmode ? ' inputmode="numeric"' : "";
   const describedBy = [hint && `${id}-hint`, `${id}-error`].filter(Boolean).join(" ");
 
   return `

@@ -7,7 +7,9 @@
 
 import { get, set } from "./store.js";
 
-const DATA_KEYS = ["profile", "habit", "habit_log", "water_log", "workout", "meal", "sleep", "mood"];
+const DATA_KEYS = ["profile", "habit", "habit_log", "water_log", "workout", "meal", "sleep", "mood", "lab_result", "body", "lab_range"];
+// Claves que guardan un objeto; el resto son listas
+const OBJECT_KEYS = ["profile", "lab_range"];
 const FORMAT_VERSION = 1;
 
 export async function exportData() {
@@ -33,7 +35,7 @@ export async function importData(backup) {
   for (const key of DATA_KEYS) {
     if (!(key in backup.data)) continue;
     const value = backup.data[key];
-    const expectsList = key !== "profile";
+    const expectsList = !OBJECT_KEYS.includes(key);
     if (expectsList !== Array.isArray(value)) {
       throw new Error(`El backup tiene un formato inválido en "${key}".`);
     }
