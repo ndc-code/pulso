@@ -97,6 +97,9 @@ src/store/synced.js        NUEVO adaptador: envuelve local.js y anota los cambio
 src/store/supabase.js      NUEVO: crea el cliente de supabase-js (import dinámico desde CDN)
 src/store/auth.js          NUEVO: entrar con Google, salir, sesión actual, avisos de cambio de sesión
 src/store/sync.js          NUEVO: cola de pendientes, subir, bajar, primer login
+src/store/account.js       NUEVO: arma todo: arranque con sesión, entrar, salir (con los confirm)
+src/utils/download.js      NUEVO: descargar un JSON (lo usan Perfil y el primer login)
+src/utils/token.js         NUEVO: generar la clave del Atajo y su hash (con tests)
 src/store/steps-token.js   NUEVO: generar la clave del Atajo
 src/store/store.js         cambia el import: local.js → synced.js (nada más)
 src/utils/sync.js          NUEVO: lógica pura (diferencias, unión, cola, validaciones) + tests
@@ -133,14 +136,15 @@ Como el diff se hace en el adaptador, sirven todos los caminos de escritura: `ad
 Se guarda en local (clave `_outbox`), así sobrevive a una recarga. Cada entrada es `{ table, id, op: "upsert" | "delete", row?, value? }`.
 
 - `coalesce`: si llega otra entrada de la misma `(table, id)`, reemplaza a la anterior (vale el último estado).
-- Subir: agrupa por tabla y hace `upsert` con `onConflict: "user_id,id"` (o `"user_id,key"` en `user_doc`). Un `delete` es un upsert con `deleted_at = now()`. Si sale bien, se sacan esas entradas; si falla, quedan para reintentar.
+- Subir: agrupa por tabla y hace `upsert` con `onConflict: "user_id,id"` (o `"user_id,key"` en `user_doc`), con `deleted_at = null` (revive una fila borrada si vuelve). Un `delete` es un `update` de `deleted_at = now()` (si la fila nunca llegó al servidor, no pasa nada). Si sale bien, se sacan de la cola **solo las entradas que se mandaron** (`removeSent`: si mientras tanto llegó un cambio nuevo de la misma fila, queda); si falla, quedan para reintentar.
+- Todas las escrituras de la cola pasan en fila (una promesa encadenada), para que dos guardados seguidos no se pisen.
 - Reintentos: al volver la red (`online`), al volver a la app y al abrirla. Nunca se manda dos veces lo mismo a la vez (un solo envío en curso).
 
 ### 4.5 Bajar cambios
 
 Cuándo: al arrancar con sesión, al volver a la app (`visibilitychange` → visible), al volver la red y después de cada subida. Siempre sube primero lo pendiente.
 
-Cómo: por cada tabla, `select` de las filas con `updated_at > cursor` (incluye las borradas). El cursor se guarda por tabla en `_sync` y se le restan 60 segundos para no perder filas que se confirmaron en paralelo (`mergeRemote` repite filas sin problema).
+Cómo: por cada tabla, `select` de las filas con `updated_at > cursor` (incluye las borradas), de a 1000 (el máximo que devuelve Supabase por pedido), hasta que no haya más. El cursor se guarda por tabla en `_sync` y se le restan 60 segundos para no perder filas que se confirmaron en paralelo (`mergeRemote` repite filas sin problema).
 
 `mergeRemote(localRows, remoteRows)`:
 - fila remota con `deleted_at` → se saca de la lista local;
@@ -149,7 +153,7 @@ Cómo: por cada tabla, `select` de las filas con `updated_at > cursor` (incluye 
 
 Lo que baja se escribe con `local.write` directo, sin pasar por la cola. Si algo cambió, se dispara `pulso:refresh` (redibuja la vista y el header).
 
-Caso especial `steps_log` (una fila por día): si después de unir hay dos filas del mismo día (carga a mano sin red + el Atajo), queda la de `updated_at` más nuevo y la otra se borra (entra a la cola como `delete`). Lo resuelve `dedupeByDate`.
+Caso especial `steps_log` (una fila por día): si después de unir hay dos filas del mismo día (carga a mano sin red + el Atajo), queda la que bajó del servidor con `updated_at` más nuevo (si ninguna bajó, la última de la lista) y la otra se borra (entra a la cola como `delete`). Lo resuelve `dedupeByDate`.
 
 ### 4.6 Primer login en un dispositivo
 
@@ -157,7 +161,7 @@ Se detecta porque `_sync` no tiene el `user_id` de esta sesión.
 
 1. ¿La cuenta está vacía? (sin filas en `habit` ni en `user_doc`)
    - **Sí:** se sube todo lo local (cada clave de datos como upsert) y queda sincronizado.
-   - **No:** manda la nube. Si el dispositivo tiene datos cargados por la persona (`hasLocalUserData`: alguna fila en logs, entrenos, comidas, sueño, análisis, peso o sesiones), primero se pregunta: «Este dispositivo tiene datos que no están en tu cuenta. Se van a reemplazar por los de tu cuenta.», con las opciones "Descargar backup", "Reemplazar" y "Cancelar" (cancelar cierra la sesión). Después se borra lo local y se baja todo.
+   - **No:** manda la nube. Si el dispositivo tiene datos cargados por la persona (`hasLocalUserData`: alguna fila en logs, entrenos, comidas, sueño, análisis, peso o sesiones), primero se pregunta con `confirm()` (como ya hace Importar): «Este dispositivo tiene datos que no están en tu cuenta. Se van a reemplazar por los de tu cuenta; antes se descarga una copia de este dispositivo por las dudas. ¿Seguimos?». Aceptar → descarga el backup y reemplaza. Cancelar → cierra la sesión y no toca nada. Después se borra lo local y se baja todo.
 2. Se guarda `_sync = { user_id, cursors }`.
 
 `seed.js` no cambia: en un dispositivo nuevo siembra los hábitos por defecto, que se reemplazan por los de la cuenta en el paso 1.
@@ -196,7 +200,7 @@ Siguiendo DESIGN.md (bloque redondeado, texto chico, naranja solo para estado):
 
 - `POST https://drraruoxrvvovnhnammp.supabase.co/functions/v1/import-steps`
 - Desplegada con `verify_jwt = false` (el Atajo no tiene sesión de Google; la autenticación es la clave). Al implementarla, verificar si el gateway pide igual el header `apikey` (si lo pide, el Atajo manda la publishable key).
-- Header `Authorization: Bearer pulso_…` · cuerpo `{ "date": "YYYY-MM-DD", "steps": 8123 }`.
+- Header `x-pulso-key: pulso_…` (un header propio y no `Authorization`, para que el gateway de Supabase no lo confunda con un JWT) · cuerpo `{ "date": "YYYY-MM-DD", "steps": 8123 }`.
 
 Pasos:
 1. `validate.js` → `validateStepsPayload({ date, steps }, nowUtc)`: fecha con formato válido, no más de 1 día después de hoy en UTC (tolera husos horarios), no más de 30 días atrás; `steps` entero entre 0 y 100.000. Si no pasa → `400` con mensaje.
@@ -216,7 +220,7 @@ Lo arma el dueño una vez en su iPhone y lo comparte con un link de iCloud, que 
 2. *Buscar muestras de salud*: tipo Pasos, fecha de inicio hoy.
 3. *Calcular estadísticas*: suma.
 4. *Formatear fecha*: hoy, formato `yyyy-MM-dd`.
-5. *Obtener contenido de URL*: POST a la función, headers `Authorization: Bearer <clave>` y `Content-Type: application/json`, cuerpo JSON `{ date, steps }`.
+5. *Obtener contenido de URL*: POST a la función, headers `x-pulso-key: <clave>` y `Content-Type: application/json`, cuerpo JSON `{ date, steps }`.
 
 ### 5.4 Perfil: bloque "Conectar con Salud"
 
@@ -241,6 +245,10 @@ En `src/utils/sync.js`, con su test en `tests/sync.test.js` escrito antes del c�
 | `dedupeByDate(rows)` | una fila por día; devuelve `{ rows, deletedIds }` |
 | `hasLocalUserData(data)` | ¿hay datos cargados por la persona? (4.6) |
 | `cursorWithMargin(iso)` | cursor menos 60 s |
+| `latestUpdatedAt(rows)` | el `updated_at` más nuevo (el próximo cursor) |
+| `outboxEntriesFor(key, prev, next)` | las entradas de la cola para un `write` (colección u objeto) |
+| `removeSent(queue, sent)` | saca de la cola solo lo que se mandó |
+| `syncStatusText(status, now)` | «Sincronizado hace 2 min», «3 cambios sin subir», «Sin conexión» |
 
 `supabase/functions/import-steps/validate.js` → `tests/import-steps.test.js` (`validateStepsPayload`).
 
