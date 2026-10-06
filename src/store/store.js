@@ -18,7 +18,8 @@
 // Las claves son los nombres de las entidades del modelo de datos
 // (profile, habit, habit_log, workout...), para que mapeen 1:1 a tablas de Supabase.
 
-import * as adapter from "./local.js";
+// synced.js = local.js + la cola para subir a Supabase (ver sync.js)
+import * as adapter from "./synced.js";
 import { DEFAULTS } from "./defaults.js";
 
 // key -> Set de callbacks

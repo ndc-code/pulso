@@ -9,6 +9,7 @@ import { get, set, subscribe } from "../../store/store.js";
 import { exportData, importData } from "../../store/backup.js";
 import { todayKey } from "../../utils/dates.js";
 import { icon } from "../../utils/icons.js";
+import { downloadJSON } from "../../utils/download.js";
 import { field, setFieldError } from "../../components/field/field.js";
 import { segmented } from "../../components/segmented/segmented.js";
 import { chipGroup } from "../../components/chip/chip.js";
@@ -86,7 +87,7 @@ export async function render(root) {
 
     <section class="card content-reveal-position-sm">
       <h2 class="card__title">Tus datos</h2>
-      <p class="card__text">Viven solo en este dispositivo. Exportalos de vez en cuando para tener una copia.</p>
+      <p class="card__text">Exportá una copia de tus datos de vez en cuando, o importá una que ya tengas.</p>
       <div class="perfil__data-actions">
         <button class="btn btn--ghost" type="button" data-export>${icon("download")}Exportar</button>
         <label class="btn btn--ghost">
@@ -127,13 +128,7 @@ export async function render(root) {
 
   /* --- Exportar: descarga un .json --- */
   root.querySelector("[data-export]").addEventListener("click", async () => {
-    const backup = await exportData();
-    const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = `pulso-backup-${todayKey()}.json`;
-    link.click();
-    URL.revokeObjectURL(link.href);
+    downloadJSON(await exportData(), `pulso-backup-${todayKey()}.json`);
   });
 
   /* --- Importar: lee el archivo, confirma y reemplaza --- */

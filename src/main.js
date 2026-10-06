@@ -7,10 +7,11 @@
 //   2. tema (antes de pintar las vistas)
 //   3. header (saludo, fecha, avatar)
 //   4. router (pinta la sección del hash actual)
+//   5. cuenta (sesión de Google y sincronización)
 
 import { get, subscribe } from "./store/store.js";
 import { ensureSeed } from "./store/seed.js";
-import { getSession } from "./store/auth.js";
+import { initAccount } from "./store/account.js";
 import { applyTheme } from "./utils/theme.js";
 import { todayKey } from "./utils/dates.js";
 import { initHeader } from "./layout/header/header.js";
@@ -28,8 +29,8 @@ async function start() {
   startRouter(document.querySelector("#view"));
   watchDayChange();
 
-  // Sesión con Google (no se espera: la app ya está pintada con lo local)
-  getSession();
+  // Cuenta y sincronización (no se espera: la app ya está pintada con lo local)
+  initAccount().catch((error) => console.warn("[account]", error));
 }
 
 // Si la app queda abierta y pasa la medianoche, "hoy" cambió:
