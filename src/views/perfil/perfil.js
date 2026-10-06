@@ -34,6 +34,7 @@ const THEME_OPTIONS = [
 const GOALS = [
   { key: "weekly_active_goal", label: "Minutos activos por semana", suffix: "min", min: 10, max: 1000, hint: "La OMS recomienda 150." },
   { key: "water_goal", label: "Agua por día", suffix: "vasos", min: 1, max: 20 },
+  { key: "meal_goal", label: "Comidas por día", suffix: "comidas", min: 1, max: 8 },
   { key: "sleep_goal", label: "Sueño por noche", suffix: "horas", min: 4, max: 12 },
 ];
 

@@ -2,8 +2,8 @@
    Views — Comer
    ============================================ */
 
-/* --- Agua (como "Water" de gauge-ui) --- */
-.water-card {
+/* --- Comidas y agua (como "Water" de gauge-ui): una card con tabs adentro --- */
+.intake-card {
     display: flex;
     flex-direction: column;
     gap: var(--gap-lg);
@@ -12,14 +12,14 @@
     background: var(--color-surface-2);
 }
 
-.water-card__top {
+/* Lo que cambia con las tabs (Comidas · Agua), debajo de ellas */
+.intake-card__panel {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--gap-md);
+    flex-direction: column;
+    gap: var(--gap-lg);
 }
 
-.water-card__title {
+.intake-card__title {
     display: flex;
     align-items: center;
     gap: var(--gap-sm);
@@ -27,12 +27,12 @@
     line-height: var(--font-lg-line);
 }
 
-.water-card__title svg {
+.intake-card__title svg {
     width: var(--icon-md);
     height: var(--icon-md);
 }
 
-.water-card__main {
+.intake-card__main {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -41,7 +41,7 @@
 }
 
 /* Anillo naranja cortado en un tramo por vaso; los cortes toman el color de la card */
-.water-card__ring {
+.intake-card__ring {
     --gauge-cut: var(--color-surface-2);
 
     position: relative;
@@ -50,16 +50,16 @@
     color: var(--color-accent-fill);
 }
 
-.water-card__ring .gauge__track {
+.intake-card__ring .gauge__track {
     stroke: var(--color-divider);
     opacity: 1;
 }
 
-.water-card__ring .gauge__cut {
+.intake-card__ring .gauge__cut {
     stroke-width: 4px;
 }
 
-.water-card__value {
+.intake-card__value {
     position: absolute;
     display: flex;
     flex-direction: column;
@@ -68,13 +68,13 @@
     white-space: nowrap;
 }
 
-.water-card__of {
+.intake-card__of {
     font-size: var(--font-xs-size);
     line-height: var(--font-xs-line);
     color: var(--color-text-muted);
 }
 
-.water-card__readouts {
+.intake-card__readouts {
     flex: 1;
     min-width: 120px;
     display: flex;
@@ -82,7 +82,7 @@
     gap: var(--gap-sm);
 }
 
-.water-card__readouts div {
+.intake-card__readouts div {
     display: flex;
     justify-content: space-between;
     gap: var(--gap-md);
@@ -90,21 +90,21 @@
     line-height: var(--font-sm-line);
 }
 
-.water-card__readouts dt {
+.intake-card__readouts dt {
     color: var(--color-text-muted);
 }
 
-.water-card__readouts dd {
+.intake-card__readouts dd {
     font-variant-numeric: tabular-nums;
 }
 
-/* − redondo y "+ 250 ml" en pill que ocupa el resto */
-.water-card__actions {
+/* − redondo y "+ 250 ml" / "+ Registrar comida" en pill que ocupa el resto */
+.intake-card__actions {
     display: flex;
     gap: var(--gap-sm);
 }
 
-.water-card__add {
+.intake-card__add {
     flex: 1;
 }
 

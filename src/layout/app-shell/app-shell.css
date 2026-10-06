@@ -12,7 +12,7 @@
 
 /* Vista activa: el router monta acá el contenido de cada sección */
 .app-view {
-    /* deja lugar a la barra inferior fija, al botón de Hoy que sobresale
+    /* deja lugar a la barra flotante, a su separación del borde
        y al área segura del iPhone */
     padding-bottom: calc(var(--size-nav) + env(safe-area-inset-bottom) + var(--spacing-3xl));
 }

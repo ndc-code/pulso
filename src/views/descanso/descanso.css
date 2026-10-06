@@ -1,0 +1,191 @@
+/* ============================================
+   Views — Descanso
+   ============================================ */
+
+/* --- Card de anoche (como "Sleep" de gauge-ui) --- */
+.rest-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-lg);
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface-2);
+}
+
+.rest-card__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-md);
+}
+
+.rest-card__title {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    font-size: var(--font-lg-size);
+    line-height: var(--font-lg-line);
+}
+
+.rest-card__title svg {
+    width: var(--icon-md);
+    height: var(--icon-md);
+}
+
+.rest-card__main {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-lg);
+}
+
+/* Reloj de 24 h: la noche en naranja, las horas en el centro */
+.rest-dial {
+    position: relative;
+    display: grid;
+    place-items: center;
+    color: var(--color-accent-fill);
+}
+
+.rest-dial__value {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--color-text);
+    white-space: nowrap;
+}
+
+.rest-dial__of {
+    font-size: var(--font-xs-size);
+    line-height: var(--font-xs-line);
+    color: var(--color-text-muted);
+}
+
+/* Datos al costado: label a la izquierda, valor a la derecha */
+.rest-readouts {
+    flex: 1;
+    min-width: 130px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+}
+
+.rest-readouts div {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--gap-md);
+    font-size: var(--font-sm-size);
+    line-height: var(--font-sm-line);
+}
+
+.rest-readouts dt {
+    color: var(--color-text-muted);
+}
+
+.rest-readouts dd {
+    font-variant-numeric: tabular-nums;
+}
+
+/* --- Respiración y ánimo --- */
+.rest-breath,
+.rest-mood {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-lg);
+}
+
+.rest-done {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    color: var(--color-text);
+}
+
+/* --- Historial --- */
+.rest-history__day {
+    color: var(--color-text-muted);
+}
+
+/* --- Hoja: registrar sueño --- */
+.sleep-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xl);
+}
+
+.sleep-form__times {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--gap-md);
+}
+
+.sleep-form__total {
+    display: flex;
+    align-items: baseline;
+    gap: var(--gap-sm);
+}
+
+/* --- Hoja: respiración guiada --- */
+.breath {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--gap-lg);
+    text-align: center;
+}
+
+.breath__stage {
+    position: relative;
+    width: 240px;
+    height: 240px;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--color-divider);
+    border-radius: var(--radius-full);
+}
+
+/* El círculo crece al inhalar y se achica al exhalar.
+   La duración la pone el JS: lo que dura cada fase. */
+.breath__circle {
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius-full);
+    background: var(--color-accent-fill);
+    transform: scale(0.35);
+    transition-property: transform;
+    transition-timing-function: ease-in-out;
+}
+
+.breath__circle[data-kind="in"] {
+    transform: scale(1);
+}
+
+.breath__circle[data-kind="out"] {
+    transform: scale(0.35);
+}
+
+.breath__count {
+    position: relative;
+    color: var(--color-on-accent);
+}
+
+.breath__phase {
+    font-size: var(--font-2xl-size);
+    line-height: var(--font-2xl-line);
+    letter-spacing: var(--font-2xl-tracking);
+}
+
+.breath .sheet__actions {
+    align-self: stretch;
+}
+
+/* Sin movimiento: el círculo queda a mitad de tamaño y guían el texto y la cuenta */
+@media (prefers-reduced-motion: reduce) {
+    .breath__circle,
+    .breath__circle[data-kind] {
+        transform: scale(0.6);
+        transition: none;
+    }
+}

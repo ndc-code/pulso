@@ -12,7 +12,7 @@ Los nombres de tokens de este archivo son los que existen en `src/styles/`.
 
 1. **Tres colores.** Blanco, negro y el naranja de Pulso. Los grises son blanco y negro diluidos, solo para texto secundario y líneas.
 2. **Números grandes, textos chicos.** Cada pantalla tiene un número protagonista (el % del día, la racha) en tamaño gigante y peso regular, con texto de apoyo chico al lado.
-3. **Plano.** Sin sombras ni degradés. Las secciones y los datos se separan con una línea de 1px y aire. Los únicos fondos son los **bloques de dato** de la pila de ciencia en Hoy. Los resúmenes de sección van en **filas tipográficas** (`stat-row`), nunca en cajas.
+3. **Plano.** Sin sombras ni degradés. Las secciones y los datos se separan con una línea de 1px y aire. Los únicos fondos son los **bloques de dato** de la pila de ciencia en Hoy. Los resúmenes de sección van en **filas tipográficas** (`stat-row`), nunca en cajas. Única excepción al plano: la barra de navegación es de **vidrio** (fondo translúcido con desenfoque), como la de Fitness.
 4. **El naranja es estado.** Aparece cuando algo pasa: hoy, cumplido, progreso, la racha. Una sola superficie naranja grande por pantalla como máximo.
 5. **Sin culpa.** Nunca rojo. Los niveles se muestran con naranja lleno / a medias / vacío y siempre con palabra o número.
 
@@ -83,11 +83,11 @@ Los números van con `.num` + `.num--sm/md/lg/xl`: regular, tracking ≈ -0.05em
 - **Spacing** (base 8): `2xs` 2 · `xs` 4 · `sm` 8 · `md` 12 · `lg` 16 · `xl` 24 · `2xl` 32 · `3xl` 40 · `4xl` 56 · `5xl` 80 · `6xl` 96 · `7xl` 120.
 - **Radius:** `none` para secciones · `sm` 4px para bloques de dato (casi rectos, acompañan el estilo tipográfico) · `full` para pills, botones, inputs y círculos · `lg` 16px solo arriba de las hojas modales.
 - **Líneas:** 1px. `--color-rule` arriba de cada sección; `--color-divider` entre filas.
-- **Layout:** columna `--width-app` 720px · gutter 20 → 24 (≥768) · nav 68 + área segura · botón Hoy 60 · riel 104 (≥1024) · área tocable mínima 44.
+- **Layout:** columna `--width-app` 720px · gutter 20 → 24 (≥768) · nav 68 flotante (cápsula a 8px de los bordes) + área segura · Hoy 28 · riel 104 (≥1024) · área tocable mínima 44.
 
 ## Navegación
 
-Barra inferior plana, separada por una línea: **Moverse · Comer · [Hoy] · Descanso · Progreso**. Labels de 11px en mayúsculas; la sección activa en naranja. Hoy es un círculo naranja de 60px que sobresale de la barra, con un anillo del color del fondo que lo despega de la línea. Perfil se abre desde el avatar (círculo con borde; relleno inverso cuando estás en Perfil). En desktop (≥1024) la barra pasa a un riel vertical a la izquierda.
+Barra **flotante de vidrio**, como la de Fitness de Apple: cápsula totalmente redondeada separada 8px de los bordes (y por encima del área segura), borde de 1px apenas visible y fondo translúcido con desenfoque (`--color-nav-glass`, `backdrop-filter`); sin desenfoque disponible o con "reducir transparencia", fondo sólido. **Moverse · Comer · [Hoy] · Descanso · Progreso**. Labels de 11px en minúscula (como Fitness); la sección activa en naranja con una **pill de fondo** redondeada. Hoy es un círculo naranja de 28px dentro de la barra. La pill activa es bien visible (15% del color del texto) y casi del alto de la barra, como en Fitness. Perfil se abre desde el avatar (círculo con borde; relleno inverso cuando estás en Perfil). En desktop (≥1024) la barra pasa a un riel vertical a la izquierda.
 
 ## Componentes
 
@@ -111,7 +111,10 @@ Barra inferior plana, separada por una línea: **Moverse · Comer · [Hoy] · De
 | Week strip | `components/week-strip/` | **Tira de la semana**, la misma en Hoy y Moverse: letra (LU, MA…), número y punto debajo. El día destacado va en **círculo naranja** (Hoy: hoy · Moverse: el día elegido); la letra de hoy, en naranja. Punto lleno = completo / con actividad, aro = algo hecho. Con `selectable` cada día es un botón. |
 | Level | `components/level/` | Marca de nivel en naranja: **lleno** (bueno), **a medias** (medio), **aro** (flojo), gris (sin registro). Siempre con la palabra al lado. Tamaños sm 12 · md 28 · lg 56. |
 | Status pulse | `components/status-pulse/` | Punto naranja de 6px. |
-| Placeholder | `components/placeholder/` | Vista "en construcción". |
+| Sleep dial | `components/sleep-dial/` | Reloj de 24 h portado del `SleepDial` de gauge-ui: medianoche arriba, una marca por hora, 00 · 06 · 12 · 18, y la noche como un solo arco naranja de la hora de dormir a la de despertar (aunque cruce las 00). Usado en Descanso. |
+| Range dial | `components/range-dial/` | Medio dial chico portado del `RangeDial` de gauge-ui: escala como track, el rango de referencia atenuado encima y un punto en el valor: **lleno** naranja en rango, **aro** naranja fuera. Siempre con la palabra ("En rango"). Usado en los análisis de Progreso. |
+| Line chart | `components/line-chart/` | Evolución en el tiempo (referencia: card "Body weight" de openGym, escrito desde cero): línea fina del color del texto, punto por medición, el último en naranja con su valor arriba, líneas punteadas para rango o meta y fechas de punta a punta. Eje X por tiempo. Lista oculta para lectores de pantalla. |
+| Placeholder | `components/placeholder/` | Vista "en construcción" (hoy sin uso: todas las secciones están hechas). |
 | Header | `layout/header/` | `h1` grande en regular + subtítulo chico + avatar. Flecha de volver en subrutas. |
 | Bottom nav | `layout/bottom-nav/` | Ver "Navegación". |
 
@@ -119,6 +122,8 @@ Piezas propias de cada vista:
 
 - **Hoy** (`views/hoy/`): tira de la semana (`week-strip`: hoy en círculo naranja; punto lleno = día completo, aro = algo hecho), **% del día gigante** con texto chico al lado y una fila de círculos (uno por hábito), lista de hábitos, **"Lo que recomienda la ciencia"** (título fijo + seis bloques apilados con el dato de referencia de cada hábito, copy arriba y número abajo; contenido en `src/content/recommendations.js`), y después racha (número grande) y pills para registrar.
 - **Comer** (`views/comer/`): filas tipográficas (comidas de hoy con su nivel · chips positivos y a moderar del día) · **card de agua como "Water" de gauge-ui**: anillo naranja grueso cortado en un tramo por vaso, litros grandes en el centro ("1,25 L de 2 L"), datos al costado (falta, vaso de 250 ml, hora del último) y botones − / "+ 250 ml"; sincronizada con Hoy · la semana (un nivel por día) · chips más frecuentes (borde punteado = a moderar). Botón "Registrar comida" (hoja con momento sugerido por la hora, chips "Sumó" y "A moderar", día y nota) e historial por día con su nivel.
+- **Descanso** (`views/descanso/`): filas tipográficas (horas de anoche en grande como reloj "7:30 h" con su nivel contra la meta · promedio de la semana) · **card gris como "Sleep" de gauge-ui**: reloj de 24 h con la noche en naranja, horas en el centro y datos al costado (me acosté, me desperté, calidad, meta); botón registrar / editar · la semana en barras con la línea punteada de referencia (7 h) · respiración guiada (patrón 4-4-4-4 / 4-7-8 y 1, 3 o 5 min; la hoja muestra un círculo naranja que crece al inhalar y se achica al exhalar, con la cuenta; al terminar marca el hábito de pausa) · check-in de ánimo y energía (1 a 5, opcional) · historial de noches. Un registro de sueño por día: el día en que te despertaste.
+- **Progreso** (`views/progreso/`): resumen de la semana en filas (% de hábitos con barra, minutos activos con barra, días buenos en Comer, sueño promedio) · **calendario de constancia** de 26 semanas: un punto por día con los niveles de `level` (lleno = todos los hábitos, a medias = la mitad o más, aro = alguno, gris = ninguno) y leyenda · peso en grande con el cambio desde hace 30 días y su línea · análisis: grilla de diales de rango separada por líneas (2 columnas, 3 desde 640), chips para elegir qué indicador ver en la línea de evolución con su rango punteado, rangos editables · Lp(a) aparte con su nota de contexto · historial de análisis · aviso fijo.
 - **Moverse** (`views/moverse/`): layout **por día** (referencia de lista de tareas), distinto a Comer a propósito: tira de la semana (la misma de Hoy, con el mes y flechas en el encabezado; el día elegido en círculo naranja; punto si hubo actividad) · card gris **como "Steps" de gauge-ui**: dial abierto abajo con marcas (arco naranja, minutos de la semana en el centro), datos al costado (sesiones, promedio, faltan, días activos) y barras por día con la meta diaria · sesiones del día elegido: tags chicos (duración, intensidad), **tipo en grande** y un **círculo negro de 88px "repetir"** (la suma hoy); al final, círculo naranja "+" para registrar en ese día · calendario de puntos de 12 semanas. El historial por semana se recorre con las flechas.
 
 
@@ -144,11 +149,11 @@ Componentes que se construyen fase a fase, con proyectos de `inspo/` como refere
 | 2 | Pilares | Registrar comida, entreno o sueño (accesos rápidos) | openGym, hojas modales (`Modals` / `sheets`) — comida y entreno ✓ |
 | 2 | Pilares | Historial con borrado | openGym `SwipeToDelete` |
 | 2 | Moverse | Minutos semanales contra la meta de 150 | layout por día (referencia de lista de tareas) + card "Steps" de gauge-ui (dial + datos + barras) + calendario de puntos de "Workouts" ✓ |
-| 2 | Descanso | Horas de sueño con referencia en 7 h | gauge-ui `SleepDial` |
-| 3 | Progreso | Resumen semanal | filas tipográficas (`stat-row`), como Moverse y Comer |
-| 3 | Progreso | Calendario de constancia | openGym `Heatmap` (en niveles de naranja, como la grilla de puntos de la referencia) |
-| 3 | Progreso | Evolución de análisis y peso | openGym `LineChart` (card "Body weight" de Home) |
-| 3 | Progreso | Indicador con rango de referencia editable (LDL, glucemia…) | gauge-ui `RangeDial` / `GaugeZones` |
+| 2 | Descanso | Horas de sueño con referencia en 7 h | gauge-ui `SleepDial` ✓ |
+| 3 | Progreso | Resumen semanal | filas tipográficas (`stat-row`), como Moverse y Comer ✓ |
+| 3 | Progreso | Calendario de constancia | openGym `Heatmap` (en niveles de naranja, como la grilla de puntos de la referencia) ✓ |
+| 3 | Progreso | Evolución de análisis y peso | openGym `LineChart` (card "Body weight" de Home) ✓ |
+| 3 | Progreso | Indicador con rango de referencia editable (LDL, glucemia…) | gauge-ui `RangeDial` / `GaugeZones` ✓ |
 | 6 | Moverse | Rutina paso a paso con temporizador de descanso | openGym `RestTimer` |
 
 Archivos de referencia: gauge-ui en `components/gauge/` (primitivas) y `components/examples/health-dashboard.tsx` (diales de salud). openGym: capturas en `assets/screenshots/`.

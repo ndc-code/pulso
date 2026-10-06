@@ -1,0 +1,51 @@
+/* ============================================
+   Components — Exercise Media
+   ============================================ */
+
+/* Recuadro cuadrado. Las fotos traen fondo blanco: se "multiplican" sobre
+   --color-media-bg, así en tema claro se funden con la página y en oscuro
+   quedan sobre un gris claro que no encandila. */
+.exercise-media {
+    position: relative;
+    flex-shrink: 0;
+    display: block;
+    aspect-ratio: 1;
+    border-radius: var(--radius-md);
+    background: var(--color-media-bg);
+    overflow: hidden;
+}
+
+.exercise-media__img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    mix-blend-mode: multiply;
+}
+
+/* Listas (biblioteca, elegir ejercicio) */
+.exercise-media--sm {
+    width: 48px;
+}
+
+/* Modo entrenamiento, al lado de "Última vez" */
+.exercise-media--md {
+    width: 96px;
+}
+
+/* Historial del ejercicio: ancho completo, hasta el tamaño original × 1,5 */
+.exercise-media--lg {
+    width: 100%;
+    max-width: 270px;
+    margin-inline: auto;
+}
+
+/* Crédito de la animación, chiquito en la esquina */
+.exercise-media__credit {
+    position: absolute;
+    right: var(--spacing-sm);
+    bottom: var(--spacing-xs);
+    font-size: var(--font-xs-size);
+    line-height: var(--font-xs-line);
+    color: var(--color-media-text);
+}

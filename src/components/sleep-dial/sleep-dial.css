@@ -1,0 +1,39 @@
+/* ============================================
+   Components — Sleep Dial
+   ============================================ */
+
+/* Reloj de 24 h: track gris, la noche en un arco grueso (currentColor) */
+.sleep-dial {
+    flex-shrink: 0;
+    overflow: visible;
+}
+
+.sleep-dial__track,
+.sleep-dial__night {
+    fill: none;
+    stroke-width: var(--gauge-width);
+}
+
+.sleep-dial__track {
+    stroke: var(--color-divider);
+}
+
+.sleep-dial__night {
+    stroke: currentColor;
+    stroke-linecap: round;
+}
+
+.sleep-dial__tick {
+    stroke: var(--color-text-muted);
+    stroke-width: 1.5px;
+    stroke-linecap: round;
+    opacity: 0.6;
+}
+
+.sleep-dial__hour {
+    fill: var(--color-text-muted);
+    font-size: var(--font-xs-size);
+    font-variant-numeric: tabular-nums;
+    text-anchor: middle;
+    dominant-baseline: central;
+}

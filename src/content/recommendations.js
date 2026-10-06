@@ -10,7 +10,7 @@
 export const RECOMMENDATIONS = [
   {
     id: "move",
-    source: "workout_minutes",
+    source: null,
     label: "Actividad física",
     value: "150",
     unit: "min por semana",

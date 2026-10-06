@@ -62,7 +62,7 @@
         <!-- LAYOUT: View (el router monta acá cada sección) -->
         <main id="view" class="app-view" tabindex="-1"></main>
 
-        <!-- LAYOUT: Bottom-Nav (Hoy al centro, elevado; riel lateral en desktop) -->
+        <!-- LAYOUT: Bottom-Nav (Ritmo · Fuerza · Pulso al centro · Comida · Descanso; riel lateral en desktop) -->
         <nav class="bottom-nav" aria-label="Secciones">
             <a class="bottom-nav__brand" href="#/hoy">
                 <span class="status-pulse status-pulse--live" aria-hidden="true"></span>
@@ -81,23 +81,25 @@
                             <path d="M16 17h4" />
                             <path d="M4 13h4" />
                         </svg>
-                        <span class="bottom-nav__label">Moverse</span>
+                        <span class="bottom-nav__label">Ritmo</span>
                     </a>
                 </li>
                 <li>
-                    <a class="bottom-nav__link" href="#/comer" data-route="comer">
-                        <!-- Lucide: apple -->
+                    <a class="bottom-nav__link" href="#/fitness" data-route="fitness">
+                        <!-- Lucide: dumbbell -->
                         <svg class="bottom-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                            <path d="M12 6.528V3a1 1 0 0 1 1-1h0" />
-                            <path
-                                d="M18.237 21A15 15 0 0 0 22 11a6 6 0 0 0-10-4.472A6 6 0 0 0 2 11a15.1 15.1 0 0 0 3.763 10 3 3 0 0 0 3.648.648 5.5 5.5 0 0 1 5.178 0A3 3 0 0 0 18.237 21" />
+                            <path d="M17.596 12.768a2 2 0 1 0 2.829-2.829l-1.768-1.767a2 2 0 0 0 2.828-2.829l-2.828-2.828a2 2 0 0 0-2.829 2.828l-1.767-1.768a2 2 0 1 0-2.829 2.829z" />
+                            <path d="m2.5 21.5 1.4-1.4" />
+                            <path d="m20.1 3.9 1.4-1.4" />
+                            <path d="M5.343 21.485a2 2 0 1 0 2.829-2.828l1.767 1.768a2 2 0 1 0 2.829-2.829l-6.364-6.364a2 2 0 1 0-2.829 2.829l1.768 1.767a2 2 0 0 0-2.828 2.829z" />
+                            <path d="m9.6 14.4 4.8-4.8" />
                         </svg>
-                        <span class="bottom-nav__label">Comer</span>
+                        <span class="bottom-nav__label">Fuerza</span>
                     </a>
                 </li>
                 <li>
-                    <!-- Hoy: botón central elevado -->
+                    <!-- Pulso (el día de hoy): al centro, con su círculo naranja -->
                     <a class="bottom-nav__link bottom-nav__link--main" href="#/hoy" data-route="hoy">
                         <span class="bottom-nav__fab">
                             <!-- Lucide: sun -->
@@ -114,7 +116,19 @@
                                 <path d="m19.07 4.93-1.41 1.41" />
                             </svg>
                         </span>
-                        <span class="bottom-nav__label">Hoy</span>
+                        <span class="bottom-nav__label">Pulso</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="bottom-nav__link" href="#/comer" data-route="comer">
+                        <!-- Lucide: apple -->
+                        <svg class="bottom-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M12 6.528V3a1 1 0 0 1 1-1h0" />
+                            <path
+                                d="M18.237 21A15 15 0 0 0 22 11a6 6 0 0 0-10-4.472A6 6 0 0 0 2 11a15.1 15.1 0 0 0 3.763 10 3 3 0 0 0 3.648.648 5.5 5.5 0 0 1 5.178 0A3 3 0 0 0 18.237 21" />
+                        </svg>
+                        <span class="bottom-nav__label">Comida</span>
                     </a>
                 </li>
                 <li>
@@ -126,17 +140,6 @@
                                 d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401" />
                         </svg>
                         <span class="bottom-nav__label">Descanso</span>
-                    </a>
-                </li>
-                <li>
-                    <a class="bottom-nav__link" href="#/progreso" data-route="progreso">
-                        <!-- Lucide: trending-up -->
-                        <svg class="bottom-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                            <path d="M16 7h6v6" />
-                            <path d="m22 7-8.5 8.5-5-5L2 17" />
-                        </svg>
-                        <span class="bottom-nav__label">Progreso</span>
                     </a>
                 </li>
             </ul>

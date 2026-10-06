@@ -66,6 +66,13 @@
 @import url('./components/stat-row/stat-row.css');
 @import url('./components/level/level.css');
 @import url('./components/week-strip/week-strip.css');
+@import url('./components/sleep-dial/sleep-dial.css');
+@import url('./components/range-dial/range-dial.css');
+@import url('./components/line-chart/line-chart.css');
+@import url('./components/tabs/tabs.css');
+@import url('./components/dot-calendar/dot-calendar.css');
+@import url('./components/exercise-media/exercise-media.css');
+@import url('./components/weight-card/weight-card.css');
 
 /* ============================================
    VIEWS
@@ -75,4 +82,5 @@
 @import url('./views/habitos/habitos.css');
 @import url('./views/moverse/moverse.css');
 @import url('./views/comer/comer.css');
-@import url('./views/progreso/progreso.css');
+@import url('./views/descanso/descanso.css');
+@import url('./views/fitness/fitness.css');

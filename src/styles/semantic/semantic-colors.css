@@ -42,6 +42,11 @@
     --color-border: var(--color-text);                                            /* bordes de pills e inputs */
     --color-divider: light-dark(var(--color-gray-300), var(--color-gray-800));    /* separa filas */
 
+    /* --- Fotos de ejercicios: vienen con fondo blanco; en oscuro, un gris
+       muy claro para que el recuadro no encandile (la foto se multiplica encima) --- */
+    --color-media-bg: light-dark(var(--color-white), var(--color-gray-150));
+    --color-media-text: var(--color-gray-600);                                    /* crédito encima de la foto */
+
     /* --- Inverso: negro sobre blanco ↔ blanco sobre negro --- */
     --color-inverse-bg: var(--color-text);
     --color-inverse-text: var(--color-bg);
@@ -73,5 +78,11 @@
     --color-nav-bg: var(--color-bg);
     --color-nav-text: var(--color-text-muted);
     --color-nav-text-active: var(--color-accent);
+    /* Barra flotante de vidrio (como la de Fitness): el fondo deja ver
+       el contenido que pasa por detrás, desenfocado */
+    --color-nav-glass: color-mix(in srgb, var(--color-bg) 72%, transparent);
+    --color-nav-glass-border: color-mix(in srgb, var(--color-text) 12%, transparent);
+    --color-nav-active-bg: color-mix(in srgb, var(--color-text) 15%, transparent);
+    --color-nav-hover-bg: color-mix(in srgb, var(--color-text) 5%, transparent);
 
 }

@@ -1,0 +1,149 @@
+/* ============================================
+   Components — Line Chart
+   ============================================ */
+
+.line-chart {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+}
+
+/* Área del dibujo. El padding deja lugar a los puntos y al valor del último. */
+.line-chart__plot {
+    position: relative;
+    height: 140px;
+    margin: var(--spacing-xl) var(--spacing-2xl) var(--spacing-sm) var(--spacing-sm);
+}
+
+.line-chart__svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+.line-chart__line {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5px;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+}
+
+/* Área bajo la línea: degradado del color del texto (definido en el SVG) */
+.line-chart__area {
+    stroke: none;
+}
+
+.line-chart__dot {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: currentColor;
+    transform: translate(-50%, -50%);
+}
+
+.line-chart__dot.is-last {
+    width: 12px;
+    height: 12px;
+    background: var(--color-accent-fill);
+}
+
+/* El valor del último punto, arriba de él */
+.line-chart__value {
+    position: absolute;
+    transform: translate(-50%, calc(-100% - 10px));
+    font-size: var(--font-sm-size);
+    line-height: var(--font-sm-line);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+/* Rango de referencia o meta: línea punteada con su número a la derecha */
+.line-chart__limit {
+    position: absolute;
+    left: 0;
+    right: 0;
+    border-top: 1px dashed var(--color-text-muted);
+}
+
+.line-chart__limit-label {
+    position: absolute;
+    left: calc(100% + var(--spacing-sm));
+    transform: translateY(-50%);
+    font-size: var(--font-xs-size);
+    line-height: var(--font-xs-line);
+    color: var(--color-text-muted);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.line-chart__axis {
+    display: flex;
+    justify-content: space-between;
+    margin-inline: var(--spacing-sm) var(--spacing-2xl);
+    font-size: var(--font-xs-size);
+    line-height: var(--font-xs-line);
+    color: var(--color-text-muted);
+}
+
+/* ---------------------------------------- */
+/* Con ejes (axes: true) */
+/* ---------------------------------------- */
+
+/* Lugar a la izquierda para los valores del eje Y */
+.line-chart--axes .line-chart__plot {
+    height: 160px;
+    margin-top: var(--spacing-md);
+    margin-left: var(--spacing-3xl);
+}
+
+/* La línea, un poco más gruesa con ejes (como la referencia) */
+.line-chart--axes .line-chart__line {
+    stroke-width: 2px;
+}
+
+.line-chart--axes .line-chart__axis {
+    margin-left: var(--spacing-3xl);
+}
+
+/* Valor redondo del eje Y, a la izquierda del dibujo */
+.line-chart__tick {
+    position: absolute;
+    right: calc(100% + var(--spacing-sm));
+    transform: translateY(-50%);
+    font-size: var(--font-xs-size);
+    line-height: var(--font-xs-line);
+    color: var(--color-text-muted);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+/* Valor redondo del eje Y: línea punteada horizontal */
+.line-chart__hgrid {
+    position: absolute;
+    left: 0;
+    right: 0;
+    border-top: 1px dotted var(--color-divider);
+}
+
+/* Día 1 de cada mes: línea punteada vertical */
+.line-chart__grid {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    border-left: 1px dotted var(--color-divider);
+}
+
+/* Meses debajo, cada uno centrado en su línea */
+.line-chart__axis--months {
+    position: relative;
+    height: var(--font-xs-line);
+}
+
+.line-chart__axis--months span {
+    position: absolute;
+    transform: translateX(-50%);
+}

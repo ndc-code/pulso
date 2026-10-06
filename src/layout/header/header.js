@@ -3,12 +3,10 @@
    ============================================ */
 
 // Header de la app: título grande, subtítulo y avatar.
-//   - En Hoy el subtítulo es el saludo: "Buen día, Nico" (la fecha está en la tira de la semana).
-//   - En el resto, el subtítulo es la bajada de la sección ("Sueño y estrés").
-// Escucha el perfil para actualizar saludo e inicial apenas cambia el nombre.
+// El subtítulo es la bajada de cada sección ("cardio", "pesas", "tu día"…).
+// Escucha el perfil para actualizar la inicial del avatar apenas cambia el nombre.
 
 import { get, subscribe } from "../../store/store.js";
-import { greeting } from "../../utils/dates.js";
 
 const subtitleEl = document.querySelector("[data-header-subtitle]");
 const titleEl = document.querySelector("[data-header-title]");
@@ -16,7 +14,6 @@ const initialEl = document.querySelector("[data-avatar-initial]");
 const iconEl = document.querySelector("[data-avatar-icon]");
 const backEl = document.querySelector("[data-header-back]");
 
-let currentRoute = null;
 let currentTitle = "";
 let currentSubtitle = "";
 let profile = null;
@@ -28,14 +25,12 @@ export async function initHeader() {
   subscribe("profile", (value) => {
     profile = value;
     renderAvatar();
-    renderTitle();
   });
 }
 
 // La llama el router en cada cambio de sección.
 // `back` (opcional) es el hash al que vuelve la flecha, para subrutas.
-export function setHeader(routeName, { title, subtitle = "", back = "" }) {
-  currentRoute = routeName;
+export function setHeader({ title, subtitle = "", back = "" }) {
   currentTitle = title;
   currentSubtitle = subtitle;
   backEl.toggleAttribute("hidden", !back);
@@ -51,13 +46,7 @@ export function focusHeaderTitle() {
 
 function renderTitle() {
   titleEl.textContent = currentTitle;
-
-  if (currentRoute === "hoy") {
-    const name = profile?.name.trim();
-    subtitleEl.textContent = name ? `${greeting()}, ${name}` : greeting();
-  } else {
-    subtitleEl.textContent = currentSubtitle;
-  }
+  subtitleEl.textContent = currentSubtitle;
 }
 
 function renderAvatar() {

@@ -1,0 +1,58 @@
+/* ============================================
+   Components — Weight Card
+   ============================================ */
+
+.weight-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+}
+
+.weight-card__log svg,
+.weight-card__chevron {
+    width: var(--icon-sm);
+    height: var(--icon-sm);
+}
+
+/* Peso grande a la izquierda, fecha del último pesaje a la derecha */
+.weight-card__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--gap-md);
+}
+
+.weight-card__value {
+    display: flex;
+    align-items: baseline;
+    gap: var(--gap-sm);
+}
+
+.weight-card__unit {
+    font-size: var(--font-sm-size);
+    line-height: var(--font-sm-line);
+    color: var(--color-text-muted);
+}
+
+/* Flecha contra el pesaje anterior. La flecha ya dice si subió o bajó;
+   el naranja marca que va hacia la meta (bajó). */
+.weight-card__delta {
+    font-size: var(--font-sm-size);
+    line-height: var(--font-sm-line);
+    font-variant-numeric: tabular-nums;
+    color: var(--color-text-muted);
+}
+
+.weight-card__delta.is-down {
+    color: var(--color-accent);
+}
+
+/* "Todos los pesajes ›", abajo a la derecha */
+.weight-card__all {
+    align-self: flex-end;
+}
+
+/* chevron-left girado: apunta a la derecha */
+.weight-card__chevron {
+    transform: rotate(180deg);
+}
