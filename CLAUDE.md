@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 **Pulso** is an installable web app (PWA) for building healthy habits: movement, food, rest and health tracking.
 
 - Product spec (source of truth): `/Users/nicolasdelcastillo/Documents/web/proyectos/pulso/PULSO-SPEC.md`. Work phase by phase following its roadmap (section 7); never start the next phase without being asked.
-- Visual system: **read `DESIGN.md` before building any UI.** It is a strict black / white / orange editorial system: big regular-weight numbers, small text, 1px rules instead of filled cards, orange only for state. `inspo/` is reference material only (gitignored) — never import from it.
+- Visual system: **read `DESIGN.md` before building any UI.** It is a strict black / white / orange editorial system: big regular-weight numbers, small text, rounded blocks separated by air (never divider lines), dark mode by default, orange only for state. `inspo/` is reference material only (gitignored) — never import from it.
 - Component references per phase are mapped in `DESIGN.md` → "Componentes por fase". **Licensing is strict:** `inspo/gauge-ui-main` is MIT (porting code is fine, with an attribution comment); `inspo/openGym-main` is **AGPL-3.0 — visual and UX reference only (Pulso copies its look), never copy or translate its code** (CSS or JS), not even rewritten from React to vanilla.
 - The owner is a web designer who wants to understand all the code: keep it clear, comment in Spanish where it helps, no over-engineering. UI copy is Spanish (es-AR).
 
@@ -69,7 +69,7 @@ A habit's value either comes from its own `habit_log` (manual) or from another p
 
 ### Views
 
-Each view exports `title` (string), `subtitle` (string, shown under the big header title), `render(root)` (may be async) and optionally `back` (hash for the header back arrow, used by sub-routes like `perfil/habitos`). To re-render the current view from anywhere (after an import, at midnight): `window.dispatchEvent(new Event("pulso:refresh"))`. Lists that update often (Hoy) update cards in place instead of re-rendering, so focus and CSS transitions survive. If `render` returns a function, the router calls it when leaving the view (unsubscribe from the store, stop timers). The router renders into a fresh `.view.container` element, then runs GSAP reveals inside a `gsap.context` that is reverted on leave — views never init or clean up animations themselves. Animation classes: `src/animation/animation-classes.md`.
+Each view exports `title` (string), optionally `subtitle` (string shown under the big header title; without one the header shows today's date — the five sections use the date, Perfil and Hábitos their own subtitle), `render(root)` (may be async) and optionally `back` (hash for the header back arrow, used by sub-routes like `perfil/habitos`). To re-render the current view from anywhere (after an import, at midnight): `window.dispatchEvent(new Event("pulso:refresh"))`. Lists that update often (Hoy) update cards in place instead of re-rendering, so focus and CSS transitions survive. If `render` returns a function, the router calls it when leaving the view (unsubscribe from the store, stop timers). The router renders into a fresh `.view.container` element, then runs GSAP reveals inside a `gsap.context` that is reverted on leave — views never init or clean up animations themselves. Animation classes: `src/animation/animation-classes.md`.
 
 ### Components
 

@@ -2,19 +2,15 @@
    Components — Habit Card
    ============================================ */
 
-/* Fila de hábito, separada por línea fina. Sin colores por hábito:
-   el naranja aparece solo cuando hay progreso o está cumplido. */
+/* Fila de hábito. En Hoy cada fila es un bloque (ver .hoy-habits).
+   Sin colores por hábito: el naranja aparece solo cuando hay progreso
+   o está cumplido. */
 
 .habit-card {
     display: flex;
     align-items: center;
     gap: var(--gap-md);
     padding-block: var(--spacing-md);
-    border-top: 1px solid var(--color-divider);
-}
-
-.habit-card:first-child {
-    border-top: none;
 }
 
 .habit-card__icon {

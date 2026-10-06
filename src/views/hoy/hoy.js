@@ -35,10 +35,10 @@ import { icon } from "../../utils/icons.js";
 import { escapeHTML } from "../../utils/html.js";
 import { habitCard, updateHabitCard } from "../../components/habit-card/habit-card.js";
 import { weekStrip } from "../../components/week-strip/week-strip.js";
+import { dotProgress } from "../../components/dot-progress/dot-progress.js";
 import { weightCard } from "../../components/weight-card/weight-card.js";
 
 export const title = "Pulso";
-export const subtitle = "tu día";
 
 export async function render(root) {
   const today = todayKey();
@@ -47,24 +47,24 @@ export async function render(root) {
   let listSignature = "";
 
   root.innerHTML = `
-    <section class="card week content-reveal-position-sm" aria-labelledby="hoy-week-title">
-      <h2 class="eyebrow" id="hoy-week-title">Esta semana</h2>
+    <section class="card card--flush hoy-week content-reveal-position-sm" aria-labelledby="hoy-week-title">
+      <h2 class="visually-hidden" id="hoy-week-title">Esta semana</h2>
       <div data-week></div>
     </section>
 
     <section class="card hoy-summary content-reveal-position-sm" aria-labelledby="hoy-summary-title">
-      <h2 class="visually-hidden" id="hoy-summary-title">Progreso de hoy</h2>
-      <div class="hoy-summary__head">
-        <p class="num num--xl hoy-summary__percent" data-percent>0%</p>
-        <p class="label hoy-summary__caption">
-          <span data-count></span><br />
-          <span data-message></span>
-        </p>
+      <div class="hoy-summary__top">
+        <h2 class="label" id="hoy-summary-title">Hábitos de hoy</h2>
+        <p class="label hoy-summary__count" data-count></p>
       </div>
-      <ol class="hoy-dots" data-dots aria-hidden="true"></ol>
+      <p class="num num--xl hoy-summary__percent" data-percent>0%</p>
+      <div class="hoy-summary__foot">
+        <div data-dots></div>
+        <p class="label" data-message></p>
+      </div>
     </section>
 
-    <section class="card content-reveal-position-sm" aria-labelledby="hoy-habits-title">
+    <section class="card card--flush content-reveal-position-sm" aria-labelledby="hoy-habits-title">
       <div class="card__header">
         <h2 class="card__title" id="hoy-habits-title">Tus hábitos</h2>
         <a class="btn btn--text" href="#/perfil/habitos">Editar</a>
@@ -75,7 +75,7 @@ export async function render(root) {
 
     <div class="content-reveal-position-sm" data-weight></div>
 
-    <section class="card science" aria-labelledby="hoy-science-title">
+    <section class="card card--flush science" aria-labelledby="hoy-science-title">
       <div class="science__head">
         <h2 class="card__title" id="hoy-science-title">Lo que recomienda la ciencia</h2>
         <p class="card__text">El dato de referencia de cada hábito.</p>
@@ -133,9 +133,7 @@ export async function render(root) {
     const { done, total, percent } = dayProgress(ctx.habits, today, ctx);
 
     root.querySelector("[data-percent]").textContent = `${percent}%`;
-    root.querySelector("[data-count]").textContent = total
-      ? `${done} de ${total} hábitos de hoy.`
-      : "Sin hábitos para hoy.";
+    root.querySelector("[data-count]").textContent = total ? `${done} de ${total} hechos` : "Sin hábitos";
 
     // Mensajes sin culpa: nunca "fallaste", siempre lo que sigue
     let message = `Te ${total - done === 1 ? "falta 1" : `faltan ${total - done}`}. Vas bien.`;
@@ -145,10 +143,7 @@ export async function render(root) {
     root.querySelector("[data-message]").textContent = message;
 
     // Un punto por hábito: los cumplidos primero, en naranja
-    root.querySelector("[data-dots]").innerHTML = Array.from(
-      { length: total },
-      (_, i) => `<li class="hoy-dots__dot${i < done ? " is-done" : ""}"></li>`,
-    ).join("");
+    root.querySelector("[data-dots]").innerHTML = dotProgress({ done, total });
   }
 
   function renderHabits() {

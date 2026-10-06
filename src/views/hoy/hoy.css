@@ -2,46 +2,43 @@
    Views — Hoy
    ============================================ */
 
-/* --- Resumen: % gigante + texto chico + puntos --- */
-.hoy-summary__head {
+/* --- Resumen: bloque con label y cuenta arriba, % gigante y puntos --- */
+.hoy-summary__top {
     display: flex;
-    align-items: flex-end;
+    align-items: baseline;
     justify-content: space-between;
-    gap: var(--gap-lg);
+    gap: var(--gap-md);
 }
 
-.hoy-summary__caption {
-    max-width: 150px;
-    padding-bottom: var(--spacing-sm);
+.hoy-summary__count {
+    color: var(--color-text);
+    font-variant-numeric: tabular-nums;
 }
 
-.hoy-dots {
+.hoy-summary__foot {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
     gap: var(--gap-sm);
 }
 
-.hoy-dots__dot {
-    width: 28px;
-    height: 28px;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-full);
-}
 
-.hoy-dots__dot.is-done {
-    border-color: var(--color-accent-fill);
-    background: var(--color-accent-fill);
-}
-
-/* --- Hábitos --- */
+/* --- Hábitos: cada uno es un bloque; entre ellos, una franja del fondo
+   (como las filas de components/list-row) --- */
 .hoy-habits {
     display: flex;
     flex-direction: column;
+    gap: var(--tile-gap);
+    border-radius: var(--card-radius);
+    overflow: hidden;
+}
+
+.hoy-habits > li {
+    padding: var(--card-padding);
+    border-radius: 0;
+    background: var(--color-block-bg);
 }
 
 .hoy-empty {
-    border-top: none;
-    padding-top: 0;
     align-items: flex-start;
 }
 
@@ -83,6 +80,11 @@
 
 .science .block-stack {
     --stack-top: 88px; /* debajo del título fijo */
+}
+
+/* Mismo radio que el resto de los bloques de la pantalla */
+.science .data-block {
+    border-radius: var(--card-radius);
 }
 
 /* --- Registrar --- */

@@ -2,15 +2,7 @@
    Views — Comer
    ============================================ */
 
-/* --- Comidas y agua (como "Water" de gauge-ui): una card con tabs adentro --- */
-.intake-card {
-    display: flex;
-    flex-direction: column;
-    gap: var(--gap-lg);
-    padding: var(--spacing-lg);
-    border-radius: var(--radius-sm);
-    background: var(--color-surface-2);
-}
+/* --- Comidas y agua (como "Water" de gauge-ui): un .card con tabs adentro --- */
 
 /* Lo que cambia con las tabs (Comidas · Agua), debajo de ellas */
 .intake-card__panel {
@@ -40,10 +32,9 @@
     gap: var(--gap-lg);
 }
 
-/* Anillo naranja cortado en un tramo por vaso; los cortes toman el color de la card */
+/* Anillo naranja cortado en un tramo por vaso; los cortes toman el color
+   de la card (el default de components/gauge) */
 .intake-card__ring {
-    --gauge-cut: var(--color-surface-2);
-
     position: relative;
     display: grid;
     place-items: center;
@@ -161,18 +152,18 @@
 .comer-history__day {
     display: flex;
     flex-direction: column;
-    gap: var(--gap-xs);
+    gap: var(--gap-sm);
 }
 
 .comer-history__day + .comer-history__day {
     margin-top: var(--spacing-lg);
 }
 
+/* Día y su nivel, sueltos sobre el fondo, arriba de los bloques de comidas */
 .comer-history__head {
     display: flex;
     justify-content: space-between;
-    padding-bottom: var(--spacing-xs);
-    border-bottom: 1px solid var(--color-rule);
+    padding-top: var(--spacing-xs);
 }
 
 .comer-history__level {

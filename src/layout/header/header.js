@@ -3,10 +3,12 @@
    ============================================ */
 
 // Header de la app: título grande, subtítulo y avatar.
-// El subtítulo es la bajada de cada sección ("cardio", "pesas", "tu día"…).
+// Debajo del título va la fecha de hoy ("martes, 6 de octubre"), salvo que
+// la vista traiga su propio subtítulo (Perfil, Hábitos).
 // Escucha el perfil para actualizar la inicial del avatar apenas cambia el nombre.
 
 import { get, subscribe } from "../../store/store.js";
+import { longDate } from "../../utils/dates.js";
 
 const subtitleEl = document.querySelector("[data-header-subtitle]");
 const titleEl = document.querySelector("[data-header-title]");
@@ -28,11 +30,12 @@ export async function initHeader() {
   });
 }
 
-// La llama el router en cada cambio de sección.
+// La llama el router en cada cambio de sección y en cada "pulso:refresh"
+// (por ejemplo a medianoche): así la fecha se actualiza sola.
 // `back` (opcional) es el hash al que vuelve la flecha, para subrutas.
 export function setHeader({ title, subtitle = "", back = "" }) {
   currentTitle = title;
-  currentSubtitle = subtitle;
+  currentSubtitle = subtitle || longDate();
   backEl.toggleAttribute("hidden", !back);
   if (back) backEl.href = back;
   renderTitle();

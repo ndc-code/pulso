@@ -25,11 +25,11 @@ export async function render(root) {
     <button class="btn btn--accent btn--block content-reveal-position-sm" type="button" data-new>
       ${icon("plus")}Nuevo hábito
     </button>
-    <section class="card content-reveal-position-sm" aria-labelledby="habitos-active">
+    <section class="card card--flush content-reveal-position-sm" aria-labelledby="habitos-active">
       <h2 class="card__title" id="habitos-active">Activos</h2>
       <ul class="list" data-active></ul>
     </section>
-    <section class="card" aria-labelledby="habitos-archived" data-archived-section hidden>
+    <section class="card card--flush" aria-labelledby="habitos-archived" data-archived-section hidden>
       <h2 class="card__title" id="habitos-archived">Archivados</h2>
       <ul class="list" data-archived></ul>
     </section>

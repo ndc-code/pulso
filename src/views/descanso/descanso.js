@@ -38,7 +38,6 @@ import { openSleepForm } from "./sleep-form.js";
 import { openBreathing } from "./breathing.js";
 
 export const title = "Descanso";
-export const subtitle = "Sueño y estrés";
 
 const HISTORY_LIMIT = 14;
 const MINUTES = [1, 3, 5];
@@ -83,7 +82,7 @@ export async function render(root) {
         })}
       </section>
 
-      <section class="rest-card content-reveal-position-sm" aria-labelledby="rest-card-title">
+      <section class="card rest-card content-reveal-position-sm" aria-labelledby="rest-card-title">
         <div class="rest-card__top">
           <h2 class="rest-card__title" id="rest-card-title">${icon("moon")}Anoche</h2>
           <p class="label">${lastNight ? `${lastNight.bed_time} – ${lastNight.wake_time}` : "Sin registro"}</p>
@@ -165,7 +164,7 @@ export async function render(root) {
         </div>
       </section>
 
-      <section class="card" aria-labelledby="rest-history-title">
+      <section class="card card--flush" aria-labelledby="rest-history-title">
         <h2 class="card__title" id="rest-history-title" tabindex="-1">Historial</h2>
         ${history(sleeps, today, goal)}
       </section>

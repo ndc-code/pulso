@@ -4,7 +4,7 @@
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { toDateKey, addDays, weekdayOf, startOfWeek, weekKeys } from "../src/utils/dates.js";
+import { toDateKey, addDays, weekdayOf, startOfWeek, weekKeys, longDate } from "../src/utils/dates.js";
 
 test("toDateKey usa la fecha LOCAL, no UTC", () => {
   // 23:30 hora local sigue siendo el mismo día, aunque en UTC ya sea el siguiente
@@ -36,4 +36,10 @@ test("weekKeys devuelve lunes a domingo", () => {
   assert.equal(keys.length, 7);
   assert.equal(keys[0], "2026-10-05");
   assert.equal(keys[6], "2026-10-11");
+});
+
+test("longDate: día de la semana, número y mes, en castellano", () => {
+  // es lo que se ve debajo del título de cada sección
+  assert.equal(longDate(new Date(2026, 9, 6)), "martes, 6 de octubre");
+  assert.equal(longDate(new Date(2026, 0, 1, 23, 59)), "jueves, 1 de enero");
 });

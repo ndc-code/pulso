@@ -66,18 +66,14 @@ export async function render(root) {
 
     <section class="card content-reveal-position-sm">
       <h2 class="card__title">Hábitos</h2>
-      <ul class="list">
-        <li>
-          <a class="list-row" href="#/perfil/habitos">
-            <span class="list-row__icon">${icon("check")}</span>
-            <span class="list-row__body">
-              <span class="list-row__title">Gestionar hábitos</span>
-              <span class="list-row__detail" data-habit-count>${activeCount(habits)}</span>
-            </span>
-            ${icon("chevron-left", "list-row__chevron")}
-          </a>
-        </li>
-      </ul>
+      <a class="list-row" href="#/perfil/habitos">
+        <span class="list-row__icon">${icon("check")}</span>
+        <span class="list-row__body">
+          <span class="list-row__title">Gestionar hábitos</span>
+          <span class="list-row__detail" data-habit-count>${activeCount(habits)}</span>
+        </span>
+        ${icon("chevron-left", "list-row__chevron")}
+      </a>
     </section>
 
     <section class="card content-reveal-position-sm">

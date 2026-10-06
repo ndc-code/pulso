@@ -41,7 +41,6 @@ const TABS = [
 let currentTab = "comidas";
 
 export const title = "Comida";
-export const subtitle = "Alimentación e hidratación";
 
 export async function render(root) {
   const today = todayKey();
@@ -133,7 +132,7 @@ export async function render(root) {
         })}
       </section>
 
-      <section class="intake-card content-reveal-position-sm" aria-label="Comidas y agua de hoy">
+      <section class="card intake-card content-reveal-position-sm" aria-label="Comidas y agua de hoy">
         ${tabs({ id: "comer", value: currentTab, label: "Comidas o agua", options: TABS })}
         <div class="intake-card__panel" id="comer-panel" role="tabpanel" aria-labelledby="comer-tab-${currentTab}">
           ${card}
@@ -155,7 +154,7 @@ export async function render(root) {
         ${frequentTags(topTags(meals, today))}
       </section>
 
-      <section class="card" aria-labelledby="comer-history-title">
+      <section class="card card--flush" aria-labelledby="comer-history-title">
         <h2 class="card__title" id="comer-history-title" tabindex="-1">Historial</h2>
         ${history(meals, today)}
       </section>

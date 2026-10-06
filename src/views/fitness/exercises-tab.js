@@ -36,7 +36,7 @@ export function html({ library, sesiones }) {
 
     <button class="btn btn--ghost btn--block" type="button" data-action="new-exercise">${icon("plus")}Crear ejercicio</button>
 
-    <section class="card" aria-labelledby="fuerza-library-title">
+    <section class="card card--flush" aria-labelledby="fuerza-library-title">
       <div class="card__header">
         <h2 class="eyebrow" id="fuerza-library-title">Ejercicios</h2>
         <p class="label" data-count aria-live="polite">${library.length}</p>

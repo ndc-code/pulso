@@ -1,24 +1,25 @@
 # Pulso — Design System
 
-> Blanco, negro y naranja. Números grandes, textos chicos, líneas finas. Una página editorial que se usa todos los días.
+> Blanco, negro y naranja. Números grandes, textos chicos, bloques redondeados. Una página editorial que se usa todos los días.
 
 **Referencias visuales**
-- **Estilo:** diseño tipográfico minimalista (stories editoriales en blanco, negro y naranja): cifras gigantes en peso regular, texto de apoyo chico, separadores de 1px, pills con borde, datos como puntos.
+- **Estilo:** diseño tipográfico minimalista (stories editoriales en blanco, negro y naranja): cifras gigantes en peso regular, texto de apoyo chico, pills con borde, datos como puntos.
+- **Bloques:** el contenido va en bloques redondeados con un fondo apenas distinto del de la página, separados por aire, nunca por líneas divisorias (referencia: app de tareas con la tira de días en bloques, un bloque con el % grande y puntos, y la lista de tareas como bloques pegados).
 - **Estructura:** la de openGym (nav con un botón central, tira de la semana, header grande). Se copia el layout, nunca su código (es AGPL, ver "Componentes por fase").
 
 Los nombres de tokens de este archivo son los que existen en `src/styles/`.
 
 ## Principios
 
-1. **Tres colores.** Blanco, negro y el naranja de Pulso. Los grises son blanco y negro diluidos, solo para texto secundario y líneas.
+1. **Tres colores.** Blanco, negro y el naranja de Pulso. Los grises son blanco y negro diluidos, solo para texto secundario, bloques y tracks.
 2. **Números grandes, textos chicos.** Cada pantalla tiene un número protagonista (el % del día, la racha) en tamaño gigante y peso regular, con texto de apoyo chico al lado.
-3. **Plano.** Sin sombras ni degradés. Las secciones y los datos se separan con una línea de 1px y aire. Los únicos fondos son los **bloques de dato** de la pila de ciencia en Hoy. Los resúmenes de sección van en **filas tipográficas** (`stat-row`), nunca en cajas. Única excepción al plano: la barra de navegación es de **vidrio** (fondo translúcido con desenfoque), como la de Fitness.
+3. **Bloques, sin líneas.** Cada sección es un **bloque** (`.card`): fondo `--color-block-bg`, radio de 24px, separado del siguiente por aire. Las listas (`.list`, `.stat-rows`, hábitos, sesiones) son **bloques pegados**: una franja de 2px del fondo entre fila y fila, y la lista entera con las puntas redondeadas. Nunca una línea divisoria entre bloques o filas (las líneas punteadas de meta en los gráficos son datos, no separadores). Sin sombras ni degradés. Única excepción: la barra de navegación es de **vidrio** (fondo translúcido con desenfoque), como la de Fitness.
 4. **El naranja es estado.** Aparece cuando algo pasa: hoy, cumplido, progreso, la racha. Una sola superficie naranja grande por pantalla como máximo.
 5. **Sin culpa.** Nunca rojo. Los niveles se muestran con naranja lleno / a medias / vacío y siempre con palabra o número.
 
 ## Tema
 
-Claro (fondo blanco) y oscuro (fondo `#0F0F0F`) con `light-dark()`. Cada alias se declara una vez con sus dos valores.
+Oscuro (fondo `#0F0F0F`, bloques `#1A1A1A`) **por defecto** y claro (fondo blanco, bloques `#F0F0F0`) con `light-dark()`. Cada alias se declara una vez con sus dos valores. El default vive en `store/defaults.js` (`profile.theme: "dark"`) y en `<html data-theme="dark">`, para que el primer pintado ya salga oscuro.
 
 | Cómo | Resultado |
 |---|---|
@@ -32,13 +33,15 @@ Claro (fondo blanco) y oscuro (fondo `#0F0F0F`) con `light-dark()`. Cada alias s
 
 | Alias | Claro | Oscuro | Uso |
 |---|---|---|---|
-| `--color-bg` / `--color-surface` | `#ffffff` | `#0f0f0f` | Fondo de todo (no hay cards con fondo) |
-| `--color-surface-2` | `#f0f0f0` | `#222222` | Hover |
+| `--color-bg` / `--color-surface` | `#ffffff` | `#0f0f0f` | Fondo de la página y de las hojas |
+| `--color-block-bg` | `#f0f0f0` | `#1a1a1a` | Bloques: cards, filas de lista, días de la tira |
+| `--color-block-track` | `#d6d6d6` | `#2e2e2e` | Puntos pendientes (`dot-progress`) |
+| `--color-surface-2` | texto al 8% | texto al 8% | Hover y etiquetas chicas (se ve sobre el fondo y sobre un bloque) |
 | `--color-text` / `--color-headings` | negro | blanco | Texto, íconos, bordes de pills |
 | `--color-text-muted` | `#6b6b6b` | `#999999` | Texto de apoyo chico |
-| `--color-rule` | negro | blanco | Línea que separa secciones |
+| `--color-rule` | negro | blanco | Borde de arriba de las hojas modales |
 | `--color-border` | negro | blanco | Bordes de pills, inputs y botones redondos |
-| `--color-divider` | `#d6d6d6` | `#2e2e2e` | Línea entre filas, track de barras |
+| `--color-divider` | `#d6d6d6` | `#2e2e2e` | Track de barras y diales, marcas de gráficos |
 | `--color-inverse-bg` / `-text` | negro / blanco | blanco / negro | Botón principal, chip elegido, toast, avatar activo |
 | `--color-accent` | `#c94a0c` | `#ee6018` | Texto naranja (nav activa) |
 | `--color-accent-fill` | `#ee6018` | `#ee6018` | Rellenos naranjas: hoy, cumplido, barras, botón Hoy, bloque de racha |
@@ -81,8 +84,8 @@ Los números van con `.num` + `.num--sm/md/lg/xl`: regular, tracking ≈ -0.05em
 ## Espacio y forma
 
 - **Spacing** (base 8): `2xs` 2 · `xs` 4 · `sm` 8 · `md` 12 · `lg` 16 · `xl` 24 · `2xl` 32 · `3xl` 40 · `4xl` 56 · `5xl` 80 · `6xl` 96 · `7xl` 120.
-- **Radius:** `none` para secciones · `sm` 4px para bloques de dato (casi rectos, acompañan el estilo tipográfico) · `full` para pills, botones, inputs y círculos · `lg` 16px solo arriba de las hojas modales.
-- **Líneas:** 1px. `--color-rule` arriba de cada sección; `--color-divider` entre filas.
+- **Radius:** `xl` 24px para bloques (`--card-radius`: cards, listas, bloques de dato) · `lg` 16px para los días de la tira, bloques chicos y arriba de las hojas modales · `full` para pills, botones, inputs y círculos.
+- **Bloques:** padding 16 (`--card-padding`), aire entre bloques = gap de la vista (16 → 24 desde 768), 2px entre filas de una lista (`--tile-gap`). Un título de sección puede ir dentro del bloque o suelto arriba (`.card--flush`) cuando el contenido ya son bloques (listas, tira de la semana).
 - **Layout:** columna `--width-app` 720px · gutter 20 → 24 (≥768) · nav 68 flotante (cápsula a 8px de los bordes) + área segura · Hoy 28 · riel 104 (≥1024) · área tocable mínima 44.
 
 ## Navegación
@@ -93,22 +96,23 @@ Barra **flotante de vidrio**, como la de Fitness de Apple: cápsula totalmente r
 
 | Componente | Archivos | Notas |
 |---|---|---|
-| Card | `components/card/` | `.card` = **sección**: línea arriba, sin fondo ni radio. `.card__header`, `.card__title`, `.card__text`. `.card--accent`: bloque naranja (uno por pantalla). |
+| Card | `components/card/` | `.card` = **bloque**: fondo `--color-block-bg`, radio 24, padding 16. `.card__header`, `.card__title`, `.card__text`. `.card--flush`: sin fondo, para secciones cuyo contenido ya son bloques (título suelto + `.list`). `.card--accent`: bloque naranja (uno por pantalla). |
 | Button | `components/button/` | Pills. `--primary` (inverso), `--ghost` (borde), `--accent` (naranja: la acción del momento), `--text` (subrayado: "Editar"), `--icon` (círculo de 44 con borde, con `aria-label`), `--block`. |
 | Field | `components/field/` | Input en pill con borde de 1px, alto 48. Foco y error: borde naranja de 2px. `suffix`, `hint`, `setFieldError()`. |
 | Segmented | `components/segmented/` | Pill con borde; la opción elegida, inversa. Hasta 3 opciones. |
 | Chip | `components/chip/` | Pills con borde, texto en mayúsculas; el elegido, inverso. |
 | Option grid | `components/option-grid/` | Círculos con ícono; el elegido, inverso. |
-| List row | `components/list-row/` | Fila con línea `divider`: ícono · título + detalle · acciones. |
-| Sheet | `components/sheet/` | Hoja modal sobre `<dialog>`, plana, con línea arriba y manija. Devuelve el foco. |
+| List row | `components/list-row/` | Fila: ícono · título + detalle · acciones. En una `.list` cada fila es un bloque, pegadas con 2px de aire y la lista redondeada. La `.list` va suelta sobre el fondo (en `.card--flush` o en una hoja), nunca dentro de otra card. |
+| Sheet | `components/sheet/` | Hoja modal sobre `<dialog>`, con el fondo de la página, borde arriba y manija. Devuelve el foco. |
 | Toast | `components/toast/` | Pill inversa con `aria-live`. |
 | Gauge | `components/gauge/` | Anillo SVG portado de gauge-ui. Color = `currentColor`. `start` / `end` lo abren abajo (60 → 300 en Moverse, como "Steps") y recortan el espacio de la apertura; `ticks` agrega marcas por dentro; `segments` lo corta en tramos. |
 | Habit card | `components/habit-card/` | Fila de hábito: ícono · nombre + meta (+ barra naranja de 2px si es contador) · check, `−`/`+` o `+` para registrar. Cumplido = check naranja lleno. |
-| Stat row | `components/stat-row/` | **Fila tipográfica** (referencia "55% · Entertainment purposes"): número grande a la izquierda, copy chico pegado a la derecha, línea fina arriba. Opcional: barra de progreso naranja de 2px y HTML extra debajo del copy (botones − / +, marca de nivel). Varias filas seguidas (`.stat-rows`) son el formato de resumen por defecto (Comer). Una sección puede tener su propio layout para no repetirse (Moverse). |
+| Stat row | `components/stat-row/` | **Fila tipográfica** (referencia "55% · Entertainment purposes"): número grande a la izquierda, copy chico pegado a la derecha, en un bloque. Opcional: barra de progreso naranja de 2px y HTML extra debajo del copy (botones − / +, marca de nivel). Varias filas seguidas (`.stat-rows`) son bloques pegados, como una `.list`: el formato de resumen por defecto (Comida, Descanso, Fuerza → Progreso). Una sección puede tener su propio layout para no repetirse (Moverse). |
 | Data block | `components/data-block/` | **Bloque de dato** (referencia "143 ha"): **copy arriba** (label + texto) y **número gigante abajo** con la unidad en chico al lado. Sin fuentes ni pie. Tonos `--accent` (naranja), `--strong` (oscuro en claro / claro en oscuro), `--soft` (gris). Radio 4. |
 | Block stack | `components/data-block/` + `animation/stack-cards.js` | `.block-stack`: bloques sticky que se apilan al scrollear; el de abajo se achica (GSAP, atado al scroll) y el último termina encima de todos. Tiene un recorrido extra corto (`::after`) para que el último llegue arriba; para que no quede un hueco al final, **después de la pila tiene que haber contenido** (en Hoy: racha y Registrar) y el título de la sección queda fijo arriba (`--stack-top`). Usado en "Lo que recomienda la ciencia". |
 | Bar chart | `components/bar-chart/` | Barras finas por día (8px, puntas redondas), punto en los días sin dato, línea punteada de meta, hoy en naranja. Lista oculta para lectores de pantalla. Usado en la card de Moverse. |
-| Week strip | `components/week-strip/` | **Tira de la semana**, la misma en Hoy y Moverse: letra (LU, MA…), número y punto debajo. El día destacado va en **círculo naranja** (Hoy: hoy · Moverse: el día elegido); la letra de hoy, en naranja. Punto lleno = completo / con actividad, aro = algo hecho. Con `selectable` cada día es un botón. |
+| Week strip | `components/week-strip/` | **Tira de la semana**, la misma en Hoy, Ritmo y Fuerza: un **bloque por día** (radio 16) con letra (LU, MA…), número grande y punto debajo. El día destacado es el **bloque naranja** (Hoy: hoy · Ritmo: el día elegido), con letra y punto en negro; la letra de hoy, en naranja. Punto lleno = completo / con actividad, aro = algo hecho. Con `selectable` cada día es un botón. |
+| Dot progress | `components/dot-progress/` | Un punto de 28px por unidad de una meta: cumplidos en naranja primero, pendientes en gris lleno. Siempre con el número al lado. Resumen de Hoy (un punto por hábito) y objetivo de Fuerza (un punto por día). |
 | Level | `components/level/` | Marca de nivel en naranja: **lleno** (bueno), **a medias** (medio), **aro** (flojo), gris (sin registro). Siempre con la palabra al lado. Tamaños sm 12 · md 28 · lg 56. |
 | Status pulse | `components/status-pulse/` | Punto naranja de 6px. |
 | Sleep dial | `components/sleep-dial/` | Reloj de 24 h portado del `SleepDial` de gauge-ui: medianoche arriba, una marca por hora, 00 · 06 · 12 · 18, y la noche como un solo arco naranja de la hora de dormir a la de despertar (aunque cruce las 00). Usado en Descanso. |
@@ -120,11 +124,11 @@ Barra **flotante de vidrio**, como la de Fitness de Apple: cápsula totalmente r
 
 Piezas propias de cada vista:
 
-- **Hoy** (`views/hoy/`): tira de la semana (`week-strip`: hoy en círculo naranja; punto lleno = día completo, aro = algo hecho), **% del día gigante** con texto chico al lado y una fila de círculos (uno por hábito), lista de hábitos, **"Lo que recomienda la ciencia"** (título fijo + seis bloques apilados con el dato de referencia de cada hábito, copy arriba y número abajo; contenido en `src/content/recommendations.js`), y después racha (número grande) y pills para registrar.
-- **Comer** (`views/comer/`): filas tipográficas (comidas de hoy con su nivel · chips positivos y a moderar del día) · **card de agua como "Water" de gauge-ui**: anillo naranja grueso cortado en un tramo por vaso, litros grandes en el centro ("1,25 L de 2 L"), datos al costado (falta, vaso de 250 ml, hora del último) y botones − / "+ 250 ml"; sincronizada con Hoy · la semana (un nivel por día) · chips más frecuentes (borde punteado = a moderar). Botón "Registrar comida" (hoja con momento sugerido por la hora, chips "Sumó" y "A moderar", día y nota) e historial por día con su nivel.
-- **Descanso** (`views/descanso/`): filas tipográficas (horas de anoche en grande como reloj "7:30 h" con su nivel contra la meta · promedio de la semana) · **card gris como "Sleep" de gauge-ui**: reloj de 24 h con la noche en naranja, horas en el centro y datos al costado (me acosté, me desperté, calidad, meta); botón registrar / editar · la semana en barras con la línea punteada de referencia (7 h) · respiración guiada (patrón 4-4-4-4 / 4-7-8 y 1, 3 o 5 min; la hoja muestra un círculo naranja que crece al inhalar y se achica al exhalar, con la cuenta; al terminar marca el hábito de pausa) · check-in de ánimo y energía (1 a 5, opcional) · historial de noches. Un registro de sueño por día: el día en que te despertaste.
+- **Hoy** (`views/hoy/`): tira de la semana (`week-strip`: hoy en bloque naranja; punto lleno = día completo, aro = algo hecho), bloque de resumen ("Hábitos de hoy" y "2 de 4 hechos" arriba, **% del día gigante**, `dot-progress` y el mensaje), lista de hábitos (un bloque por hábito), **"Lo que recomienda la ciencia"** (título fijo + seis bloques apilados con el dato de referencia de cada hábito, copy arriba y número abajo; contenido en `src/content/recommendations.js`), y después racha (número grande) y pills para registrar.
+- **Comer** (`views/comer/`): filas en bloques (`stat-rows`) (comidas de hoy con su nivel · chips positivos y a moderar del día) · **card de agua como "Water" de gauge-ui**: anillo naranja grueso cortado en un tramo por vaso, litros grandes en el centro ("1,25 L de 2 L"), datos al costado (falta, vaso de 250 ml, hora del último) y botones − / "+ 250 ml"; sincronizada con Hoy · la semana (un nivel por día) · chips más frecuentes (borde punteado = a moderar). Botón "Registrar comida" (hoja con momento sugerido por la hora, chips "Sumó" y "A moderar", día y nota) e historial por día con su nivel.
+- **Descanso** (`views/descanso/`): filas en bloques (`stat-rows`) (horas de anoche en grande como reloj "7:30 h" con su nivel contra la meta · promedio de la semana) · **card como "Sleep" de gauge-ui**: reloj de 24 h con la noche en naranja, horas en el centro y datos al costado (me acosté, me desperté, calidad, meta); botón registrar / editar · la semana en barras con la línea punteada de referencia (7 h) · respiración guiada (patrón 4-4-4-4 / 4-7-8 y 1, 3 o 5 min; la hoja muestra un círculo naranja que crece al inhalar y se achica al exhalar, con la cuenta; al terminar marca el hábito de pausa) · check-in de ánimo y energía (1 a 5, opcional) · historial de noches. Un registro de sueño por día: el día en que te despertaste.
 - **Progreso** (`views/progreso/`): resumen de la semana en filas (% de hábitos con barra, minutos activos con barra, días buenos en Comer, sueño promedio) · **calendario de constancia** de 26 semanas: un punto por día con los niveles de `level` (lleno = todos los hábitos, a medias = la mitad o más, aro = alguno, gris = ninguno) y leyenda · peso en grande con el cambio desde hace 30 días y su línea · análisis: grilla de diales de rango separada por líneas (2 columnas, 3 desde 640), chips para elegir qué indicador ver en la línea de evolución con su rango punteado, rangos editables · Lp(a) aparte con su nota de contexto · historial de análisis · aviso fijo.
-- **Moverse** (`views/moverse/`): layout **por día** (referencia de lista de tareas), distinto a Comer a propósito: tira de la semana (la misma de Hoy, con el mes y flechas en el encabezado; el día elegido en círculo naranja; punto si hubo actividad) · card gris **como "Steps" de gauge-ui**: dial abierto abajo con marcas (arco naranja, minutos de la semana en el centro), datos al costado (sesiones, promedio, faltan, días activos) y barras por día con la meta diaria · sesiones del día elegido: tags chicos (duración, intensidad), **tipo en grande** y un **círculo negro de 88px "repetir"** (la suma hoy); al final, círculo naranja "+" para registrar en ese día · calendario de puntos de 12 semanas. El historial por semana se recorre con las flechas.
+- **Moverse** (`views/moverse/`): layout **por día** (referencia de lista de tareas), distinto a Comer a propósito: tira de la semana (la misma de Hoy, con el mes y flechas en el encabezado; el día elegido en bloque naranja; punto si hubo actividad) · card **como "Steps" de gauge-ui**: dial abierto abajo con marcas (arco naranja, minutos de la semana en el centro), datos al costado (sesiones, promedio, faltan, días activos) y barras por día con la meta diaria · sesiones del día elegido, un bloque por sesión: tags chicos (duración, intensidad), **tipo en grande** y un **círculo negro de 88px "repetir"** (la suma hoy); al final, círculo naranja "+" para registrar en ese día · calendario de puntos de 12 semanas. El historial por semana se recorre con las flechas.
 
 
 ## Componentes por fase (referencias)
@@ -135,7 +139,7 @@ Componentes que se construyen fase a fase, con proyectos de `inspo/` como refere
 
 - **gauge-ui** (`inspo/gauge-ui-main`, MIT): se puede portar el código (la matemática de arcos, ticks y zonas) a JS vanilla. Cada archivo portado lleva en su cabecera: `// Adaptado de gauge-ui (MIT) — https://gauge-ui.dev`.
 - **openGym** (`inspo/openGym-main`, **AGPL-3.0**): referencia de **look y de UX**: cómo se ve y cómo se comporta. **Nunca se copia ni se traduce su código** (ni su CSS, ni su JS, ni reescrito de React a vanilla), porque eso volvería a Pulso AGPL. Se miran las pantallas y se escribe desde cero.
-- **Estética:** de openGym se toma la estructura y el comportamiento; el look es el editorial de este archivo (blanco, negro, naranja; líneas en vez de cards; números grandes). Donde openGym usa colores o verde, Pulso usa naranja por niveles.
+- **Estética:** de openGym se toma la estructura y el comportamiento; el look es el editorial de este archivo (blanco, negro, naranja; bloques sin líneas divisorias; números grandes). Donde openGym usa colores o verde, Pulso usa naranja por niveles.
 - **Gráficos:** SVG propio a partir de estas referencias, sin librerías de gráficos (resuelve la decisión pendiente de la spec, sección 8).
 
 | Fase | Sección | Necesidad de la spec | Referencia |
@@ -174,13 +178,14 @@ Lucide (ISC), SVG inline desde `utils/icons.js`: trazo `currentColor` de 1.5, si
 
 **Do**
 - Darle a cada pantalla un número protagonista en grande, con texto chico al lado.
-- Separar secciones con una línea de 1px y aire.
+- Poner cada sección en un bloque y separar los bloques con aire; las filas de una lista, con 2px de aire.
 - Usar el naranja para lo que está pasando (hoy, cumplido, progreso) y nada más.
 - Mostrar niveles con lleno / aro / vacío y siempre con palabra o número.
 
 **Don't**
 - No sumar colores: nada de verde, rojo, azul ni colores por hábito.
 - No usar bold: la jerarquía es tamaño y tracking.
-- No poner fondos a las secciones ni sombras a nada.
+- No separar bloques ni filas con líneas divisorias, ni poner sombras a nada.
+- No meter una `.list` dentro de otra card (los bloques se confundirían): título suelto con `.card--flush`.
 - No usar más de una superficie naranja grande por pantalla (excepción: la pila de ciencia, donde los tonos se alternan).
 - No copiar CSS ni JS de openGym.

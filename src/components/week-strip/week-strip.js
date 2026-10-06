@@ -2,17 +2,16 @@
    Components — Week Strip
    ============================================ */
 
-// Tira de la semana (lunes a domingo): letra, número y un punto debajo.
-// La usan Hoy y Moverse, así se ven iguales.
+// Tira de la semana (lunes a domingo): un bloque por día con la letra,
+// el número y un punto debajo. La usan Hoy, Ritmo y Fuerza, así se ven iguales.
 //
 //   weekStrip([
 //     { key, weekday, dayNumber,
-//       highlighted,   // círculo naranja (Hoy: hoy · Moverse: el día elegido)
+//       highlighted,   // bloque naranja (Hoy: hoy · Ritmo: el día elegido)
 //       isToday, isFuture,
 //       level,         // punto: "full" lleno · "partial" aro · "none" nada
 //       label },       // texto para lectores de pantalla ("lunes 5: 3 de 6 hábitos")
 //   ], { selectable: true })
-//
 // Con `selectable`, cada día es un botón con data-day="AAAA-MM-DD" y aria-pressed;
 // la vista escucha los clicks. Los días futuros quedan deshabilitados.
 

@@ -17,7 +17,7 @@ const SHORT_DAYS = ["dom", "lun", "mar", "mié", "jue", "vie", "sáb"];
 
 export function html({ rutinas }) {
   return `
-    <section class="card content-reveal-position-sm" aria-labelledby="fuerza-plan-title">
+    <section class="card card--flush content-reveal-position-sm" aria-labelledby="fuerza-plan-title">
       <h2 class="card__title" id="fuerza-plan-title">Tu semana</h2>
       <p class="card__text">Qué rutina toca cada día. Los días sin rutina son de descanso.</p>
       <ul class="plan-week">
@@ -25,7 +25,7 @@ export function html({ rutinas }) {
       </ul>
     </section>
 
-    <section class="card content-reveal-position-sm" aria-labelledby="fuerza-routines-title">
+    <section class="card card--flush content-reveal-position-sm" aria-labelledby="fuerza-routines-title">
       <div class="card__header">
         <h2 class="card__title" id="fuerza-routines-title">Rutinas</h2>
         <button class="btn btn--text" type="button" data-action="new-routine">Nueva</button>

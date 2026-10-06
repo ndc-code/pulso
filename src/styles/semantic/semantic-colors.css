@@ -28,7 +28,9 @@
     /* --- Fondo: blanco o negro, plano --- */
     --color-bg: light-dark(var(--color-white), var(--color-ink));
     --color-surface: var(--color-bg);                                            /* hojas, nav */
-    --color-surface-2: light-dark(var(--color-gray-100), var(--color-gray-900));  /* tracks, hover */
+    /* hover y etiquetas: un velo del color del texto, así se ve encima
+       del fondo y encima de un bloque */
+    --color-surface-2: color-mix(in srgb, var(--color-text) 8%, transparent);
     --color-surface-hover: var(--color-surface-2);
 
     /* --- Texto --- */
@@ -67,6 +69,11 @@
     --color-btn-primary-text: var(--color-inverse-text);
     --color-btn-ghost-border: var(--color-border);
     --color-btn-ghost-text: var(--color-text);
+
+    /* --- Bloques (cards, filas de lista): una superficie apenas distinta
+       del fondo; se separan por el aire entre ellos, nunca por líneas --- */
+    --color-block-bg: light-dark(var(--color-gray-100), var(--color-gray-925));
+    --color-block-track: light-dark(var(--color-gray-300), var(--color-gray-800)); /* puntos pendientes */
 
     /* --- Bloques de dato (components/data-block): naranja, fuerte y suave --- */
     --color-block-strong-bg: light-dark(var(--color-gray-850), var(--color-gray-150));

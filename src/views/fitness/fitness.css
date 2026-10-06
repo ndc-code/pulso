@@ -15,11 +15,17 @@
     width: 100%;
 }
 
-/* "editar" pegado al copy del objetivo */
-.fuerza-edit {
-    align-self: flex-start;
-    min-height: auto;
-    font-size: var(--font-sm-size);
+/* --- Hoy: objetivo de la semana (como el resumen de Pulso) --- */
+.fuerza-goal__value {
+    display: flex;
+    align-items: baseline;
+    gap: var(--gap-sm);
+}
+
+.fuerza-goal__of {
+    font-size: var(--font-base-size);
+    line-height: var(--font-base-line);
+    color: var(--color-text-muted);
 }
 
 /* Etiqueta chica gris ("Descanso" en el Plan) */
@@ -41,14 +47,9 @@
     font-variant-numeric: tabular-nums;
 }
 
-/* --- Hoy: rutina del día (card gris, como la de Moverse) --- */
+/* --- Hoy: rutina del día (un .card, más apretado) --- */
 .fuerza-today {
-    display: flex;
-    flex-direction: column;
     gap: var(--gap-sm);
-    padding: var(--spacing-lg);
-    border-radius: var(--radius-sm);
-    background: var(--color-surface-2);
 }
 
 .fuerza-today__top {
@@ -74,7 +75,6 @@
     justify-content: space-between;
     gap: var(--gap-md);
     padding-block: var(--spacing-xs);
-    border-top: 1px solid var(--color-divider);
     font-size: var(--font-sm-size);
     line-height: var(--font-sm-line);
 }
@@ -98,18 +98,21 @@
     color: var(--color-text);
 }
 
-/* --- Plan: la semana --- */
+/* --- Plan: la semana (un bloque por día, pegados como una .list) --- */
 .plan-week {
     display: flex;
     flex-direction: column;
+    gap: var(--tile-gap);
+    border-radius: var(--card-radius);
+    overflow: hidden;
 }
 
 .plan-day {
     display: flex;
     flex-direction: column;
     gap: var(--gap-xs);
-    padding-block: var(--spacing-sm);
-    border-top: 1px solid var(--color-divider);
+    padding: var(--spacing-sm) var(--spacing-sm) var(--spacing-sm) var(--card-padding);
+    background: var(--color-block-bg);
 }
 
 .plan-day__head {
@@ -206,8 +209,9 @@
 }
 
 .fuerza-figure {
-    padding-top: var(--spacing-sm);
-    border-top: 1px solid var(--color-rule);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-lg);
+    background: var(--color-block-bg);
 }
 
 /* Editor de rutina: un bloque por ejercicio con sus tres números */
@@ -218,17 +222,21 @@
     border: none;
 }
 
+/* Un bloque por ejercicio, pegados como una .list */
 .routine-exercises__list {
     display: flex;
     flex-direction: column;
+    gap: var(--tile-gap);
+    border-radius: var(--card-radius);
+    overflow: hidden;
 }
 
 .routine-exercise {
     display: flex;
     flex-direction: column;
     gap: var(--gap-sm);
-    padding-block: var(--spacing-md);
-    border-top: 1px solid var(--color-divider);
+    padding: var(--spacing-md) var(--spacing-sm) var(--spacing-md) var(--card-padding);
+    background: var(--color-block-bg);
 }
 
 .routine-exercise__head {
@@ -388,7 +396,7 @@
     align-items: center;
     gap: var(--gap-xs) var(--gap-md);
     padding: var(--spacing-md) var(--spacing-lg);
-    border-radius: var(--radius-sm);
+    border-radius: var(--card-radius);
     background: var(--color-accent-fill);
     color: var(--color-on-accent);
 }

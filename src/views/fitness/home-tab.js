@@ -3,7 +3,7 @@
    ============================================ */
 
 // Fuerza → Hoy (como el Home de openGym):
-//   1. objetivo de la semana: "2 / 3 días esta semana · editar"
+//   1. objetivo de la semana: "2 de 3 días", un punto por día y editar
 //   2. la semana: punto lleno = entrenaste · aro = día con rutina en el plan
 //   3. la rutina del día con "Empezar" (o elegir otra / entrenamiento libre)
 //   4. pérdida de peso: la misma tarjeta que en Pulso (components/weight-card)
@@ -13,7 +13,7 @@ import { weekKeys, weekdayOf, fromDateKey, WEEKDAY_NAMES } from "../../utils/dat
 import { weekDays, weekStreak, routinesForDay, estimateMinutes, sessionStats } from "../../utils/strength.js";
 import { escapeHTML } from "../../utils/html.js";
 import { icon } from "../../utils/icons.js";
-import { statRow } from "../../components/stat-row/stat-row.js";
+import { dotProgress } from "../../components/dot-progress/dot-progress.js";
 import { weekStrip } from "../../components/week-strip/week-strip.js";
 import { levelMark } from "../../components/level/level.js";
 import { weightCard } from "../../components/weight-card/weight-card.js";
@@ -22,25 +22,25 @@ import { dayLabel, formatKg } from "./format.js";
 export function html({ today, goals, rutinas, sesiones, body, weightGoal }) {
   const goal = goals.fuerzaDiasSemana;
   const done = weekDays(sesiones, today);
-  const left = Math.max(0, goal - done);
   const todays = routinesForDay(rutinas, weekdayOf(today));
   const trainedToday = sesiones.filter((s) => s.fecha === today);
   const streak = weekStreak(sesiones, today, goal);
   const last = [...sesiones].sort((a, b) => (a.fecha < b.fecha ? 1 : -1))[0];
 
   return `
-    <section class="stat-rows content-reveal-stagger" aria-label="Objetivo de la semana">
-      ${statRow({
-        value: done,
-        unit: `/ ${goal} días`,
-        size: "xl",
-        copy: ["esta semana.", left ? `Te ${left === 1 ? "falta 1" : `faltan ${left}`}.` : "Objetivo cumplido."],
-        bar: goal ? (done / goal) * 100 : 0,
-        extra: `<button class="btn btn--text fuerza-edit" type="button" data-action="edit-goal">editar</button>`,
-      })}
+    <section class="card fuerza-goal content-reveal-position-sm" aria-labelledby="fuerza-goal-title">
+      <div class="card__header">
+        <h2 class="label" id="fuerza-goal-title">Objetivo de la semana</h2>
+        <button class="btn btn--text" type="button" data-action="edit-goal">Editar</button>
+      </div>
+      <p class="fuerza-goal__value">
+        <span class="num num--xl">${done}</span>
+        <span class="fuerza-goal__of">de ${goal} ${goal === 1 ? "día" : "días"}</span>
+      </p>
+      ${dotProgress({ done: Math.min(done, goal), total: goal })}
     </section>
 
-    <section class="card content-reveal-position-sm" aria-labelledby="fuerza-week-title">
+    <section class="card card--flush content-reveal-position-sm" aria-labelledby="fuerza-week-title">
       <h2 class="eyebrow" id="fuerza-week-title">Esta semana</h2>
       ${weekStrip(
         weekKeys(today).map((key) => {
@@ -82,7 +82,7 @@ export function html({ today, goals, rutinas, sesiones, body, weightGoal }) {
   `;
 }
 
-// Tarjeta gris de la rutina del día (como la card "Today" de openGym)
+// Card de la rutina del día (como la card "Today" de openGym)
 function routineCard(rutina, trainedToday) {
   const done = trainedToday.some((s) => s.rutina === rutina.nombre);
   const preview = rutina.ejercicios
@@ -90,7 +90,7 @@ function routineCard(rutina, trainedToday) {
     .join("");
 
   return `
-    <section class="fuerza-today content-reveal-position-sm" aria-label="Rutina de hoy: ${escapeHTML(rutina.nombre)}">
+    <section class="card fuerza-today content-reveal-position-sm" aria-label="Rutina de hoy: ${escapeHTML(rutina.nombre)}">
       <div class="fuerza-today__top">
         <p class="label">Rutina de hoy</p>
         ${done ? `<p class="label fuerza-done">${levelMark("good")}Hecha</p>` : ""}
@@ -109,7 +109,7 @@ function routineCard(rutina, trainedToday) {
 // Día sin rutina en el plan: descanso, o elegir algo igual
 function restCard(trainedToday) {
   return `
-    <section class="fuerza-today content-reveal-position-sm" aria-labelledby="fuerza-rest-title">
+    <section class="card fuerza-today content-reveal-position-sm" aria-labelledby="fuerza-rest-title">
       <p class="label">Rutina de hoy</p>
       <h2 class="fuerza-today__name" id="fuerza-rest-title">Descanso</h2>
       <p class="label">${
