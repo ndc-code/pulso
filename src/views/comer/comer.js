@@ -4,7 +4,7 @@
 
 // Alimentación e hidratación (spec 4.3). Calidad, no calorías.
 // Estilo tipográfico, como Hoy:
-//   filas de número grande + copy chico (comidas de hoy con su nivel, chips del día)
+//   fila de número grande + copy chico (comidas de hoy con su nivel)
 //   agua: card como "Water" de gauge-ui (anillo cortado por vaso, litros, − / + 250 ml)
 //   la semana: un nivel por día · los chips más frecuentes
 // Después: registrar comida e historial agrupado por día.
@@ -61,10 +61,6 @@ export async function render(root) {
             ? [score.meals === 1 ? "comida hoy." : "comidas hoy.", `${LEVEL_LABELS[score.level]}.`]
             : ["comidas hoy.", "Registrá la primera."],
           extra: levelMark(score.level, "md"),
-        })}
-        ${statRow({
-          value: score.positives,
-          copy: [score.positives === 1 ? "chip positivo" : "chips positivos", `y ${score.moderates} a moderar hoy.`],
         })}
       </section>
 
