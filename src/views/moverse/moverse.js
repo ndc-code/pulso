@@ -25,7 +25,6 @@ import { toast } from "../../components/toast/toast.js";
 import { openWorkoutForm } from "./workout-form.js";
 
 export const title = "Ritmo";
-export const subtitle = "cardio";
 
 const GRID_WEEKS = 12;
 const MONTH = new Intl.DateTimeFormat("es-AR", { month: "long" });
@@ -54,7 +53,7 @@ export async function render(root) {
     const activeInGrid = grid.flat().filter((d) => d.active).length;
 
     root.innerHTML = `
-      <section class="card move-week content-reveal-position-sm" aria-label="Elegir día">
+      <section class="card card--flush move-week content-reveal-position-sm" aria-label="Elegir día">
         <div class="card__header move-week__nav">
           <p class="eyebrow">${monthLabel(week)}</p>
           <div class="move-week__arrows">
@@ -82,7 +81,7 @@ export async function render(root) {
         )}
       </section>
 
-      <section class="move-card content-reveal-position-sm" aria-labelledby="move-card-title">
+      <section class="card move-card content-reveal-position-sm" aria-labelledby="move-card-title">
         <div class="move-card__top">
           <h2 class="label" id="move-card-title">Minutos de la semana</h2>
           <p class="label">Meta: ${goal}</p>

@@ -1,0 +1,21 @@
+/* ============================================
+   Components — Dot Progress
+   ============================================ */
+
+.dot-progress {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--gap-sm);
+}
+
+/* Pendiente = punto gris lleno; cumplido = naranja (el texto al lado lo dice) */
+.dot-progress__dot {
+    width: 28px;
+    height: 28px;
+    border-radius: var(--radius-full);
+    background: var(--color-block-track);
+}
+
+.dot-progress__dot.is-done {
+    background: var(--color-accent-fill);
+}

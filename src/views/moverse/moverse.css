@@ -20,15 +20,7 @@
     transform: rotate(180deg);
 }
 
-/* --- 2. Card de la semana (como "Steps" de gauge-ui) --- */
-.move-card {
-    display: flex;
-    flex-direction: column;
-    gap: var(--gap-lg);
-    padding: var(--spacing-lg);
-    border-radius: var(--radius-sm);
-    background: var(--color-surface-2);
-}
+/* --- 2. Card de la semana (como "Steps" de gauge-ui): un .card --- */
 
 .move-card__top {
     display: flex;
@@ -102,10 +94,13 @@
     font-variant-numeric: tabular-nums;
 }
 
-/* --- 3. Sesiones del día --- */
+/* --- 3. Sesiones del día: un bloque por sesión, pegados como una .list --- */
 .move-list {
     display: flex;
     flex-direction: column;
+    gap: var(--tile-gap);
+    border-radius: var(--card-radius);
+    overflow: hidden;
 }
 
 .move-item {
@@ -113,12 +108,8 @@
     align-items: center;
     justify-content: space-between;
     gap: var(--gap-lg);
-    padding-block: var(--spacing-lg);
-    border-top: 1px solid var(--color-divider);
-}
-
-.move-item:first-child {
-    border-top: 1px solid var(--color-rule);
+    padding: var(--card-padding);
+    background: var(--color-block-bg);
 }
 
 .move-item__body {

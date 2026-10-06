@@ -2,12 +2,16 @@
    Semantic — Cards
    ============================================ */
 
-/* En el estilo editorial una "card" es una sección: línea arriba y aire */
+/* Una "card" es un bloque: fondo, radio grande y aire alrededor.
+   Las filas de una lista (.list, .stat-rows) son bloques pegados,
+   separados por una franja de 2px del fondo (--tile-gap). */
 
 :root {
 
-    --card-padding: var(--spacing-xl);
+    --card-padding: var(--spacing-lg);
     --card-gap: var(--spacing-lg);
+    --card-radius: var(--radius-xl);
+    --tile-gap: 2px;
 
     --card-title-size: var(--font-xl-size);
     --card-title-line: var(--font-xl-line);

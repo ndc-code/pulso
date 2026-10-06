@@ -2,11 +2,16 @@
    Components — Stat Row
    ============================================ */
 
-/* Número grande a la izquierda, copy chico a la derecha, línea fina arriba */
+/* Número grande a la izquierda, copy chico a la derecha.
+   Cada fila es un bloque; varias seguidas (.stat-rows) van pegadas,
+   separadas por una franja del fondo, como las filas de una .list */
 
 .stat-rows {
     display: flex;
     flex-direction: column;
+    gap: var(--tile-gap);
+    border-radius: var(--card-radius);
+    overflow: hidden;
 }
 
 .stat-row {
@@ -16,8 +21,8 @@
     /* el copy va pegado al número, como en la referencia */
     column-gap: var(--gap-lg);
     row-gap: var(--gap-sm);
-    padding-block: var(--spacing-lg);
-    border-top: 1px solid var(--color-rule);
+    padding: var(--card-padding);
+    background: var(--color-block-bg);
 }
 
 .stat-row__value {

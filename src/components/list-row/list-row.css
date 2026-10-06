@@ -2,12 +2,23 @@
    Components — List Row
    ============================================ */
 
-/* Fila separada por una línea fina:
-   ícono · título + detalle ............ acciones */
+/* Fila: ícono · título + detalle ............ acciones
+   En una .list cada fila es un bloque; entre ellos, una franja del fondo
+   y la lista entera con las puntas redondeadas (sin líneas divisorias).
+   Va suelta sobre el fondo de la página (en una .card--flush o en una hoja),
+   no adentro de otra card: ahí no se distinguiría del bloque de atrás. */
 
 .list {
     display: flex;
     flex-direction: column;
+    gap: var(--tile-gap);
+    border-radius: var(--card-radius);
+    overflow: hidden;
+}
+
+.list > li {
+    padding-inline: var(--card-padding);
+    background: var(--color-block-bg);
 }
 
 .list-row {
@@ -16,12 +27,6 @@
     gap: var(--gap-md);
     min-height: 60px;
     padding-block: var(--spacing-sm);
-    border-top: 1px solid var(--color-divider);
-}
-
-.list > .list-row:first-child,
-.list > li:first-child > .list-row {
-    border-top: none;
 }
 
 /* Fila entera clickeable: un link (a.list-row) o un botón principal

@@ -2,15 +2,7 @@
    Views — Descanso
    ============================================ */
 
-/* --- Card de anoche (como "Sleep" de gauge-ui) --- */
-.rest-card {
-    display: flex;
-    flex-direction: column;
-    gap: var(--gap-lg);
-    padding: var(--spacing-lg);
-    border-radius: var(--radius-sm);
-    background: var(--color-surface-2);
-}
+/* --- Card de anoche (como "Sleep" de gauge-ui): un .card --- */
 
 .rest-card__top {
     display: flex;

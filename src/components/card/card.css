@@ -2,15 +2,16 @@
    Components — Card
    ============================================ */
 
-/* En el estilo editorial una card es una SECCIÓN: sin fondo ni radio,
-   con una línea fina arriba y aire. El contenido queda alineado al gutter. */
+/* Una card es un BLOQUE: superficie redondeada con fondo, sin líneas.
+   Los bloques se separan por el aire entre ellos (el gap de la vista). */
 
 .card {
     display: flex;
     flex-direction: column;
     gap: var(--card-gap);
-    padding-top: var(--spacing-lg);
-    border-top: 1px solid var(--color-rule);
+    padding: var(--card-padding);
+    border-radius: var(--card-radius);
+    background: var(--color-block-bg);
 }
 
 /* Fila de cabecera: título a la izquierda, acción a la derecha */
@@ -33,6 +34,14 @@
     color: var(--color-text-muted);
 }
 
+/* Sección suelta: sin fondo. El título queda sobre el fondo de la página
+   y el contenido ya viene en bloques (una .list, la tira de la semana…) */
+.card--flush {
+    padding: 0;
+    border-radius: 0;
+    background: none;
+}
+
 /* Bloque de acento: la sección destacada de la pantalla, en naranja.
    Uno por pantalla como máximo. */
 .card--accent {
@@ -42,7 +51,6 @@
     --color-eyebrow: var(--color-on-accent);
 
     padding: var(--spacing-xl) var(--spacing-lg);
-    border-top: none;
     background: var(--color-accent-fill);
     color: var(--color-on-accent);
 }

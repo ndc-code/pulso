@@ -51,12 +51,12 @@ export function html({ today, goals, sesiones }) {
       ${dotCalendar(grid)}
     </section>
 
-    <section class="card content-reveal-position-sm" aria-labelledby="fuerza-best-title">
+    <section class="card card--flush content-reveal-position-sm" aria-labelledby="fuerza-best-title">
       <h2 class="card__title" id="fuerza-best-title">Mejores marcas</h2>
       ${bestMarks(sesiones, today)}
     </section>
 
-    <section class="card" aria-labelledby="fuerza-history-title">
+    <section class="card card--flush" aria-labelledby="fuerza-history-title">
       <h2 class="card__title" id="fuerza-history-title" tabindex="-1">Historial</h2>
       <ul class="list">${[...sesiones]
         .sort((a, b) => (a.fecha < b.fecha ? 1 : -1))

@@ -16,7 +16,7 @@ export const DEFAULTS = {
     name: "",
     goal: null,              // "move" | "eat" | "sleep" | "all"
     units: "metric",
-    theme: "system",         // "system" | "light" | "dark"
+    theme: "dark",           // "system" | "light" | "dark" (oscuro por defecto)
     weekly_active_goal: 150, // minutos por semana (OMS)
     water_goal: 8,           // vasos por día
     meal_goal: 4,            // comidas registradas por día (hábito Comida)

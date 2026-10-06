@@ -32,7 +32,6 @@ import { openExerciseDetail } from "./exercise-detail.js";
 import { handleWeightClick } from "../hoy/weight-actions.js";
 
 export const title = "Fuerza";
-export const subtitle = "pesas";
 
 const TABS = [
   { value: "hoy", label: "Hoy", module: homeTab },

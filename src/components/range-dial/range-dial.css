@@ -27,13 +27,13 @@
    El borde del color de fondo lo despega del track. */
 .range-dial__dot {
     fill: var(--color-accent-fill);
-    stroke: var(--range-dial-halo, var(--color-bg));
+    stroke: var(--range-dial-halo, var(--color-block-bg));
     stroke-width: 3px;
     paint-order: stroke;
 }
 
 .range-dial__dot:not([data-status="in"]) {
-    fill: var(--range-dial-halo, var(--color-bg));
+    fill: var(--range-dial-halo, var(--color-block-bg));
     stroke: var(--color-accent-fill);
     stroke-width: 2.5px;
 }

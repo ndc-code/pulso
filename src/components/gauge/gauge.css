@@ -37,8 +37,9 @@
     opacity: 0.6;
 }
 
-/* Cortes entre segmentos: del color del fondo que hay detrás */
+/* Cortes entre segmentos: del color del fondo que hay detrás
+   (por defecto, el de un bloque: los diales siempre van en una card) */
 .gauge__cut {
-    stroke: var(--gauge-cut, var(--color-bg));
+    stroke: var(--gauge-cut, var(--color-block-bg));
     stroke-width: 2px;
 }
