@@ -10,6 +10,12 @@ import {
   outboxEntriesFor,
   coalesceOutbox,
   removeSent,
+  mergeRemote,
+  dedupeByDate,
+  latestUpdatedAt,
+  cursorWithMargin,
+  hasLocalUserData,
+  syncStatusText,
 } from "../src/utils/sync.js";
 
 /* ---------------------------------------- */
@@ -85,4 +91,88 @@ test("removeSent: saca lo que se mandó, deja lo que cambió mientras tanto", ()
   const oldB = { table: "habit", id: "b", op: "upsert", row: { id: "b", v: 1 } };
   const newB = { table: "habit", id: "b", op: "upsert", row: { id: "b", v: 2 } };
   assert.deepEqual(removeSent([sentA, newB], [sentA, oldB]), [newB]);
+});
+
+/* ---------------------------------------- */
+/* Bajada */
+/* ---------------------------------------- */
+
+test("mergeRemote: reemplaza, agrega y saca las borradas", () => {
+  const local = [{ id: "a", v: 1 }, { id: "b", v: 1 }];
+  const remote = [
+    { id: "a", data: { id: "a", v: 2 }, deleted_at: null },
+    { id: "b", data: { id: "b", v: 1 }, deleted_at: "2026-10-06T10:00:00+00:00" },
+    { id: "c", data: { id: "c", v: 1 }, deleted_at: null },
+  ];
+  assert.deepEqual(mergeRemote(local, remote), [{ id: "a", v: 2 }, { id: "c", v: 1 }]);
+});
+
+test("mergeRemote: lo que todavía no se subió gana", () => {
+  const local = [{ id: "a", v: 1 }];
+  const remote = [{ id: "a", data: { id: "a", v: 2 }, deleted_at: null }];
+  assert.deepEqual(mergeRemote(local, remote, new Set(["a"])), [{ id: "a", v: 1 }]);
+});
+
+test("mergeRemote: borrar algo que no está no hace nada", () => {
+  const remote = [{ id: "z", data: { id: "z" }, deleted_at: "2026-10-06T10:00:00+00:00" }];
+  assert.deepEqual(mergeRemote([{ id: "a" }], remote), [{ id: "a" }]);
+  assert.deepEqual(mergeRemote(null, []), []);
+});
+
+test("dedupeByDate: una fila por día, gana la que bajó más nueva", () => {
+  const rows = [
+    { id: "m", date: "2026-10-06", steps: 100 },   // a mano
+    { id: "s", date: "2026-10-06", steps: 900 },   // del Atajo
+    { id: "x", date: "2026-10-05", steps: 5 },
+  ];
+  assert.deepEqual(dedupeByDate(rows, ["s"]), {
+    rows: [{ id: "s", date: "2026-10-06", steps: 900 }, { id: "x", date: "2026-10-05", steps: 5 }],
+    deletedIds: ["m"],
+  });
+});
+
+test("dedupeByDate: si ninguna bajó, queda la última", () => {
+  const rows = [{ id: "m", date: "2026-10-06" }, { id: "n", date: "2026-10-06" }];
+  assert.deepEqual(dedupeByDate(rows), { rows: [{ id: "n", date: "2026-10-06" }], deletedIds: ["m"] });
+});
+
+test("latestUpdatedAt: el más nuevo, o null", () => {
+  const rows = [
+    { updated_at: "2026-10-06T10:00:00.5+00:00" },
+    { updated_at: "2026-10-06T12:00:00+00:00" },
+    { updated_at: "2026-10-06T11:00:00+00:00" },
+  ];
+  assert.equal(latestUpdatedAt(rows), "2026-10-06T12:00:00+00:00");
+  assert.equal(latestUpdatedAt([]), null);
+});
+
+test("cursorWithMargin: 60 segundos antes", () => {
+  assert.equal(cursorWithMargin("2026-10-06T12:00:00+00:00"), "2026-10-06T11:59:00.000Z");
+  assert.equal(cursorWithMargin(null), null);
+});
+
+test("hasLocalUserData: cuenta registros, no hábitos ni perfil", () => {
+  assert.equal(hasLocalUserData({ habit: [{ id: "h" }], habit_log: [] }), false);
+  assert.equal(hasLocalUserData({ water_log: [{ id: "w" }] }), true);
+  assert.equal(hasLocalUserData({}), false);
+});
+
+/* ---------------------------------------- */
+/* Estado */
+/* ---------------------------------------- */
+
+test("syncStatusText", () => {
+  const now = new Date("2026-10-06T12:00:00Z");
+  const base = { pending: 0, lastSyncAt: null, online: true, error: false };
+
+  assert.equal(syncStatusText({ ...base, online: false }, now), "Sin conexión");
+  assert.equal(syncStatusText({ ...base, online: false, pending: 2 }, now), "Sin conexión · 2 cambios sin subir");
+  assert.equal(syncStatusText({ ...base, pending: 1 }, now), "1 cambio sin subir");
+  assert.equal(syncStatusText({ ...base, error: true }, now), "No se pudo sincronizar");
+  assert.equal(syncStatusText(base, now), "Sincronizando…");
+  assert.equal(syncStatusText({ ...base, lastSyncAt: "2026-10-06T11:59:30Z" }, now), "Sincronizado recién");
+  assert.equal(syncStatusText({ ...base, lastSyncAt: "2026-10-06T11:58:00Z" }, now), "Sincronizado hace 2 min");
+  assert.equal(syncStatusText({ ...base, lastSyncAt: "2026-10-06T09:00:00Z" }, now), "Sincronizado hace 3 h");
+  assert.equal(syncStatusText({ ...base, lastSyncAt: "2026-10-05T11:00:00Z" }, now), "Sincronizado hace 1 día");
+  assert.equal(syncStatusText({ ...base, lastSyncAt: "2026-10-03T12:00:00Z" }, now), "Sincronizado hace 3 días");
 });
