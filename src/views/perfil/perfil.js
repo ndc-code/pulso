@@ -13,6 +13,7 @@ import { field, setFieldError } from "../../components/field/field.js";
 import { segmented } from "../../components/segmented/segmented.js";
 import { chipGroup } from "../../components/chip/chip.js";
 import { toast } from "../../components/toast/toast.js";
+import { mountAccountCard } from "./account-card.js";
 
 export const title = "Perfil";
 export const subtitle = "Ajustes y metas";
@@ -43,6 +44,8 @@ export async function render(root) {
   const habits = (await get("habit")) ?? [];
 
   root.innerHTML = `
+    <section class="card content-reveal-position-sm" data-account></section>
+
     <section class="card content-reveal-position-sm">
       <h2 class="card__title">Vos</h2>
       ${field({ id: "perfil-name", label: "Nombre", value: profile.name, placeholder: "¿Cómo te llamás?", autocomplete: "given-name" })}
@@ -151,12 +154,17 @@ export async function render(root) {
     }
   });
 
+  const offAccount = mountAccountCard(root.querySelector("[data-account]"));
+
   // Si se importan datos o cambian los hábitos, actualizar el contador
   const off = subscribe("habit", (value) => {
     root.querySelector("[data-habit-count]").textContent = activeCount(value ?? []);
   });
 
-  return off;
+  return () => {
+    off();
+    offAccount();
+  };
 }
 
 function activeCount(habits) {

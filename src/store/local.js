@@ -5,8 +5,8 @@
 // Adaptador de datos sobre localStorage.
 //
 // Es el ÚNICO archivo de la app que toca localStorage.
-// Cuando llegue Supabase se crea supabase.js con las mismas
-// tres funciones (read, write, remove) y se cambia el import en store.js.
+// store.js no lo usa directo: pasa por synced.js, que guarda acá y además
+// anota los cambios para subirlos a Supabase (ver sync.js).
 //
 // Las funciones son async aunque localStorage sea sincrónico:
 // así la firma ya es la misma que tendrá el adaptador de Supabase.
@@ -54,3 +54,18 @@ export async function remove(key) {
   if (ls) ls.removeItem(PREFIX + key);
   else memory.delete(key);
 }
+
+// Dónde guarda supabase-js la sesión (se lo pasa supabase.js como auth.storage).
+// supabase-js maneja texto plano, así que acá no se hace JSON.parse.
+// Vive en este archivo para que siga siendo el único que toca localStorage.
+export const authStorage = {
+  getItem: (key) => (ls ? ls.getItem(PREFIX + key) : memory.get(key) ?? null),
+  setItem: (key, value) => {
+    if (ls) ls.setItem(PREFIX + key, value);
+    else memory.set(key, value);
+  },
+  removeItem: (key) => {
+    if (ls) ls.removeItem(PREFIX + key);
+    else memory.delete(key);
+  },
+};

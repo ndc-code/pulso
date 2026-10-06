@@ -10,6 +10,7 @@
 
 import { get, subscribe } from "./store/store.js";
 import { ensureSeed } from "./store/seed.js";
+import { getSession } from "./store/auth.js";
 import { applyTheme } from "./utils/theme.js";
 import { todayKey } from "./utils/dates.js";
 import { initHeader } from "./layout/header/header.js";
@@ -26,6 +27,9 @@ async function start() {
   await initHeader();
   startRouter(document.querySelector("#view"));
   watchDayChange();
+
+  // Sesión con Google (no se espera: la app ya está pintada con lo local)
+  getSession();
 }
 
 // Si la app queda abierta y pasa la medianoche, "hoy" cambió:
