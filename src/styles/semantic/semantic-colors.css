@@ -42,6 +42,11 @@
     --color-border: var(--color-text);                                            /* bordes de pills e inputs */
     --color-divider: light-dark(var(--color-gray-300), var(--color-gray-800));    /* separa filas */
 
+    /* --- Fotos de ejercicios: vienen con fondo blanco; en oscuro, un gris
+       muy claro para que el recuadro no encandile (la foto se multiplica encima) --- */
+    --color-media-bg: light-dark(var(--color-white), var(--color-gray-150));
+    --color-media-text: var(--color-gray-600);                                    /* crédito encima de la foto */
+
     /* --- Inverso: negro sobre blanco ↔ blanco sobre negro --- */
     --color-inverse-bg: var(--color-text);
     --color-inverse-text: var(--color-bg);

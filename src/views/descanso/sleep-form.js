@@ -4,7 +4,7 @@
 
 // Hoja "Registrar sueño" (spec 4.4): día, hora de dormir y de despertar
 // (calcula las horas mientras escribís) y calidad de 1 a 5.
-// Se abre desde Descanso y desde Hoy (+ Sueño y el + de "Dormir 7 h o más").
+// Se abre desde Descanso y desde Hoy (+ Sueño y el + de Descanso).
 // Un registro por día: si el día ya tiene uno, se edita.
 //
 //   openSleepForm()                         // anoche (el día de hoy)

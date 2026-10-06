@@ -6,7 +6,7 @@
 // Una noche: { id, date, bed_time: "23:30", wake_time: "07:15", hours, quality }
 //
 // `date` es el día en que te despertaste: así "anoche" es el registro de hoy
-// y el hábito "Dormir 7 h o más" de hoy sale de ese registro.
+// y el hábito Descanso de hoy sale de ese registro.
 
 import { weekKeys, weekdayOf, fromDateKey, startOfWeek, addDays } from "./dates.js";
 
@@ -39,6 +39,25 @@ export function sleepHours(bedTime, wakeTime) {
 
   const minutes = (wake - bed + 24 * 60) % (24 * 60);
   return Math.round((minutes / 60) * 100) / 100;
+}
+
+// Hora de acostarse para haber dormido `hours` hasta `wakeTime`.
+// La usa el − / + de Descanso en Hoy, que carga horas y no horarios.
+//   bedTimeFor("07:00", 8) → "23:00"
+export function bedTimeFor(wakeTime, hours) {
+  const minutes = (toMinutes(wakeTime) - Math.round(hours * 60) + 24 * 60) % (24 * 60);
+  return `${String(Math.floor(minutes / 60)).padStart(2, "0")}:${String(minutes % 60).padStart(2, "0")}`;
+}
+
+// El − / + de Descanso en Hoy: de a media hora, entre 0 y 14 h.
+// Sin registro (0), el primer + pone la meta: la mayoría de las noches
+// quedan cerca, y de ahí se ajusta.
+const SLEEP_STEP = 0.5;
+const SLEEP_MAX = 14;
+
+export function nextSleepHours(current, direction, goal) {
+  if (current === 0 && direction > 0) return goal;
+  return Math.min(SLEEP_MAX, Math.max(0, current + direction * SLEEP_STEP));
 }
 
 // 7.75 → "7 h 45" · 8 → "8 h"

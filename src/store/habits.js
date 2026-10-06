@@ -10,14 +10,15 @@ import { sortByOrder } from "../utils/habits.js";
 
 // Todas las claves que afectan el estado de un hábito en un día.
 // Las vistas de hábitos se suscriben a estas para refrescarse.
-export const HABIT_KEYS = ["profile", "habit", "habit_log", "water_log", "workout", "meal", "sleep"];
+export const HABIT_KEYS = [
+  "profile", "objetivos", "habit", "habit_log", "water_log", "steps_log", "workout", "meal", "sleep", "sesion_fuerza",
+];
 
 // Carga todo lo necesario para calcular hábitos (ver utils/habits.js)
 export async function loadHabitContext() {
-  const [profile, habits, habitLogs, waterLogs, workouts, meals, sleeps] = await Promise.all(
-    HABIT_KEYS.map((key) => get(key)),
-  );
-  return { profile, habits: habits ?? [], habitLogs, waterLogs, workouts, meals, sleeps };
+  const [profile, goals, habits, habitLogs, waterLogs, stepLogs, workouts, meals, sleeps, strengthSessions] =
+    await Promise.all(HABIT_KEYS.map((key) => get(key)));
+  return { profile, goals, habits: habits ?? [], habitLogs, waterLogs, stepLogs, workouts, meals, sleeps, strengthSessions };
 }
 
 /* ---------------------------------------- */
@@ -53,6 +54,21 @@ export async function setWaterGlasses(date, glasses) {
     await update("water_log", log.id, { glasses, last_at: lastAt });
   } else {
     await add("water_log", { date, glasses, last_at: lastAt });
+  }
+}
+
+// Pasos de un día (el total, no se suman): { date, steps }. Con 0 se borra.
+// Por ahora se cargan a mano desde Hoy; después llegan desde Salud.
+export async function setSteps(date, steps) {
+  const logs = await get("steps_log");
+  const log = logs.find((row) => row.date === date);
+
+  if (steps <= 0) {
+    if (log) await remove("steps_log", log.id);
+  } else if (log) {
+    await update("steps_log", log.id, { steps });
+  } else {
+    await add("steps_log", { date, steps });
   }
 }
 

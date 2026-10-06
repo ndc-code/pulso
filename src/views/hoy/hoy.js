@@ -5,7 +5,9 @@
 // Pantalla de inicio: el día de un vistazo (spec 4.1).
 //   - tira de la semana: un punto por día según cuánto se cumplió
 //   - % del día en grande + un punto por hábito (naranja = cumplido)
-//   - lista de hábitos que aplican hoy, con check o contador
+//   - lista de hábitos que aplican hoy (Ritmo, Fuerza, Comida, Descanso),
+//     con check, contador o + para registrar
+//   - peso: el último, cuánto bajó, la meta y su gráfico de evolución
 //   - lo que recomienda la ciencia (bloques que se apilan al scrollear,
 //     debajo del título de la sección, que queda fijo mientras tanto)
 //   - la racha más larga y los accesos rápidos para registrar: van después
@@ -15,27 +17,33 @@
 // Se suscribe a todas las claves que cambian un hábito: si se registra agua
 // acá, un entreno en Moverse o se edita un hábito en Ajustes, se refresca sola.
 
-import { subscribe } from "../../store/store.js";
+import { get, subscribe } from "../../store/store.js";
 import { HABIT_KEYS, loadHabitContext, setManualValue, setWaterGlasses } from "../../store/habits.js";
 import { todayKey, WEEKDAY_NAMES } from "../../utils/dates.js";
-import { isApplicable, habitTarget, habitValue, dayProgress, weekProgress, sortByOrder } from "../../utils/habits.js";
+import { isApplicable, habitTarget, habitValue, habitParts, isDone, strengthToday, dayProgress, weekProgress, sortByOrder } from "../../utils/habits.js";
+import { nextSleepHours } from "../../utils/sleep.js";
+import { setSleepHours } from "../../store/rest.js";
 import { longestStreak } from "../../utils/streaks.js";
 import { RECOMMENDATIONS } from "../../content/recommendations.js";
 import { dataBlock } from "../../components/data-block/data-block.js";
 import { openWorkoutForm } from "../moverse/workout-form.js";
 import { openMealForm } from "../comer/meal-form.js";
 import { openSleepForm } from "../descanso/sleep-form.js";
+import { handleWeightClick } from "./weight-actions.js";
+import { openStepsForm } from "./steps-form.js";
 import { icon } from "../../utils/icons.js";
 import { escapeHTML } from "../../utils/html.js";
 import { habitCard, updateHabitCard } from "../../components/habit-card/habit-card.js";
 import { weekStrip } from "../../components/week-strip/week-strip.js";
+import { weightCard } from "../../components/weight-card/weight-card.js";
 
-export const title = "Hoy";
-export const subtitle = ""; // el header pone el saludo
+export const title = "Pulso";
+export const subtitle = "tu día";
 
 export async function render(root) {
   const today = todayKey();
   let ctx = null;
+  let body = [];
   let listSignature = "";
 
   root.innerHTML = `
@@ -65,6 +73,8 @@ export async function render(root) {
     </section>
 
 
+    <div class="content-reveal-position-sm" data-weight></div>
+
     <section class="card science" aria-labelledby="hoy-science-title">
       <div class="science__head">
         <h2 class="card__title" id="hoy-science-title">Lo que recomienda la ciencia</h2>
@@ -92,6 +102,7 @@ export async function render(root) {
         <button class="btn btn--ghost" type="button" data-open="meal">${icon("plus")}Comida</button>
         <button class="btn btn--ghost" type="button" data-open="workout">${icon("plus")}Entreno</button>
         <button class="btn btn--ghost" type="button" data-open="sleep">${icon("plus")}Sueño</button>
+        <button class="btn btn--ghost" type="button" data-weight="log">${icon("plus")}Peso</button>
       </div>
     </section>
 
@@ -102,9 +113,20 @@ export async function render(root) {
   /* ---------------------------------------- */
 
   function stateOf(habit) {
-    const value = habitValue(habit, today, ctx);
-    const target = habitTarget(habit, ctx.profile);
-    return { value, target, done: value >= target, profile: ctx.profile };
+    const state = {
+      value: habitValue(habit, today, ctx),
+      target: habitTarget(habit, ctx),
+      done: isDone(habit, today, ctx),
+      parts: habitParts(habit, today, ctx), // solo Comida: agua y comidas
+      profile: ctx.profile,
+    };
+    // Fuerza: el + marca hoy (si todavía no entrenaste) y el − deshace esa marca
+    if (habit.source === "strength_week") {
+      const { trained, marked } = strengthToday(habit, today, ctx);
+      state.canInc = !trained;
+      state.canDec = marked;
+    }
+    return state;
   }
 
   function renderSummary() {
@@ -137,7 +159,7 @@ export async function render(root) {
     // Si solo cambiaron valores se actualiza en el lugar: así no se pierde
     // el foco del botón que se tocó y los anillos animan la transición.
     const signature = habits
-      .map((h) => [h.id, h.name, h.icon, h.color, h.type, h.unit, habitTarget(h, ctx.profile)].join(":"))
+      .map((h) => [h.id, h.name, h.icon, h.color, h.type, h.unit, habitTarget(h, ctx)].join(":"))
       .join("|");
 
     if (signature !== listSignature) {
@@ -188,12 +210,18 @@ export async function render(root) {
     `;
   }
 
+  // Tarjeta de peso (la misma que en Fuerza)
+  function renderWeight() {
+    root.querySelector("[data-weight]").innerHTML = weightCard({ body, goal: ctx.profile.weight_goal, id: "hoy-weight" });
+  }
+
   async function refresh() {
-    ctx = await loadHabitContext();
+    [ctx, body] = await Promise.all([loadHabitContext(), get("body")]);
     renderWeek();
     renderSummary();
     renderHabits();
     renderStreak();
+    renderWeight();
   }
 
   /* ---------------------------------------- */
@@ -202,7 +230,11 @@ export async function render(root) {
 
   root.addEventListener("click", async (event) => {
     // Registrar entreno, comida o sueño: hoja sin salir de Hoy
-    // (los + de Moverme, Verdura y Dormir, y los accesos de abajo)
+    // (el + de Ritmo, el de comidas en Comida y los accesos de abajo)
+    if (event.target.closest('[data-open="steps"]')) {
+      openStepsForm({ steps: ctx.stepLogs.find((row) => row.date === today)?.steps ?? 0 });
+      return;
+    }
     if (event.target.closest('[data-open="workout"]')) {
       openWorkoutForm();
       return;
@@ -211,6 +243,7 @@ export async function render(root) {
       openMealForm();
       return;
     }
+    if (handleWeightClick(event, { body, goal: ctx.profile.weight_goal })) return;
     if (event.target.closest('[data-open="sleep"]')) {
       openSleepForm();
       return;
@@ -221,20 +254,36 @@ export async function render(root) {
 
     const li = button.closest("[data-habit-id]");
     const habit = ctx.habits.find((h) => h.id === li.dataset.habitId);
-    const { value } = stateOf(habit);
+    const { value, target, parts } = stateOf(habit);
 
     if (button.dataset.action === "toggle") {
       await setManualValue(habit.id, today, value >= 1 ? 0 : 1);
       return;
     }
 
-    const next = Math.max(0, value + (button.dataset.action === "inc" ? 1 : -1));
-    if (habit.source === "water") await setWaterGlasses(today, next);
-    else await setManualValue(habit.id, today, next);
+    // − / +: qué mueven depende del hábito
+    const step = button.dataset.action === "inc" ? 1 : -1;
+    switch (habit.source) {
+      case "food": // el renglón de vasos de Comida
+        await setWaterGlasses(today, Math.max(0, parts[0].value + step));
+        break;
+      case "water":
+        await setWaterGlasses(today, Math.max(0, value + step));
+        break;
+      case "strength_week": // marca (o desmarca) hoy como día de pesas
+        await setManualValue(habit.id, today, step > 0 ? 1 : 0);
+        break;
+      case "sleep": // horas dormidas anoche, de a media hora
+        await setSleepHours(today, nextSleepHours(value, step, target));
+        break;
+      default:
+        await setManualValue(habit.id, today, Math.max(0, value + step));
+    }
   });
 
   // Cualquier cambio en los datos de hábitos → refrescar
-  const unsubscribers = HABIT_KEYS.map((key) => subscribe(key, refresh));
+  // (y el peso, que no es de hábitos)
+  const unsubscribers = [...HABIT_KEYS, "body"].map((key) => subscribe(key, refresh));
 
   await refresh();
 

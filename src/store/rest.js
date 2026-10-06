@@ -5,8 +5,9 @@
 // Escrituras de Descanso: sueño, ánimo y respiración.
 // Sueño y ánimo guardan un registro por día: si ya hay uno, se pisa.
 
-import { get, add, update } from "./store.js";
+import { get, add, update, remove } from "./store.js";
 import { setManualValue } from "./habits.js";
+import { bedTimeFor, lastTimes } from "../utils/sleep.js";
 
 // Guarda la noche del día `date` (el día en que te despertaste)
 export async function saveSleep({ date, bed_time, wake_time, hours, quality }) {
@@ -16,6 +17,24 @@ export async function saveSleep({ date, bed_time, wake_time, hours, quality }) {
 
   if (existing) await update("sleep", existing.id, data);
   else await add("sleep", data);
+}
+
+// Horas de sueño desde el − / + de Descanso en Hoy (sin horarios).
+// La hora de despertar se mantiene (la de esa noche, o la de la última
+// registrada) y la de acostarse se calcula. Con 0 horas se borra la noche.
+export async function setSleepHours(date, hours) {
+  const sleeps = await get("sleep");
+  const existing = sleeps.find((row) => row.date === date);
+
+  if (hours <= 0) {
+    if (existing) await remove("sleep", existing.id);
+    return;
+  }
+
+  const wake = existing?.wake_time ?? lastTimes(sleeps).wake;
+  const data = { bed_time: bedTimeFor(wake, hours), wake_time: wake, hours };
+  if (existing) await update("sleep", existing.id, data);
+  else await add("sleep", { date, quality: null, ...data });
 }
 
 // Check-in de ánimo y energía. `changes` puede traer uno solo de los dos.

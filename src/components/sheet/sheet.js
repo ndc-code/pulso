@@ -18,15 +18,20 @@
 import { escapeHTML } from "../../utils/html.js";
 import { icon } from "../../utils/icons.js";
 
+// Contador para que cada hoja tenga su propio id de título
+// (se pueden abrir dos a la vez: "Editar rutina" → "Elegir ejercicio")
+let sheetCount = 0;
+
 export function openSheet({ title, body, onClose }) {
   const opener = document.activeElement;
+  const titleId = `sheet-title-${++sheetCount}`;
   const dialog = document.createElement("dialog");
   dialog.className = "sheet";
-  dialog.setAttribute("aria-labelledby", "sheet-title");
+  dialog.setAttribute("aria-labelledby", titleId);
   dialog.innerHTML = `
     <div class="sheet__inner">
       <header class="sheet__header">
-        <h2 class="sheet__title" id="sheet-title">${escapeHTML(title)}</h2>
+        <h2 class="sheet__title" id="${titleId}">${escapeHTML(title)}</h2>
         <button class="btn btn--icon" type="button" data-sheet-close aria-label="Cerrar">${icon("x")}</button>
       </header>
       <div class="sheet__body">${body}</div>

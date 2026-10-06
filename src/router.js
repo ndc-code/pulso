@@ -2,8 +2,9 @@
    App — Router
    ============================================ */
 
-// Router por hash: #/hoy, #/moverse, #/comer, #/descanso, #/progreso,
-// #/perfil y #/perfil/habitos
+// Router por hash. Cada ruta y el nombre que se ve en la app:
+//   #/hoy → Pulso · #/moverse → Ritmo · #/fitness → Fuerza
+//   #/comer → Comida · #/descanso → Descanso · #/perfil y #/perfil/habitos
 //
 // Cada cambio de hash:
 //   1. limpia la vista anterior (su cleanup y sus animaciones)
@@ -19,8 +20,8 @@
 import * as hoy from "./views/hoy/hoy.js";
 import * as moverse from "./views/moverse/moverse.js";
 import * as comer from "./views/comer/comer.js";
+import * as fitness from "./views/fitness/fitness.js";
 import * as descanso from "./views/descanso/descanso.js";
-import * as progreso from "./views/progreso/progreso.js";
 import * as perfil from "./views/perfil/perfil.js";
 import * as habitos from "./views/habitos/habitos.js";
 import { setHeader, focusHeaderTitle } from "./layout/header/header.js";
@@ -29,9 +30,9 @@ import { animateView } from "./animation/animations.js";
 const ROUTES = {
   hoy,
   moverse,
+  fitness,
   comer,
   descanso,
-  progreso,
   perfil,
   "perfil/habitos": habitos,
 };
@@ -91,8 +92,8 @@ async function render({ moveFocus }) {
 
   // 3. Actualizar el resto de la app
   const section = path.split("/")[0];
-  document.title = `${view.title} · Pulso`;
-  setHeader(path, view);
+  document.title = view.title === "Pulso" ? "Pulso" : `${view.title} · Pulso`;
+  setHeader(view);
   markActive(section);
 
   if (moveFocus && !isFirstRender) {

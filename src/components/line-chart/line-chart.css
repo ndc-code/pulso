@@ -23,12 +23,17 @@
     overflow: visible;
 }
 
-.line-chart__svg path {
+.line-chart__line {
     fill: none;
     stroke: currentColor;
     stroke-width: 1.5px;
     stroke-linejoin: round;
     stroke-linecap: round;
+}
+
+/* Área bajo la línea: degradado del color del texto (definido en el SVG) */
+.line-chart__area {
+    stroke: none;
 }
 
 .line-chart__dot {
@@ -82,4 +87,63 @@
     font-size: var(--font-xs-size);
     line-height: var(--font-xs-line);
     color: var(--color-text-muted);
+}
+
+/* ---------------------------------------- */
+/* Con ejes (axes: true) */
+/* ---------------------------------------- */
+
+/* Lugar a la izquierda para los valores del eje Y */
+.line-chart--axes .line-chart__plot {
+    height: 160px;
+    margin-top: var(--spacing-md);
+    margin-left: var(--spacing-3xl);
+}
+
+/* La línea, un poco más gruesa con ejes (como la referencia) */
+.line-chart--axes .line-chart__line {
+    stroke-width: 2px;
+}
+
+.line-chart--axes .line-chart__axis {
+    margin-left: var(--spacing-3xl);
+}
+
+/* Valor redondo del eje Y, a la izquierda del dibujo */
+.line-chart__tick {
+    position: absolute;
+    right: calc(100% + var(--spacing-sm));
+    transform: translateY(-50%);
+    font-size: var(--font-xs-size);
+    line-height: var(--font-xs-line);
+    color: var(--color-text-muted);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+/* Valor redondo del eje Y: línea punteada horizontal */
+.line-chart__hgrid {
+    position: absolute;
+    left: 0;
+    right: 0;
+    border-top: 1px dotted var(--color-divider);
+}
+
+/* Día 1 de cada mes: línea punteada vertical */
+.line-chart__grid {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    border-left: 1px dotted var(--color-divider);
+}
+
+/* Meses debajo, cada uno centrado en su línea */
+.line-chart__axis--months {
+    position: relative;
+    height: var(--font-xs-line);
+}
+
+.line-chart__axis--months span {
+    position: absolute;
+    transform: translateX(-50%);
 }

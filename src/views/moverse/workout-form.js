@@ -3,11 +3,12 @@
    ============================================ */
 
 // Hoja "Registrar sesión" (spec 4.2): tipo, duración, intensidad, día y nota.
-// Se abre desde Moverse y también desde Hoy (+ Entreno y el + de Moverme),
-// sin salir de la pantalla.
+// Se abre desde Moverse y también desde Hoy (+ Entreno y los + de Ritmo
+// y Fuerza), sin salir de la pantalla.
 //
-//   openWorkoutForm()                    // día: hoy
+//   openWorkoutForm()                        // día: hoy, tipo: cardio
 //   openWorkoutForm({ date: "2026-10-03" })  // día elegido en Moverse
+//   openWorkoutForm({ type: "fuerza" })      // desde el + de Fuerza
 
 import { add } from "../../store/store.js";
 import { WORKOUT_TYPES, INTENSITIES } from "../../utils/workouts.js";
@@ -24,7 +25,7 @@ const MIN = 5;
 const MAX = 600;
 const QUICK = [15, 30, 45, 60];
 
-export function openWorkoutForm({ date: initialDate = todayKey() } = {}) {
+export function openWorkoutForm({ date: initialDate = todayKey(), type = "cardio" } = {}) {
   let duration = 30;
 
   const body = `
@@ -33,7 +34,7 @@ export function openWorkoutForm({ date: initialDate = todayKey() } = {}) {
         name: "type",
         legend: "Tipo",
         type: "radio",
-        values: ["cardio"],
+        values: [type],
         options: WORKOUT_TYPES.map((t) => ({ value: t.value, label: t.label })),
       })}
 

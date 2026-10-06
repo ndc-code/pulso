@@ -81,3 +81,30 @@ export function bodyTrend(body, today, days = 30) {
     since: base?.date ?? null,
   };
 }
+
+// Pérdida de peso: el primer y el último registro, el cambio entre los dos,
+// el cambio contra el pesaje anterior y cuánto falta para la meta (en kg, 0 si ya se alcanzó).
+// { latest, start, previous, change, lastChange, toGoal, reached }
+// previous y lastChange son null con un solo registro; toGoal es null sin meta.
+export function weightProgress(body, goal) {
+  const withWeight = [...body]
+    .filter((row) => row.weight != null)
+    .sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0));
+  if (!withWeight.length) return null;
+
+  const start = withWeight[0];
+  const latest = withWeight.at(-1);
+  const previous = withWeight.at(-2) ?? null;
+  const round1 = (n) => Math.round(n * 10) / 10;
+  const hasGoal = goal != null;
+
+  return {
+    latest,
+    start,
+    previous,
+    change: round1(latest.weight - start.weight),
+    lastChange: previous ? round1(latest.weight - previous.weight) : null,
+    toGoal: hasGoal ? Math.max(0, round1(latest.weight - goal)) : null,
+    reached: hasGoal && latest.weight <= goal,
+  };
+}

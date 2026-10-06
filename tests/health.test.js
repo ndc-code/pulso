@@ -4,7 +4,7 @@
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { labStatus, labSeries, latestLab, bodySeries, bodyTrend, defaultRanges, LAB_INDICATORS } from "../src/utils/health.js";
+import { labStatus, labSeries, latestLab, bodySeries, bodyTrend, weightProgress, defaultRanges, LAB_INDICATORS } from "../src/utils/health.js";
 
 const TODAY = "2026-10-08";
 
@@ -98,4 +98,31 @@ test("bodyTrend: con un solo registro no hay cambio", () => {
 
 test("bodyTrend: sin registros", () => {
   assert.equal(bodyTrend([], TODAY), null);
+});
+
+test("weightProgress: cuánto bajó desde el primer registro y cuánto falta para la meta", () => {
+  const progress = weightProgress(body, 77);
+  assert.equal(progress.latest.weight, 79.9);
+  assert.equal(progress.start.weight, 82);
+  assert.equal(progress.change, -2.1);
+  assert.equal(progress.toGoal, 2.9);
+  assert.equal(progress.reached, false);
+  // contra el pesaje anterior (como la flecha de openGym)
+  assert.equal(progress.previous.weight, 80.6);
+  assert.equal(progress.lastChange, -0.7);
+});
+
+test("weightProgress: con un solo registro no hay pesaje anterior", () => {
+  const progress = weightProgress([{ id: "a", date: "2026-10-01", weight: 80 }], null);
+  assert.equal(progress.previous, null);
+  assert.equal(progress.lastChange, null);
+  assert.equal(progress.change, 0);
+});
+
+test("weightProgress: meta alcanzada, sin meta y sin registros", () => {
+  assert.equal(weightProgress(body, 80).reached, true);
+  assert.equal(weightProgress(body, 80).toGoal, 0);
+  assert.equal(weightProgress(body, null).toGoal, null);
+  assert.equal(weightProgress(body, null).reached, false);
+  assert.equal(weightProgress([], 77), null);
 });

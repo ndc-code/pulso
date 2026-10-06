@@ -20,11 +20,12 @@ import { icon } from "../../utils/icons.js";
 import { ring } from "../../components/gauge/gauge.js";
 import { weekStrip } from "../../components/week-strip/week-strip.js";
 import { barChart } from "../../components/bar-chart/bar-chart.js";
+import { dotCalendar } from "../../components/dot-calendar/dot-calendar.js";
 import { toast } from "../../components/toast/toast.js";
 import { openWorkoutForm } from "./workout-form.js";
 
-export const title = "Moverse";
-export const subtitle = "Ejercicio y actividad";
+export const title = "Ritmo";
+export const subtitle = "cardio";
 
 const GRID_WEEKS = 12;
 const MONTH = new Intl.DateTimeFormat("es-AR", { month: "long" });
@@ -38,12 +39,12 @@ export async function render(root) {
   let focusAfterPaint = null;
 
   async function paint() {
-    const [stored, profile, habits] = await Promise.all([get("workout"), get("profile"), get("habit")]);
+    const [stored, profile] = await Promise.all([get("workout"), get("profile")]);
     workouts = stored ?? [];
     goal = profile.weekly_active_goal;
-    // meta diaria: la del hábito Moverme; si no está, la semanal repartida en 7
-    const dailyGoal = (habits ?? []).find((h) => h.source === "workout_minutes" && !h.archived)?.target
-      ?? Math.round(goal / 7);
+    // meta diaria de minutos: la semanal repartida en 7
+    // (el hábito Ritmo de Hoy va por pasos, no por minutos)
+    const dailyGoal = Math.round(goal / 7);
 
     const week = weekKeys(selected);
     const summary = weekSummary(workouts, selected, goal, today);
@@ -232,36 +233,5 @@ function sessionItem(workout, today) {
       <button class="move-item__action" type="button" data-repeat
         aria-label="Repetir ${escapeHTML(label)} hoy">repetir</button>
     </li>
-  `;
-}
-
-// Calendario de puntos: una columna por semana, una fila por día.
-// Arriba, el mes cuando cambia de una columna a otra.
-function dotCalendar(grid) {
-  let lastMonth = null;
-  const months = grid
-    .map((week) => {
-      const month = fromDateKey(week[0].key).getMonth();
-      const label = month !== lastMonth ? MONTH_SHORT.format(fromDateKey(week[0].key)).replace(".", "") : "";
-      lastMonth = month;
-      return `<span>${label}</span>`;
-    })
-    .join("");
-
-  const dots = grid
-    .flat()
-    .map((day) => {
-      const classes = ["dots__dot", day.active && "is-active", day.isToday && "is-today", day.isFuture && "is-future"]
-        .filter(Boolean)
-        .join(" ");
-      return `<span class="${classes}"></span>`;
-    })
-    .join("");
-
-  return `
-    <div class="dots" aria-hidden="true" style="--weeks: ${grid.length}">
-      <div class="dots__months">${months}</div>
-      <div class="dots__grid">${dots}</div>
-    </div>
   `;
 }

@@ -61,14 +61,6 @@ export function weekKeys(key) {
   return Array.from({ length: 7 }, (_, i) => addDays(monday, i));
 }
 
-// "Buen día" / "Buenas tardes" / "Buenas noches" según la hora
-export function greeting(date = new Date()) {
-  const hour = date.getHours();
-  if (hour >= 5 && hour < 12) return "Buen día";
-  if (hour >= 12 && hour < 20) return "Buenas tardes";
-  return "Buenas noches";
-}
-
 // "5 oct"
 export function shortDate(key) {
   return new Intl.DateTimeFormat(LOCALE, { day: "numeric", month: "short" })

@@ -7,9 +7,9 @@
 
 import { get, set } from "./store.js";
 
-const DATA_KEYS = ["profile", "habit", "habit_log", "water_log", "workout", "meal", "sleep", "mood", "lab_result", "body", "lab_range"];
+const DATA_KEYS = ["profile", "habit", "habit_log", "water_log", "steps_log", "workout", "meal", "sleep", "mood", "lab_result", "body", "lab_range", "objetivos", "rutina", "sesion_fuerza", "ejercicio"];
 // Claves que guardan un objeto; el resto son listas
-const OBJECT_KEYS = ["profile", "lab_range"];
+const OBJECT_KEYS = ["profile", "lab_range", "objetivos"];
 const FORMAT_VERSION = 1;
 
 export async function exportData() {

@@ -1,0 +1,436 @@
+/* ============================================
+   Views — Fitness
+   ============================================ */
+
+/* Panel de cada tab: mismo ritmo vertical que una vista */
+.fuerza-panel {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-lg);
+}
+
+/* Filas que son botones (rutinas, ejercicios): ocupan todo el ancho */
+.fuerza-panel button.list-row,
+.fuerza-form button.list-row {
+    width: 100%;
+}
+
+/* "editar" pegado al copy del objetivo */
+.fuerza-edit {
+    align-self: flex-start;
+    min-height: auto;
+    font-size: var(--font-sm-size);
+}
+
+/* Etiqueta chica gris ("Descanso" en el Plan) */
+.fuerza-tag {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface-2);
+    font-size: var(--font-sm-size);
+    line-height: var(--font-sm-line);
+    color: var(--color-text-muted);
+}
+
+/* Último peso usado, a la derecha de un ejercicio */
+.fuerza-last {
+    flex-shrink: 0;
+    font-size: var(--font-sm-size);
+    line-height: var(--font-sm-line);
+    color: var(--color-text-muted);
+    font-variant-numeric: tabular-nums;
+}
+
+/* --- Hoy: rutina del día (card gris, como la de Moverse) --- */
+.fuerza-today {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface-2);
+}
+
+.fuerza-today__top {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--gap-md);
+}
+
+.fuerza-today__name {
+    font-size: var(--font-2xl-size);
+    line-height: var(--font-2xl-line);
+    letter-spacing: var(--font-2xl-tracking);
+}
+
+.fuerza-today__list {
+    display: flex;
+    flex-direction: column;
+    margin-block: var(--spacing-sm) var(--spacing-md);
+}
+
+.fuerza-today__list li {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--gap-md);
+    padding-block: var(--spacing-xs);
+    border-top: 1px solid var(--color-divider);
+    font-size: var(--font-sm-size);
+    line-height: var(--font-sm-line);
+}
+
+.fuerza-today__list li span:last-child {
+    color: var(--color-text-muted);
+    font-variant-numeric: tabular-nums;
+}
+
+.fuerza-today__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--gap-sm);
+    margin-top: var(--spacing-sm);
+}
+
+.fuerza-done {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    color: var(--color-text);
+}
+
+/* --- Plan: la semana --- */
+.plan-week {
+    display: flex;
+    flex-direction: column;
+}
+
+.plan-day {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xs);
+    padding-block: var(--spacing-sm);
+    border-top: 1px solid var(--color-divider);
+}
+
+.plan-day__head {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-md);
+}
+
+.plan-day__name {
+    flex: 1;
+    font-size: var(--font-lg-size);
+    line-height: var(--font-lg-line);
+}
+
+.plan-day__add {
+    border-color: transparent;
+}
+
+.plan-day__list {
+    display: flex;
+    flex-direction: column;
+}
+
+.plan-day__routine {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-md);
+}
+
+/* Punto naranja: ese día hay rutina */
+.plan-day__dot {
+    width: 8px;
+    height: 8px;
+    flex-shrink: 0;
+    border-radius: var(--radius-full);
+    background: var(--color-accent-fill);
+}
+
+.plan-day__remove {
+    border-color: transparent;
+    color: var(--color-text-muted);
+}
+
+/* --- Progreso --- */
+.fuerza-mark {
+    flex-shrink: 0;
+    display: flex;
+    align-items: baseline;
+    gap: var(--gap-xs);
+    font-size: var(--font-sm-size);
+    color: var(--color-text-muted);
+}
+
+.fuerza-mark .num {
+    color: var(--color-text);
+}
+
+.fuerza-sets {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* --- Ejercicios --- */
+.fuerza-search {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-lg);
+}
+
+/* --- Hojas --- */
+.fuerza-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xl);
+}
+
+.fuerza-stepper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.fuerza-stepper__value {
+    display: flex;
+    align-items: baseline;
+    gap: var(--gap-sm);
+}
+
+.fuerza-figures {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--gap-lg);
+}
+
+.fuerza-figure {
+    padding-top: var(--spacing-sm);
+    border-top: 1px solid var(--color-rule);
+}
+
+/* Editor de rutina: un bloque por ejercicio con sus tres números */
+.routine-exercises {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+    border: none;
+}
+
+.routine-exercises__list {
+    display: flex;
+    flex-direction: column;
+}
+
+.routine-exercise {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+    padding-block: var(--spacing-md);
+    border-top: 1px solid var(--color-divider);
+}
+
+.routine-exercise__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-md);
+}
+
+.routine-exercise__name {
+    font-size: var(--font-base-size);
+    line-height: var(--font-base-line);
+}
+
+.routine-exercise__head .btn--icon {
+    border-color: transparent;
+    color: var(--color-text-muted);
+}
+
+.routine-exercise__numbers {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--gap-sm);
+}
+
+.routine-number {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xs);
+}
+
+.routine-number__label {
+    font-size: var(--font-xs-size);
+    line-height: var(--font-xs-line);
+    color: var(--color-text-muted);
+}
+
+.routine-delete {
+    margin-right: auto;
+    color: var(--color-text-muted);
+}
+
+/* --- Modo entrenamiento --- */
+.training {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-lg);
+    /* lugar para el timer de descanso, que flota abajo */
+    padding-bottom: 180px;
+}
+
+.training__bar {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-md);
+}
+
+.training__title {
+    flex: 1;
+    min-width: 0;
+    text-align: center;
+}
+
+.training__name {
+    font-size: var(--font-lg-size);
+    line-height: var(--font-lg-line);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* La animación del ejercicio al lado de "Última vez" */
+.training-ex__intro {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-md);
+}
+
+.training-ex__actions {
+    display: flex;
+    justify-content: space-between;
+}
+
+.training-ex__actions .btn svg {
+    width: var(--icon-sm);
+    height: var(--icon-sm);
+}
+
+.training-ex__remove {
+    color: var(--color-text-muted);
+}
+
+/* Tabla de series: número · peso · reps · check */
+.sets {
+    display: flex;
+    flex-direction: column;
+}
+
+.sets__row {
+    display: grid;
+    grid-template-columns: 32px 1fr 1fr var(--size-tap);
+    align-items: center;
+    gap: var(--gap-sm);
+    padding-block: var(--spacing-xs);
+}
+
+.sets__head {
+    font-size: var(--font-xs-size);
+    line-height: var(--font-xs-line);
+    letter-spacing: var(--font-xs-tracking);
+    font-weight: var(--font-weight-medium);
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+}
+
+.sets__n {
+    font-size: var(--font-sm-size);
+    color: var(--color-text-muted);
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Campo chico en pill, como el de components/field (16px: sin zoom en iOS) */
+.sets__input {
+    width: 100%;
+    height: var(--size-tap);
+    padding-inline: var(--spacing-md);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    background: transparent;
+    color: var(--color-text);
+    font-size: 16px;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+}
+
+.sets__input:focus-visible {
+    outline: none;
+    border: 2px solid var(--color-focus);
+}
+
+/* Serie hecha: los campos se apagan, el check queda naranja */
+.sets__row.is-done .sets__input {
+    border-color: var(--color-divider);
+    color: var(--color-text-muted);
+}
+
+/* Timer de descanso: el bloque naranja de la pantalla, flotando arriba de la barra */
+.rest {
+    position: fixed;
+    left: var(--spacing-sm);
+    right: var(--spacing-sm);
+    bottom: calc(var(--size-nav) + max(var(--spacing-md), env(safe-area-inset-bottom)) + var(--spacing-sm));
+    z-index: var(--z-sticky);
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: var(--gap-xs) var(--gap-md);
+    padding: var(--spacing-md) var(--spacing-lg);
+    border-radius: var(--radius-sm);
+    background: var(--color-accent-fill);
+    color: var(--color-on-accent);
+}
+
+.rest[hidden] {
+    display: none;
+}
+
+.rest__label {
+    grid-column: 1 / -1;
+    font-size: var(--font-sm-size);
+    line-height: var(--font-sm-line);
+    font-weight: var(--font-weight-medium);
+}
+
+.rest__actions {
+    display: flex;
+    gap: var(--gap-xs);
+}
+
+.rest__btn {
+    min-width: var(--size-tap);
+    padding-inline: var(--spacing-sm);
+    border-color: var(--color-on-accent);
+    color: var(--color-on-accent);
+}
+
+.rest__btn:hover {
+    background: color-mix(in srgb, var(--color-on-accent) 10%, transparent);
+}
+
+/* ============================================
+RESPONSIVE
+============================================ */
+
+@media (min-width: 1024px) {
+    /* el riel ocupa la izquierda: el timer se corre y baja */
+    .rest {
+        left: calc(var(--size-rail) + var(--spacing-lg));
+        right: var(--spacing-lg);
+        bottom: var(--spacing-lg);
+        max-width: var(--width-app);
+        margin-inline: auto;
+    }
+}

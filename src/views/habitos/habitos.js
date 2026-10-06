@@ -127,10 +127,13 @@ function archivedRow(habit) {
   `;
 }
 
-// "8 vasos · todos los días", "Sí / No · L M X J V"
+// Hábitos cuya meta se ajusta en otra pantalla
+const GOAL_ELSEWHERE = { water: "meta en Perfil", food: "metas en Perfil", strength_week: "meta en Fuerza", sleep: "meta en Perfil" };
+
+// "8.000 pasos · todos los días", "Sí / No · L M X J V"
 function habitDetail(habit) {
   const goal = habit.type === "count"
-    ? (habit.source === "water" ? "meta en Perfil" : `${habit.target} ${habit.unit}`.trim())
+    ? (GOAL_ELSEWHERE[habit.source] ?? `${habit.target.toLocaleString("es-AR")} ${habit.unit}`.trim())
     : "Sí / No";
   return `${goal} · ${daysLabel(habit.days)}`;
 }

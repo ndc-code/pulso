@@ -21,6 +21,23 @@ hr {
     border-top: 1px solid var(--color-divider);
 }
 
+/* Sin zoom por doble toque en el celular: al tocar rápido un + dos veces
+   (sumar vasos, horas) iOS lo tomaba como gesto de zoom. "manipulation"
+   deja el pellizco para agrandar (accesibilidad) y saca el doble toque,
+   que además quita la espera de 300ms antes de cada click. */
+html,
+a,
+button,
+input,
+select,
+textarea,
+label,
+summary,
+[role="button"],
+[role="tab"] {
+    touch-action: manipulation;
+}
+
 /* Foco visible solo con teclado */
 :focus-visible {
     outline: 2px solid var(--color-focus);

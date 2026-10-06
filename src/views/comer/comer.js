@@ -26,7 +26,7 @@ const GLASS_ML = 250;
 const liters = new Intl.NumberFormat("es-AR", { maximumFractionDigits: 2 });
 const hour = new Intl.DateTimeFormat("es-AR", { hour: "2-digit", minute: "2-digit", hourCycle: "h23" });
 
-export const title = "Comer";
+export const title = "Comida";
 export const subtitle = "Alimentación e hidratación";
 
 export async function render(root) {

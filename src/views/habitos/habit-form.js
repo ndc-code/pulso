@@ -37,7 +37,8 @@ export function openHabitForm(existing = null, onClose) {
   const habit = { ...NEW_HABIT, ...existing };
   const isNew = !existing;
   const isAuto = Boolean(habit.source);
-  const targetFromProfile = habit.source === "water";
+  // agua y Comida: la meta vive en el perfil; Fuerza: en sus objetivos
+  const targetNote = TARGET_NOTES[habit.source];
 
   const body = `
     <form class="habit-form" novalidate>
@@ -63,11 +64,11 @@ export function openHabitForm(existing = null, onClose) {
           })}
 
       <div class="habit-form__count" data-count-fields ${habit.type === "count" ? "" : "hidden"}>
-        ${targetFromProfile
-          ? `<p class="habit-form__note">La meta de agua se ajusta en Perfil → Metas.</p>`
+        ${targetNote
+          ? `<p class="habit-form__note">${targetNote}</p>`
           : `
             <div class="habit-form__row">
-              ${field({ id: "habit-target", label: "Meta por día", type: "number", value: habit.target, attrs: { min: 1, max: 999, step: 1 } })}
+              ${field({ id: "habit-target", label: "Meta por día", type: "number", value: habit.target, attrs: { min: 1, max: maxTarget(habit), step: 1 } })}
               ${field({ id: "habit-unit", label: "Unidad", value: habit.unit, placeholder: "min, vasos, páginas…", attrs: { maxlength: 12, ...(isAuto ? { readonly: true } : {}) } })}
             </div>`}
       </div>
@@ -143,11 +144,12 @@ function readForm(form, habit) {
   if (type === "count" && targetInput) {
     target = Number(targetInput.value);
     unit = form.querySelector("#habit-unit").value.trim();
-    const ok = Number.isInteger(target) && target >= 1 && target <= 999;
-    setFieldError(targetInput, ok ? "" : "Tiene que ser un número entre 1 y 999.");
+    const max = maxTarget(habit);
+    const ok = Number.isInteger(target) && target >= 1 && target <= max;
+    setFieldError(targetInput, ok ? "" : `Tiene que ser un número entre 1 y ${max.toLocaleString("es-AR")}.`);
     if (!ok) valid = false;
   } else if (type === "count") {
-    // agua: la meta vive en el perfil
+    // agua, Comida y Fuerza: la meta vive en otro lado (ver TARGET_NOTES)
     target = habit.target;
     unit = habit.unit;
   }
@@ -170,9 +172,22 @@ function readForm(form, habit) {
   };
 }
 
+// Hábitos cuya meta no se edita acá, y dónde se edita
+const TARGET_NOTES = {
+  water: "La meta de agua se ajusta en Perfil → Metas.",
+  food: "Las metas de agua y de comidas se ajustan en Perfil → Metas.",
+  strength_week: "Los días por semana se ajustan en Fuerza.",
+  sleep: "Las horas de sueño se ajustan en Perfil → Metas.",
+};
+
+// Los pasos necesitan metas grandes (8.000); el resto, hasta 999
+const maxTarget = (habit) => (habit.source === "steps" ? 50000 : 999);
+
 function sourceLabel(source) {
   return {
-    workout_minutes: "tus entrenos",
+    steps: "tu registro de pasos",
+    strength_week: "tus entrenos de Fuerza",
+    food: "el agua y tus comidas",
     water: "el contador de agua",
     meal_veggies: "tus comidas",
     sleep: "tu registro de sueño",

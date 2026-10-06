@@ -13,6 +13,8 @@ import {
   lastTimes,
   breathingStep,
   BREATHING_PATTERNS,
+  bedTimeFor,
+  nextSleepHours,
 } from "../src/utils/sleep.js";
 
 const DAY = "2026-10-08"; // jueves
@@ -115,4 +117,19 @@ test("breathingStep: 4-7-8 sostiene 7 y exhala 8", () => {
   assert.equal(breathingStep(p478, 11).phase.kind, "out");
   assert.equal(breathingStep(p478, 11).secondsLeft, 8);
   assert.equal(breathingStep(p478, 19).cycle, 1);
+});
+
+test("bedTimeFor: la hora de acostarse para dormir X horas hasta el despertar", () => {
+  assert.equal(bedTimeFor("07:00", 8), "23:00");
+  assert.equal(bedTimeFor("07:30", 7.5), "00:00");
+  assert.equal(bedTimeFor("06:15", 6.5), "23:45");
+});
+
+test("nextSleepHours: el primer + pone la meta, después de a media hora", () => {
+  assert.equal(nextSleepHours(0, 1, 8), 8);
+  assert.equal(nextSleepHours(8, -1, 8), 7.5);
+  assert.equal(nextSleepHours(7.5, 1, 8), 8);
+  assert.equal(nextSleepHours(0, -1, 8), 0);
+  assert.equal(nextSleepHours(0.5, -1, 8), 0);
+  assert.equal(nextSleepHours(14, 1, 8), 14); // tope
 });

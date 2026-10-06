@@ -56,6 +56,20 @@
     padding-bottom: var(--spacing-sm);
 }
 
+/* Hojas "Registrar peso" y "Registrar pasos" */
+.body-form,
+.steps-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xl);
+}
+
+.body-form__pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--gap-md);
+}
+
 /* --- Lo que recomienda la ciencia --- */
 /* El título queda fijo arriba mientras los bloques se apilan debajo */
 .science__head {

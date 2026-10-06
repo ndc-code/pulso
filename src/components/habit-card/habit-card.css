@@ -66,6 +66,35 @@
     transition: width 0.3s var(--ease-standard);
 }
 
+/* --- Hábito con partes (Comida): nombre arriba y un renglón por parte --- */
+.habit-card--parts {
+    align-items: flex-start;
+}
+
+/* Sin ícono propio: el nombre se corre para alinearse con los otros nombres */
+.habit-card__name--indent {
+    padding-left: calc(var(--icon-lg) + var(--gap-md));
+}
+
+.habit-parts {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    margin-top: var(--spacing-xs);
+}
+
+/* Renglón de una parte: texto y barra a la izquierda, botones a la derecha */
+.habit-part {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-md);
+}
+
+.habit-part__text {
+    flex: 1;
+    min-width: 0;
+}
+
 /* --- Acciones --- */
 .habit-card__action {
     flex-shrink: 0;

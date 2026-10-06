@@ -6,11 +6,11 @@
 //   1. filas tipográficas: horas de anoche (con su nivel) y el promedio de la semana
 //   2. card de anoche (como "Sleep" de gauge-ui): reloj de 24 h con la noche
 //      en un arco, datos al costado y el botón para registrar o editar
-//   3. la semana: barras de horas con la referencia de 7 h
+//   3. la semana: barras de horas con la referencia de la meta de sueño
 //   4. respiración guiada 4-4-4-4 o 4-7-8 (marca el hábito de pausa)
 //   5. check-in opcional de ánimo y energía
 //   6. historial de noches
-// Con la meta de sueño o más, el hábito "Dormir 7 h o más" se marca solo
+// Con la meta de sueño o más, el hábito Descanso se marca solo
 // (lo calcula utils/habits.js a partir del registro de sueño).
 
 import { get, remove, subscribe } from "../../store/store.js";
