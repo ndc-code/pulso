@@ -1,0 +1,55 @@
+/* ============================================
+   Tokens — Typography
+   ============================================ */
+
+/* Estilo tipográfico: números y títulos grandes con tracking cerrado,
+   textos de apoyo chicos. --font-[talle]-size / -line / -tracking */
+
+:root {
+
+    --font-xs-size: 11px;        /* letras de días, nav, eyebrows */
+    --font-xs-line: 14px;
+    --font-xs-tracking: 0.4px;
+
+    --font-sm-size: 13px;        /* metas, ayudas, captions */
+    --font-sm-line: 17px;
+    --font-sm-tracking: 0;
+
+    --font-base-size: 15px;      /* texto corrido, nombres de hábitos */
+    --font-base-line: 20px;
+    --font-base-tracking: -0.1px;
+
+    --font-lg-size: 18px;        /* títulos de sección chicos */
+    --font-lg-line: 22px;
+    --font-lg-tracking: -0.3px;
+
+    --font-xl-size: 24px;        /* títulos de sección */
+    --font-xl-line: 28px;
+    --font-xl-tracking: -0.6px;
+
+    --font-2xl-size: 32px;       /* título de hoja modal */
+    --font-2xl-line: 34px;
+    --font-2xl-tracking: -1px;
+
+    --font-3xl-size: 40px;       /* título de pantalla (mobile) */
+    --font-3xl-line: 42px;
+    --font-3xl-tracking: -1.6px;
+
+    --font-4xl-size: 56px;       /* título de pantalla (desktop) */
+    --font-4xl-line: 56px;
+    --font-4xl-tracking: -2.4px;
+
+}
+
+/* ============================================
+RESPONSIVE
+============================================ */
+
+@media (min-width: 768px) {
+    :root {
+        --font-sm-size: 14px;
+        --font-sm-line: 18px;
+        --font-base-size: 16px;
+        --font-base-line: 22px;
+    }
+}

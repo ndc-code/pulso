@@ -1,0 +1,17 @@
+/* ============================================
+   Animation — Basics
+   ============================================ */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.fade-in.show {
+    animation: fadeIn 0.2s var(--ease-standard) forwards;
+}

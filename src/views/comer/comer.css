@@ -1,0 +1,195 @@
+/* ============================================
+   Views — Comer
+   ============================================ */
+
+/* --- Agua (como "Water" de gauge-ui) --- */
+.water-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-lg);
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface-2);
+}
+
+.water-card__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-md);
+}
+
+.water-card__title {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    font-size: var(--font-lg-size);
+    line-height: var(--font-lg-line);
+}
+
+.water-card__title svg {
+    width: var(--icon-md);
+    height: var(--icon-md);
+}
+
+.water-card__main {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-lg);
+}
+
+/* Anillo naranja cortado en un tramo por vaso; los cortes toman el color de la card */
+.water-card__ring {
+    --gauge-cut: var(--color-surface-2);
+
+    position: relative;
+    display: grid;
+    place-items: center;
+    color: var(--color-accent-fill);
+}
+
+.water-card__ring .gauge__track {
+    stroke: var(--color-divider);
+    opacity: 1;
+}
+
+.water-card__ring .gauge__cut {
+    stroke-width: 4px;
+}
+
+.water-card__value {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--color-text);
+    white-space: nowrap;
+}
+
+.water-card__of {
+    font-size: var(--font-xs-size);
+    line-height: var(--font-xs-line);
+    color: var(--color-text-muted);
+}
+
+.water-card__readouts {
+    flex: 1;
+    min-width: 120px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+}
+
+.water-card__readouts div {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--gap-md);
+    font-size: var(--font-sm-size);
+    line-height: var(--font-sm-line);
+}
+
+.water-card__readouts dt {
+    color: var(--color-text-muted);
+}
+
+.water-card__readouts dd {
+    font-variant-numeric: tabular-nums;
+}
+
+/* − redondo y "+ 250 ml" en pill que ocupa el resto */
+.water-card__actions {
+    display: flex;
+    gap: var(--gap-sm);
+}
+
+.water-card__add {
+    flex: 1;
+}
+
+/* --- La semana: un nivel por día --- */
+.comer-week {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    justify-items: center;
+}
+
+.comer-week__day {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--gap-xs);
+    font-size: var(--font-xs-size);
+    line-height: var(--font-xs-line);
+    font-weight: var(--font-weight-medium);
+}
+
+.comer-week__day.is-today > span[aria-hidden] {
+    color: var(--color-accent);
+}
+
+.comer-week__day.is-future {
+    opacity: 0.35;
+}
+
+/* --- Chips frecuentes --- */
+.comer-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--gap-sm);
+}
+
+.comer-tag {
+    padding: var(--spacing-xs) var(--spacing-md);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    font-size: var(--font-sm-size);
+    line-height: var(--font-sm-line);
+}
+
+.comer-tag span {
+    color: var(--color-text-muted);
+}
+
+/* A moderar: borde punteado (se distingue sin depender del color) */
+.comer-tag--moderate {
+    border-style: dashed;
+}
+
+/* --- Historial --- */
+.comer-history__day {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xs);
+}
+
+.comer-history__day + .comer-history__day {
+    margin-top: var(--spacing-lg);
+}
+
+.comer-history__head {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: var(--spacing-xs);
+    border-bottom: 1px solid var(--color-rule);
+}
+
+.comer-history__level {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    color: var(--color-text);
+}
+
+/* --- Hoja: registrar comida --- */
+.meal-form,
+.meal-form__tags {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xl);
+}
+
+.meal-form__tags {
+    gap: var(--gap-lg);
+}

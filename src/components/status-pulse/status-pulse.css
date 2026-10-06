@@ -1,0 +1,39 @@
+/* ============================================
+   Components — Status Pulse
+   ============================================ */
+
+/* Punto de 6px en el color de acento: indica estado vivo / activo.
+   Va siempre pegado antes de un texto.
+   .status-pulse--live suma un latido suave (la marca de Pulso). */
+
+.status-pulse {
+    position: relative;
+    display: inline-block;
+    flex-shrink: 0;
+    width: 6px;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--color-accent);
+}
+
+.status-pulse--live::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: inherit;
+    animation: status-pulse 2s var(--ease-standard) infinite;
+}
+
+@keyframes status-pulse {
+    0% {
+        transform: scale(1);
+        opacity: 0.6;
+    }
+
+    70%,
+    100% {
+        transform: scale(3);
+        opacity: 0;
+    }
+}

@@ -1,0 +1,55 @@
+/* ============================================
+   Components — Chip
+   ============================================ */
+
+/* Pills con borde fino; la elegida se rellena (inverso), como en la referencia */
+
+.chip-group {
+    border: none;
+}
+
+.chip-group__legend {
+    margin-bottom: var(--spacing-sm);
+    font-size: var(--font-sm-size);
+    line-height: var(--font-sm-line);
+    color: var(--color-text-muted);
+}
+
+.chip-group__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--gap-sm);
+}
+
+.chip {
+    min-width: var(--size-tap);
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--gap-xs);
+    padding-inline: var(--spacing-md);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    font-size: var(--font-sm-size);
+    font-weight: var(--font-weight-medium);
+    text-transform: uppercase;
+    letter-spacing: var(--font-xs-tracking);
+    color: var(--color-text);
+    cursor: pointer;
+    transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.chip:hover {
+    background: var(--color-surface-2);
+}
+
+.chip:has(:checked) {
+    background: var(--color-inverse-bg);
+    color: var(--color-inverse-text);
+}
+
+.chip:has(:focus-visible) {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+}

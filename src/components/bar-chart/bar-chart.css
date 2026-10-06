@@ -1,0 +1,87 @@
+/* ============================================
+   Components — Bar Chart
+   ============================================ */
+
+.bars {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+}
+
+.bars__plot {
+    position: relative;
+    height: 120px;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    align-items: end;
+}
+
+/* Línea punteada de la meta */
+.bars__goal {
+    position: absolute;
+    inset: auto 0 var(--goal) 0;
+    border-top: 1px dashed currentColor;
+    opacity: 0.6;
+}
+
+.bars__col {
+    position: relative;
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+.bars__bar {
+    width: 8px;
+    min-height: 8px;
+    border-radius: var(--radius-full);
+    background: currentColor;
+    transition: height 0.4s var(--ease-standard);
+}
+
+/* Hoy en naranja */
+.bars__col.is-today .bars__bar {
+    background: var(--color-accent-fill);
+}
+
+/* Sin dato: un punto */
+.bars__col.is-empty .bars__bar {
+    width: 6px;
+    min-height: 6px;
+    height: 6px !important;
+    opacity: 0.35;
+}
+
+.bars__col.is-future .bars__bar {
+    opacity: 0.15;
+}
+
+.bars__labels {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    font-size: var(--font-xs-size);
+    line-height: var(--font-xs-line);
+    letter-spacing: var(--font-xs-tracking);
+    font-weight: var(--font-weight-medium);
+}
+
+.bars__labels .is-today {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.bars__legend {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    font-size: var(--font-sm-size);
+    line-height: var(--font-sm-line);
+    opacity: 0.75;
+}
+
+.bars__legend-line {
+    width: 16px;
+    border-top: 1px dashed currentColor;
+}

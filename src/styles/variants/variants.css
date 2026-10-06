@@ -1,0 +1,18 @@
+/* ============================================
+   Variants — Global
+   ============================================ */
+
+/* Overrides utilitarios. Para invertir el tema de un bloque
+   usá data-theme="light" | "dark" en vez de estas clases. */
+
+.variant--bg-surface {
+    background-color: var(--color-surface) !important;
+}
+
+.variant--text-muted {
+    color: var(--color-text-muted) !important;
+}
+
+.variant--text-accent {
+    color: var(--color-accent) !important;
+}

@@ -1,0 +1,84 @@
+/* ============================================
+   Views — Hoy
+   ============================================ */
+
+/* --- Resumen: % gigante + texto chico + puntos --- */
+.hoy-summary__head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--gap-lg);
+}
+
+.hoy-summary__caption {
+    max-width: 150px;
+    padding-bottom: var(--spacing-sm);
+}
+
+.hoy-dots {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--gap-sm);
+}
+
+.hoy-dots__dot {
+    width: 28px;
+    height: 28px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+}
+
+.hoy-dots__dot.is-done {
+    border-color: var(--color-accent-fill);
+    background: var(--color-accent-fill);
+}
+
+/* --- Hábitos --- */
+.hoy-habits {
+    display: flex;
+    flex-direction: column;
+}
+
+.hoy-empty {
+    border-top: none;
+    padding-top: 0;
+    align-items: flex-start;
+}
+
+/* --- Racha --- */
+.streak__row {
+    display: flex;
+    align-items: flex-end;
+    gap: var(--gap-lg);
+}
+
+.streak__caption {
+    padding-bottom: var(--spacing-sm);
+}
+
+/* --- Lo que recomienda la ciencia --- */
+/* El título queda fijo arriba mientras los bloques se apilan debajo */
+.science__head {
+    position: sticky;
+    top: 0;
+    z-index: var(--z-base);
+    padding-block: var(--spacing-lg) var(--spacing-sm);
+    margin-top: calc(var(--spacing-lg) * -1);
+    background: var(--color-bg);
+}
+
+.science .block-stack {
+    --stack-top: 88px; /* debajo del título fijo */
+}
+
+/* --- Registrar --- */
+.hoy-quick {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--gap-sm);
+}
+
+.hoy-quick .btn svg {
+    width: var(--icon-sm);
+    height: var(--icon-sm);
+}

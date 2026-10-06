@@ -1,0 +1,12 @@
+/* ============================================
+   Tokens — Font Weight
+   ============================================ */
+
+/* Casi todo en regular: la jerarquía la dan el tamaño y el tracking */
+
+:root {
+
+    --font-weight-regular: 400;
+    --font-weight-medium: 500;   /* labels chicos, nav, botones */
+
+}

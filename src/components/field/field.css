@@ -1,0 +1,85 @@
+/* ============================================
+   Components — Field
+   ============================================ */
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+}
+
+.field__label {
+    font-size: var(--font-sm-size);
+    line-height: var(--font-sm-line);
+    color: var(--color-text-muted);
+}
+
+.field__control {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+/* Input en pill con borde fino, como el "Send Message" de la referencia */
+.field__input {
+    width: 100%;
+    height: 48px;
+    padding-inline: var(--spacing-lg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    background: transparent;
+    /* 16px: con menos, iOS hace zoom al enfocar */
+    font-size: 16px;
+    font-variant-numeric: tabular-nums;
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.field__input::placeholder {
+    color: var(--color-text-muted);
+}
+
+.field__input:focus-visible {
+    outline: none;
+    border-color: var(--color-focus);
+    box-shadow: inset 0 0 0 1px var(--color-focus);
+}
+
+.field__input[aria-invalid="true"] {
+    border-color: var(--color-status-bad);
+    box-shadow: inset 0 0 0 1px var(--color-status-bad);
+}
+
+/* Unidad pegada a la derecha del input ("vasos", "min") */
+.field__suffix {
+    position: absolute;
+    right: var(--spacing-lg);
+    font-size: var(--font-sm-size);
+    color: var(--color-text-muted);
+    pointer-events: none;
+}
+
+.field__control:has(.field__suffix) .field__input {
+    padding-right: 80px;
+}
+
+.field__hint,
+.field__error {
+    font-size: var(--font-sm-size);
+    line-height: var(--font-sm-line);
+    color: var(--color-text-muted);
+}
+
+.field__error {
+    color: var(--color-text);
+}
+
+.field__error::before {
+    content: "";
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    margin-right: var(--spacing-sm);
+    border-radius: var(--radius-full);
+    background: var(--color-status-bad);
+    vertical-align: middle;
+}

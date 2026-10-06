@@ -1,0 +1,33 @@
+/* ============================================
+   Tokens — Colors
+   ============================================ */
+
+/* Tres colores: blanco, negro y naranja.
+   Los grises son solo blanco y negro diluidos (texto secundario, tracks).
+   Las vistas y componentes NUNCA usan estos valores directo:
+   usan los alias de semantic/semantic-colors.css. */
+
+:root {
+
+   /* --- Base --- */
+   --color-black: #000000;
+   --color-white: #ffffff;
+   --color-ink: #0f0f0f;        /* fondo del tema oscuro (negro apenas levantado) */
+
+
+   /* --- Grises (blanco y negro diluidos) --- */
+   --color-gray-100: #f0f0f0;   /* tracks y hover sobre blanco */
+   --color-gray-150: #ececec;   /* bloque claro */
+   --color-gray-300: #d6d6d6;   /* líneas finas sobre blanco */
+   --color-gray-600: #6b6b6b;   /* texto secundario sobre blanco */
+   --color-gray-400: #999999;   /* texto secundario sobre negro */
+   --color-gray-800: #2e2e2e;   /* líneas finas sobre negro */
+   --color-gray-850: #2a2a2a;   /* bloque oscuro */
+   --color-gray-900: #222222;   /* tracks y hover sobre el fondo oscuro */
+
+
+   /* --- Acento --- */
+   --color-orange-500: #ee6018;  /* rellenos: hoy, cumplido, botón Hoy, barras */
+   --color-orange-600: #c94a0c;  /* texto naranja sobre blanco (4.7:1) */
+
+}

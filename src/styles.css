@@ -1,0 +1,78 @@
+/* ============================================
+   STYLES
+   ============================================ */
+/* tokens */
+@import url('./styles/tokens/tokens-colors.css');
+@import url('./styles/tokens/tokens-effects.css');
+@import url('./styles/tokens/tokens-font-family.css');
+@import url('./styles/tokens/tokens-font-weight.css');
+@import url('./styles/tokens/tokens-gap.css');
+@import url('./styles/tokens/tokens-icons.css');
+@import url('./styles/tokens/tokens-numeric.css');
+@import url('./styles/tokens/tokens-radius.css');
+@import url('./styles/tokens/tokens-spacing.css');
+@import url('./styles/tokens/tokens-typography.css');
+@import url('./styles/tokens/tokens-width.css');
+
+/* semantic */
+@import url('./styles/semantic/semantic-colors.css');
+@import url('./styles/semantic/semantic-buttons.css');
+@import url('./styles/semantic/semantic-cards.css');
+@import url('./styles/semantic/semantic-accordion.css');
+
+/* base */
+@import url('./styles/base/reset.css');
+@import url('./styles/base/base.css');
+@import url('./styles/base/layout.css');
+@import url('./styles/base/responsive.css');
+@import url('./styles/base/typography.css');
+@import url('./styles/base/utilities.css');
+
+/* variants */
+@import url('./styles/variants/variants.css');
+
+/* ============================================
+   LAYOUT
+   ============================================ */
+@import url('./layout/grid/grid.css');
+@import url('./layout/app-shell/app-shell.css');
+@import url('./layout/header/header.css');
+@import url('./layout/bottom-nav/bottom-nav.css');
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+@import url('./animation/basics.css');
+@import url('./animation/split-type.css');
+
+/* ============================================
+   COMPONENTS
+   ============================================ */
+@import url('./components/card/card.css');
+@import url('./components/status-pulse/status-pulse.css');
+@import url('./components/placeholder/placeholder.css');
+@import url('./components/field/field.css');
+@import url('./components/segmented/segmented.css');
+@import url('./components/button/button.css');
+@import url('./components/chip/chip.css');
+@import url('./components/option-grid/option-grid.css');
+@import url('./components/list-row/list-row.css');
+@import url('./components/sheet/sheet.css');
+@import url('./components/toast/toast.css');
+@import url('./components/gauge/gauge.css');
+@import url('./components/habit-card/habit-card.css');
+@import url('./components/data-block/data-block.css');
+@import url('./components/bar-chart/bar-chart.css');
+@import url('./components/stat-row/stat-row.css');
+@import url('./components/level/level.css');
+@import url('./components/week-strip/week-strip.css');
+
+/* ============================================
+   VIEWS
+   ============================================ */
+@import url('./views/hoy/hoy.css');
+@import url('./views/perfil/perfil.css');
+@import url('./views/habitos/habitos.css');
+@import url('./views/moverse/moverse.css');
+@import url('./views/comer/comer.css');
+@import url('./views/progreso/progreso.css');

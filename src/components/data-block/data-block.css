@@ -1,0 +1,102 @@
+/* ============================================
+   Components — Data Block
+   ============================================ */
+
+/* Bloque de dato: el copy arriba (label + texto) y el número gigante abajo,
+   con la unidad en chico al lado. Tres tonos:
+   --accent (naranja) · --strong (oscuro en claro / claro en oscuro) · --soft (gris) */
+
+.data-block {
+    --block-bg: var(--color-block-soft-bg);
+    --block-text: var(--color-block-soft-text);
+
+    min-height: 220px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: var(--gap-lg);
+    padding: var(--spacing-lg) var(--spacing-lg) var(--spacing-md);
+    border-radius: var(--radius-sm);
+    background: var(--block-bg);
+    color: var(--block-text);
+    transform-origin: center top;
+}
+
+.data-block--accent {
+    --block-bg: var(--color-accent-fill);
+    --block-text: var(--color-on-accent);
+}
+
+.data-block--strong {
+    --block-bg: var(--color-block-strong-bg);
+    --block-text: var(--color-block-strong-text);
+}
+
+/* Todo el texto adentro toma el color del bloque */
+.data-block * {
+    color: inherit;
+}
+
+/* Arriba: el copy */
+.data-block__copy {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xs);
+    max-width: 280px;
+}
+
+.data-block__label {
+    font-size: var(--font-lg-size);
+    line-height: var(--font-lg-line);
+    letter-spacing: var(--font-lg-tracking);
+}
+
+.data-block__text {
+    font-size: var(--font-sm-size);
+    line-height: var(--font-sm-line);
+    opacity: 0.75; /* ≥4.7:1 en los tres tonos */
+}
+
+/* Abajo: el número y su unidad */
+.data-block__value {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    column-gap: var(--gap-sm);
+}
+
+.data-block__unit {
+    font-size: var(--font-base-size);
+    line-height: var(--font-base-line);
+}
+
+/* --- Grupo: bloques pegados uno arriba del otro (como en la referencia) --- */
+.block-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+/* --- Pila: los bloques se apilan al scrollear (ver animation/stack-cards.js) --- */
+.block-stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+}
+
+/* Recorrido extra al final de la pila: sin él, la página se termina antes
+   de que el último bloque llegue arriba y nunca queda encima de los demás.
+   Es lo justo para que llegue (alto de pantalla menos el tope de la pila,
+   el último bloque y el contenido que sigue abajo), así no queda un hueco
+   grande al final. Va como hijo (::after) y no como padding porque los
+   sticky solo se mueven dentro del contenido. */
+.block-stack::after {
+    content: "";
+    height: max(0px, calc(100dvh - 712px));
+}
+
+.block-stack > .data-block {
+    position: sticky;
+    /* cada bloque queda un poco más abajo que el anterior: se ve el borde de la pila */
+    top: calc(var(--stack-top, var(--spacing-lg)) + var(--i, 0) * 10px);
+}

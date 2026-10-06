@@ -1,0 +1,29 @@
+/* ============================================
+   Views — Habitos
+   ============================================ */
+
+.habit-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xl);
+}
+
+.habit-form__row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--gap-md);
+}
+
+/* Nota aclaratoria: texto chico con una línea naranja a la izquierda */
+.habit-form__note {
+    padding-left: var(--spacing-md);
+    border-left: 2px solid var(--color-accent-fill);
+    font-size: var(--font-sm-size);
+    line-height: var(--font-sm-line);
+    color: var(--color-text-muted);
+}
+
+/* La hoja ya tiene su propio espacio de acciones */
+.habit-form .sheet__actions {
+    padding-top: var(--spacing-sm);
+}

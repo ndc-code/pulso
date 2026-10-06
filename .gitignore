@@ -1,0 +1,7 @@
+# Sistema y editor
+.DS_Store
+.vscode/
+.claude/settings.local.json
+
+# Material de referencia (no es parte del proyecto)
+inspo/

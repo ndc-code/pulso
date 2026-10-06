@@ -1,0 +1,95 @@
+/* ============================================
+   Components — List Row
+   ============================================ */
+
+/* Fila separada por una línea fina:
+   ícono · título + detalle ............ acciones */
+
+.list {
+    display: flex;
+    flex-direction: column;
+}
+
+.list-row {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-md);
+    min-height: 60px;
+    padding-block: var(--spacing-sm);
+    border-top: 1px solid var(--color-divider);
+}
+
+.list > .list-row:first-child,
+.list > li:first-child > .list-row {
+    border-top: none;
+}
+
+/* Fila entera clickeable: un link (a.list-row) o un botón principal
+   (.list-row__main) que deja lugar a acciones al costado */
+.list-row__main {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--gap-md);
+    min-height: var(--size-tap);
+    text-align: left;
+}
+
+a.list-row:hover .list-row__title,
+.list-row__main:hover .list-row__title {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+}
+
+.list-row__icon {
+    flex-shrink: 0;
+    width: var(--icon-lg);
+    height: var(--icon-lg);
+    display: grid;
+    place-items: center;
+    color: var(--color-text);
+}
+
+.list-row__icon svg {
+    width: var(--icon-lg);
+    height: var(--icon-lg);
+}
+
+.list-row__body {
+    flex: 1;
+    min-width: 0;
+}
+
+.list-row__title,
+.list-row__detail {
+    display: block;
+}
+
+.list-row__title {
+    font-size: var(--font-base-size);
+    line-height: var(--font-base-line);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.list-row__detail {
+    font-size: var(--font-sm-size);
+    line-height: var(--font-sm-line);
+    color: var(--color-text-muted);
+}
+
+.list-row__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    flex-shrink: 0;
+}
+
+.list-row__chevron {
+    width: var(--icon-md);
+    height: var(--icon-md);
+    color: var(--color-text-muted);
+    transform: rotate(180deg);
+}

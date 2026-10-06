@@ -1,0 +1,16 @@
+/* ============================================
+   Tokens — Gap
+   ============================================ */
+
+:root {
+
+    --gap-none: var(--spacing-none);
+    --gap-xs: var(--spacing-xs);
+    --gap-sm: var(--spacing-sm);
+    --gap-md: var(--spacing-md);
+    --gap-lg: var(--spacing-lg);
+    --gap-xl: var(--spacing-xl);
+    --gap-2xl: var(--spacing-2xl);
+    --gap-3xl: var(--spacing-3xl);
+
+}

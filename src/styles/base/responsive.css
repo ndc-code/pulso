@@ -1,0 +1,37 @@
+/* =================================================
+   Base — Responsive
+
+   MOBILE FIRST.
+   Los estilos base son mobile; se agrega con min-width.
+
+   Breakpoints (orden ascendente, siempre al final del archivo):
+
+   >= 480   Large Mobile
+   >= 640   Phablet
+   >= 768   Tablet        → gutter 24px, tipografía grande
+   >= 1024  Laptop        → la barra inferior pasa a riel lateral
+   >= 1280  Desktop
+   >= 1400  Large Desktop
+
+   Tamaños de prueba:
+   375 x 812   mobile (fuente de verdad)
+   768 x 1024  tablet
+   1280 x 800  laptop
+   1440 x 900  desktop
+================================================= */
+
+/* ============================================
+RESPONSIVE
+============================================ */
+
+@media (min-width: 480px) {}
+
+@media (min-width: 640px) {}
+
+@media (min-width: 768px) {}
+
+@media (min-width: 1024px) {}
+
+@media (min-width: 1280px) {}
+
+@media (min-width: 1400px) {}

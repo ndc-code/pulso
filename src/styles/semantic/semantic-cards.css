@@ -1,0 +1,19 @@
+/* ============================================
+   Semantic — Cards
+   ============================================ */
+
+/* En el estilo editorial una "card" es una sección: línea arriba y aire */
+
+:root {
+
+    --card-padding: var(--spacing-xl);
+    --card-gap: var(--spacing-lg);
+
+    --card-title-size: var(--font-xl-size);
+    --card-title-line: var(--font-xl-line);
+    --card-title-tracking: var(--font-xl-tracking);
+
+    --card-body-size: var(--font-sm-size);
+    --card-body-line: var(--font-sm-line);
+
+}

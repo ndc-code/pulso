@@ -1,0 +1,241 @@
+/* ============================================
+   Views — Comer
+   ============================================ */
+
+// Alimentación e hidratación (spec 4.3). Calidad, no calorías.
+// Estilo tipográfico, como Hoy:
+//   filas de número grande + copy chico (comidas de hoy con su nivel, chips del día)
+//   agua: card como "Water" de gauge-ui (anillo cortado por vaso, litros, − / + 250 ml)
+//   la semana: un nivel por día · los chips más frecuentes
+// Después: registrar comida e historial agrupado por día.
+// (Foto en Fase 5; tips contextuales más adelante.)
+
+import { get, remove, subscribe } from "../../store/store.js";
+import { setWaterGlasses } from "../../store/habits.js";
+import { todayKey, weekdayOf, fromDateKey, WEEKDAY_LETTERS, WEEKDAY_NAMES } from "../../utils/dates.js";
+import { dayScore, weekLevels, topTags, tagLabel, slotLabel, LEVEL_LABELS } from "../../utils/meals.js";
+import { escapeHTML } from "../../utils/html.js";
+import { icon } from "../../utils/icons.js";
+import { statRow } from "../../components/stat-row/stat-row.js";
+import { ring } from "../../components/gauge/gauge.js";
+import { levelMark } from "../../components/level/level.js";
+import { toast } from "../../components/toast/toast.js";
+import { openMealForm } from "./meal-form.js";
+
+const GLASS_ML = 250;
+const liters = new Intl.NumberFormat("es-AR", { maximumFractionDigits: 2 });
+const hour = new Intl.DateTimeFormat("es-AR", { hour: "2-digit", minute: "2-digit", hourCycle: "h23" });
+
+export const title = "Comer";
+export const subtitle = "Alimentación e hidratación";
+
+export async function render(root) {
+  const today = todayKey();
+  let meals = [];
+  let glasses = 0;
+  let lastAt = null;
+  let focusHistoryAfterPaint = false;
+
+  async function paint() {
+    const [storedMeals, waterLogs, profile] = await Promise.all([get("meal"), get("water_log"), get("profile")]);
+    meals = storedMeals ?? [];
+    const waterToday = (waterLogs ?? []).find((row) => row.date === today);
+    glasses = waterToday?.glasses ?? 0;
+    lastAt = waterToday?.last_at ?? null;
+
+    const goal = profile.water_goal;
+    const score = dayScore(meals, today);
+    const week = weekLevels(meals, today);
+    const counts = { good: 0, mid: 0, low: 0 };
+    week.forEach((day) => { if (counts[day.level] !== undefined) counts[day.level]++; });
+
+    // Si el foco estaba en un botón que se repinta (− / + del agua), se recupera después
+    const focusKey = document.activeElement?.dataset?.focus;
+
+    root.innerHTML = `
+      <section class="stat-rows content-reveal-stagger" aria-label="Resumen de hoy">
+        ${statRow({
+          value: score.meals,
+          size: "xl",
+          copy: score.meals
+            ? [score.meals === 1 ? "comida hoy." : "comidas hoy.", `${LEVEL_LABELS[score.level]}.`]
+            : ["comidas hoy.", "Registrá la primera."],
+          extra: levelMark(score.level, "md"),
+        })}
+        ${statRow({
+          value: score.positives,
+          copy: [score.positives === 1 ? "chip positivo" : "chips positivos", `y ${score.moderates} a moderar hoy.`],
+        })}
+      </section>
+
+      <section class="water-card content-reveal-position-sm" aria-labelledby="comer-water-title">
+        <div class="water-card__top">
+          <h2 class="water-card__title" id="comer-water-title">${icon("droplet")}Agua</h2>
+          <p class="label">${glasses} de ${goal} vasos</p>
+        </div>
+        <div class="water-card__main">
+          <div class="water-card__ring">
+            ${ring({ value: glasses, max: goal, size: 152, width: 16, segments: goal <= 16 ? goal : 0, label: `${glasses} de ${goal} vasos` })}
+            <p class="water-card__value" aria-hidden="true">
+              <span class="num num--sm">${liters.format((glasses * GLASS_ML) / 1000)} L</span>
+              <span class="water-card__of">de ${liters.format((goal * GLASS_ML) / 1000)} L</span>
+            </p>
+          </div>
+          <dl class="water-card__readouts">
+            <div><dt>Falta</dt><dd>${liters.format((Math.max(0, goal - glasses) * GLASS_ML) / 1000)} L</dd></div>
+            <div><dt>Vaso</dt><dd>${GLASS_ML} ml</dd></div>
+            <div><dt>Último</dt><dd>${lastAt ? hour.format(new Date(lastAt)) : "—"}</dd></div>
+          </dl>
+        </div>
+        <div class="water-card__actions">
+          <button class="btn btn--icon" type="button" data-water="-1" data-focus="water-dec"
+            aria-label="Restar un vaso" ${glasses <= 0 ? "disabled" : ""}>${icon("minus")}</button>
+          <button class="btn btn--primary water-card__add" type="button" data-water="1" data-focus="water-inc">
+            ${icon("plus")}${GLASS_ML} ml
+          </button>
+        </div>
+      </section>
+
+      <section class="card content-reveal-position-sm" aria-labelledby="comer-week-title">
+        <div class="card__header">
+          <h2 class="eyebrow" id="comer-week-title">Esta semana</h2>
+          <p class="label">${plural(counts.good, "bueno")} · ${plural(counts.mid, "medio")} · ${plural(counts.low, "flojo")}</p>
+        </div>
+        <ol class="comer-week">
+          ${week.map(weekDay).join("")}
+        </ol>
+      </section>
+
+      <section class="card content-reveal-position-sm" aria-labelledby="comer-tags-title">
+        <h2 class="eyebrow" id="comer-tags-title">Lo más frecuente</h2>
+        ${frequentTags(topTags(meals, today))}
+      </section>
+
+      <button class="btn btn--primary btn--block" type="button" data-open="meal">
+        ${icon("plus")}Registrar comida
+      </button>
+
+      <section class="card" aria-labelledby="comer-history-title">
+        <h2 class="card__title" id="comer-history-title" tabindex="-1">Historial</h2>
+        ${history(meals, today)}
+      </section>
+    `;
+
+    if (focusKey) root.querySelector(`[data-focus="${focusKey}"]:not(:disabled)`)?.focus();
+    if (focusHistoryAfterPaint) {
+      focusHistoryAfterPaint = false;
+      root.querySelector("#comer-history-title").focus();
+    }
+  }
+
+  root.addEventListener("click", async (event) => {
+    if (event.target.closest('[data-open="meal"]')) {
+      openMealForm();
+      return;
+    }
+
+    const water = event.target.closest("[data-water]");
+    if (water) {
+      // el mismo registro que el hábito Agua de Hoy: quedan sincronizados
+      await setWaterGlasses(today, Math.max(0, glasses + Number(water.dataset.water)));
+      return;
+    }
+
+    const del = event.target.closest("[data-delete]");
+    if (!del) return;
+    const id = del.closest("[data-meal-id]").dataset.mealId;
+    const meal = meals.find((m) => m.id === id);
+    if (!confirm(`¿Borrar ${slotLabel(meal.slot).toLowerCase()}?`)) return;
+    focusHistoryAfterPaint = true;
+    await remove("meal", id);
+    toast("Comida borrada");
+  });
+
+  const offs = ["meal", "water_log", "profile"].map((key) => subscribe(key, paint));
+
+  await paint();
+  return () => offs.forEach((off) => off());
+}
+
+/* ---------------------------------------- */
+/* Tiles */
+/* ---------------------------------------- */
+
+// "1 bueno", "3 buenos"
+const plural = (n, word) => `${n} ${n === 1 ? word : `${word}s`}`;
+
+function weekDay(day) {
+  const classes = ["comer-week__day", day.isToday && "is-today", day.isFuture && "is-future"].filter(Boolean).join(" ");
+  const status = day.isFuture ? "todavía no" : LEVEL_LABELS[day.level].toLowerCase();
+  return `
+    <li class="${classes}">
+      ${levelMark(day.isFuture ? "none" : day.level, "md")}
+      <span aria-hidden="true">${WEEKDAY_LETTERS[day.weekday]}</span>
+      <span class="visually-hidden">${WEEKDAY_NAMES[day.weekday]} ${day.dayNumber}: ${status}</span>
+    </li>
+  `;
+}
+
+function frequentTags({ positives, moderates }) {
+  if (!positives.length && !moderates.length) {
+    return `<p class="label">Todavía no registraste comidas esta semana.</p>`;
+  }
+
+  const pill = ({ tag, count }, moderate) =>
+    `<li class="comer-tag${moderate ? " comer-tag--moderate" : ""}">${escapeHTML(tagLabel(tag))} <span>×${count}</span></li>`;
+
+  return `
+    <ul class="comer-tags">
+      ${positives.slice(0, 4).map((t) => pill(t, false)).join("")}
+      ${moderates.slice(0, 3).map((t) => pill(t, true)).join("")}
+    </ul>
+  `;
+}
+
+/* ---------------------------------------- */
+/* Historial: por día, del más nuevo al más viejo */
+/* ---------------------------------------- */
+
+function history(meals, today) {
+  if (!meals.length) {
+    return `<p class="card__text">Todavía no registraste comidas.</p>`;
+  }
+
+  const days = [...new Set(meals.map((m) => m.date))].sort().reverse();
+
+  return days
+    .map((date) => {
+      const ofDay = meals.filter((m) => m.date === date);
+      const level = dayScore(meals, date).level;
+      const name = date === today ? "Hoy" : `${WEEKDAY_NAMES[weekdayOf(date)]} ${fromDateKey(date).getDate()}`;
+
+      return `
+        <div class="comer-history__day">
+          <p class="eyebrow comer-history__head">
+            <span>${name}</span>
+            <span class="comer-history__level">${levelMark(level)}${LEVEL_LABELS[level]}</span>
+          </p>
+          <ul class="list">${ofDay.map(mealRow).join("")}</ul>
+        </div>
+      `;
+    })
+    .join("");
+}
+
+function mealRow(meal) {
+  const tags = meal.tags.map(tagLabel).join(", ");
+  const detail = [tags, meal.note].filter(Boolean).join(" · ");
+
+  return `
+    <li class="list-row" data-meal-id="${escapeHTML(meal.id)}">
+      <span class="list-row__body">
+        <span class="list-row__title">${escapeHTML(slotLabel(meal.slot))}</span>
+        <span class="list-row__detail">${escapeHTML(detail)}</span>
+      </span>
+      <span class="list-row__actions">
+        <button class="btn btn--icon" type="button" data-delete
+          aria-label="Borrar ${escapeHTML(slotLabel(meal.slot).toLowerCase())}">${icon("trash-2")}</button>
+      </span>
+    </li>
+  `;
+}

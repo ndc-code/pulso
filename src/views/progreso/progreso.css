@@ -1,0 +1,12 @@
+/* ============================================
+   Views — Progreso
+   ============================================ */
+
+/* Aviso fijo de la sección (spec 4.5) */
+.progreso__notice {
+    padding-top: var(--spacing-sm);
+    font-size: var(--font-sm-size);
+    line-height: var(--font-sm-line);
+    color: var(--color-text-muted);
+    text-align: center;
+}

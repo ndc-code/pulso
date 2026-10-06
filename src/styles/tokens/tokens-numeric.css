@@ -1,0 +1,42 @@
+/* ============================================
+   Tokens — Numeric
+   ============================================ */
+
+/* Números grandes en peso regular, con tracking bien cerrado
+   (≈ -0.05em). Siempre con cifras tabulares. */
+
+:root {
+
+    --num-sm-size: 32px;         /* contadores en filas */
+    --num-sm-line: 32px;
+    --num-sm-tracking: -1.2px;
+
+    --num-md-size: 64px;         /* "2 de 7" */
+    --num-md-line: 60px;
+    --num-md-tracking: -3px;
+
+    --num-lg-size: 96px;         /* racha */
+    --num-lg-line: 88px;
+    --num-lg-tracking: -5px;
+
+    --num-xl-size: 128px;        /* número protagonista de una pantalla */
+    --num-xl-line: 112px;
+    --num-xl-tracking: -7px;
+
+}
+
+/* ============================================
+RESPONSIVE
+============================================ */
+
+@media (min-width: 768px) {
+    :root {
+        --num-md-size: 80px;
+        --num-md-line: 76px;
+        --num-md-tracking: -4px;
+
+        --num-lg-size: 128px;
+        --num-lg-line: 116px;
+        --num-lg-tracking: -7px;
+    }
+}

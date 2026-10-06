@@ -1,0 +1,54 @@
+/* ============================================
+   Components — Option Grid
+   ============================================ */
+
+/* Grilla de opciones visuales (íconos), con radios nativos.
+   La elegida se rellena (inverso). */
+
+.option-grid {
+    border: none;
+}
+
+.option-grid__legend {
+    margin-bottom: var(--spacing-sm);
+    font-size: var(--font-sm-size);
+    line-height: var(--font-sm-line);
+    color: var(--color-text-muted);
+}
+
+.option-grid__list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(var(--size-tap), 1fr));
+    gap: var(--gap-sm);
+}
+
+.option-grid__option {
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--color-divider);
+    border-radius: var(--radius-full);
+    color: var(--color-text);
+    cursor: pointer;
+    transition: background-color var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.option-grid__option svg {
+    width: var(--icon-md);
+    height: var(--icon-md);
+}
+
+.option-grid__option:hover {
+    border-color: var(--color-border);
+}
+
+.option-grid__option:has(:checked) {
+    border-color: var(--color-inverse-bg);
+    background: var(--color-inverse-bg);
+    color: var(--color-inverse-text);
+}
+
+.option-grid__option:has(:focus-visible) {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+}

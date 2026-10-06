@@ -1,0 +1,106 @@
+/* ============================================
+   Components — Habit Card
+   ============================================ */
+
+/* Fila de hábito, separada por línea fina. Sin colores por hábito:
+   el naranja aparece solo cuando hay progreso o está cumplido. */
+
+.habit-card {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-md);
+    padding-block: var(--spacing-md);
+    border-top: 1px solid var(--color-divider);
+}
+
+.habit-card:first-child {
+    border-top: none;
+}
+
+.habit-card__icon {
+    flex-shrink: 0;
+    width: var(--icon-lg);
+    height: var(--icon-lg);
+    color: var(--color-text);
+}
+
+.habit-card__icon svg {
+    width: var(--icon-lg);
+    height: var(--icon-lg);
+}
+
+/* --- Texto --- */
+.habit-card__body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-2xs);
+}
+
+.habit-card__name {
+    font-size: var(--font-base-size);
+    line-height: var(--font-base-line);
+}
+
+.habit-card__meta {
+    font-size: var(--font-sm-size);
+    line-height: var(--font-sm-line);
+    color: var(--color-text-muted);
+    font-variant-numeric: tabular-nums;
+}
+
+/* Barra de progreso de los contadores: fina, naranja */
+.habit-card__bar {
+    display: block;
+    height: 2px;
+    margin-top: var(--spacing-xs);
+    background: var(--color-divider);
+    overflow: hidden;
+}
+
+.habit-card__bar > span {
+    display: block;
+    height: 100%;
+    background: var(--color-accent-fill);
+    transition: width 0.3s var(--ease-standard);
+}
+
+/* --- Acciones --- */
+.habit-card__action {
+    flex-shrink: 0;
+}
+
+.habit-stepper {
+    display: flex;
+    gap: var(--gap-sm);
+}
+
+/* Check: círculo con borde fino; cumplido = relleno naranja */
+.habit-check {
+    width: var(--size-tap);
+    height: var(--size-tap);
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    color: transparent;
+    transition: background-color var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
+}
+
+.habit-check svg {
+    width: var(--icon-md);
+    height: var(--icon-md);
+    stroke-width: 2;
+}
+
+.habit-check:hover {
+    color: var(--color-text-muted);
+}
+
+.habit-check[aria-pressed="true"],
+.habit-check--static {
+    border-color: var(--color-status-good);
+    background: var(--color-status-good);
+    color: var(--color-on-status);
+}

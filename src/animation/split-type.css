@@ -1,0 +1,13 @@
+/* ============================================
+   Animation — Split Type
+   ============================================ */
+
+.split-line {
+    display: block;
+    overflow: hidden;
+}
+
+.word,
+.char {
+    display: inline-block;
+}

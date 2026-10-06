@@ -1,0 +1,151 @@
+/* ============================================
+   Layout — Bottom Nav
+   ============================================ */
+
+/* Mobile: barra fija abajo, separada por una línea. Cuatro secciones con
+   ícono + label y, en el centro, Hoy como círculo naranja que sobresale.
+   Desktop (>= 1024): riel vertical fijo a la izquierda. */
+
+.bottom-nav {
+    position: fixed;
+    inset: auto 0 0 0;
+    z-index: var(--z-nav);
+    background: var(--color-nav-bg);
+    border-top: 1px solid var(--color-rule);
+    padding-bottom: env(safe-area-inset-bottom);
+}
+
+.bottom-nav__brand {
+    display: none;
+}
+
+.bottom-nav__list {
+    height: var(--size-nav);
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    align-items: center;
+}
+
+.bottom-nav__link {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--gap-xs);
+    color: var(--color-nav-text);
+    transition: color var(--transition-fast);
+}
+
+.bottom-nav__icon {
+    width: var(--icon-lg);
+    height: var(--icon-lg);
+    stroke-width: 1.5;
+}
+
+.bottom-nav__label {
+    font-size: var(--font-xs-size);
+    line-height: var(--font-xs-line);
+    letter-spacing: var(--font-xs-tracking);
+    font-weight: var(--font-weight-medium);
+    text-transform: uppercase;
+}
+
+.bottom-nav__link:hover,
+.bottom-nav__link[aria-current="page"] {
+    color: var(--color-nav-text-active);
+}
+
+.bottom-nav__link[aria-current="page"] .bottom-nav__icon {
+    stroke-width: 2;
+}
+
+/* --- Hoy: botón central elevado --- */
+.bottom-nav__link--main {
+    justify-content: flex-end;
+    padding-bottom: var(--spacing-sm);
+    color: var(--color-accent);
+}
+
+
+.bottom-nav__fab {
+    width: var(--size-fab);
+    height: var(--size-fab);
+    display: grid;
+    place-items: center;
+    /* sube por encima de la barra */
+    margin-top: -28px;
+    /* anillo del color del fondo: lo despega de la línea de la barra */
+    border: 4px solid var(--color-bg);
+    border-radius: var(--radius-full);
+    background: var(--color-accent-fill);
+    color: var(--color-on-accent);
+    transition: transform var(--transition-fast);
+}
+
+.bottom-nav__fab .bottom-nav__icon {
+    width: 28px;
+    height: 28px;
+    stroke-width: 2;
+}
+
+.bottom-nav__link--main:hover .bottom-nav__fab {
+    transform: scale(1.04);
+}
+
+/* ============================================
+RESPONSIVE
+============================================ */
+
+@media (min-width: 1024px) {
+    .bottom-nav {
+        inset: 0 auto 0 0;
+        width: var(--size-rail);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--gap-2xl);
+        padding: var(--spacing-xl) 0;
+        border-top: none;
+        border-right: 1px solid var(--color-rule);
+    }
+
+    .bottom-nav__brand {
+        display: flex;
+        align-items: center;
+        gap: var(--gap-sm);
+        height: var(--size-tap);
+        font-size: var(--font-lg-size);
+        letter-spacing: var(--font-lg-tracking);
+        color: var(--color-text);
+    }
+
+    .bottom-nav__list {
+        height: auto;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: var(--gap-sm);
+    }
+
+    .bottom-nav__link {
+        height: 76px;
+    }
+
+    .bottom-nav__link--main {
+        justify-content: center;
+        padding-bottom: 0;
+    }
+
+    .bottom-nav__fab {
+        width: 52px;
+        height: 52px;
+        margin-top: 0;
+        border: none;
+    }
+
+    .bottom-nav__fab .bottom-nav__icon {
+        width: 26px;
+        height: 26px;
+    }
+}

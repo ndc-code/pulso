@@ -1,0 +1,44 @@
+/* ============================================
+   Components — Gauge
+   ============================================ */
+
+.gauge {
+    flex-shrink: 0;
+    overflow: visible;
+}
+
+.gauge__track,
+.gauge__arc {
+    fill: none;
+    stroke-width: var(--gauge-width);
+}
+
+.gauge__track {
+    stroke: currentColor;
+    opacity: 0.15;
+}
+
+.gauge__arc {
+    stroke: currentColor;
+    stroke-linecap: butt;
+    transition: stroke-dasharray 0.4s var(--ease-standard);
+}
+
+/* Con valor 0 no se dibuja nada (evita un punto suelto) */
+.gauge__arc.is-empty {
+    opacity: 0;
+}
+
+/* Marcas por dentro del arco */
+.gauge__tick {
+    stroke: var(--color-text-muted);
+    stroke-width: 1.5px;
+    stroke-linecap: round;
+    opacity: 0.6;
+}
+
+/* Cortes entre segmentos: del color del fondo que hay detrás */
+.gauge__cut {
+    stroke: var(--gauge-cut, var(--color-bg));
+    stroke-width: 2px;
+}

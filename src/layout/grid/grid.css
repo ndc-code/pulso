@@ -1,0 +1,70 @@
+/* ============================================
+   Layout — Grid
+   ============================================ */
+
+.grid-layout {
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-toast);
+    pointer-events: none;
+    display: flex;
+    justify-content: center;
+    transition: opacity var(--transition-normal);
+}
+
+.grid-layout.hidden {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.grid-inner {
+    width: 100%;
+    max-width: var(--width-app);
+    height: 100dvh;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--gap-lg);
+    padding-inline: var(--gutter);
+}
+
+.grid-inner div {
+    background: var(--color-signal-orange);
+    opacity: 0.12;
+}
+
+.grid-inner div:nth-child(n+5) {
+    display: none;
+}
+
+/* ============================================
+RESPONSIVE
+============================================ */
+
+@media (min-width: 768px) {
+    .grid-inner {
+        grid-template-columns: repeat(8, 1fr);
+    }
+
+    .grid-inner div:nth-child(n+5) {
+        display: block;
+    }
+
+    .grid-inner div:nth-child(n+9) {
+        display: none;
+    }
+}
+
+@media (min-width: 1024px) {
+    /* En desktop la columna de contenido está corrida por el riel lateral */
+    .grid-layout {
+        padding-left: var(--size-rail);
+    }
+
+    .grid-inner {
+        grid-template-columns: repeat(12, 1fr);
+    }
+
+    .grid-inner div:nth-child(n+9) {
+        display: block;
+    }
+}

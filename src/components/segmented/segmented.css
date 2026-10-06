@@ -1,0 +1,52 @@
+/* ============================================
+   Components — Segmented
+   ============================================ */
+
+/* Pill con borde que agrupa opciones; la elegida se rellena (inverso) */
+
+.segmented {
+    border: none;
+}
+
+.segmented__legend {
+    margin-bottom: var(--spacing-sm);
+    font-size: var(--font-sm-size);
+    line-height: var(--font-sm-line);
+    color: var(--color-text-muted);
+}
+
+.segmented__track {
+    display: flex;
+    padding: 3px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+}
+
+.segmented__option {
+    flex: 1;
+    min-height: 38px;
+    display: grid;
+    place-items: center;
+    padding-inline: var(--spacing-sm);
+    border-radius: var(--radius-full);
+    font-size: var(--font-sm-size);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-muted);
+    text-align: center;
+    cursor: pointer;
+    transition: background-color var(--btn-transition), color var(--btn-transition);
+}
+
+.segmented__option:hover {
+    color: var(--color-text);
+}
+
+.segmented__option:has(:checked) {
+    background: var(--color-inverse-bg);
+    color: var(--color-inverse-text);
+}
+
+.segmented__option:has(:focus-visible) {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+}

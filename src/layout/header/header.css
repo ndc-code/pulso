@@ -1,0 +1,85 @@
+/* ============================================
+   Layout — Header
+   ============================================ */
+
+/* Título grande en regular con subtítulo chico debajo; avatar redondo a la derecha.
+   No es sticky: scrollea con la página, como en la referencia. */
+
+.app-header {
+    padding-top: env(safe-area-inset-top);
+}
+
+.app-header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-lg);
+    padding-block: var(--spacing-xl) var(--spacing-lg);
+}
+
+.app-header__lead {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    min-width: 0;
+}
+
+/* Flecha de volver (solo en subrutas, ej: Perfil → Hábitos) */
+.app-header__back {
+    flex-shrink: 0;
+}
+
+.app-header__titles {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.app-header__title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.app-header__title:focus {
+    outline: none;
+}
+
+.app-header__subtitle {
+    margin-top: var(--spacing-xs);
+    font-size: var(--font-sm-size);
+    line-height: var(--font-sm-line);
+    color: var(--color-text-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* --- Avatar: acceso a Perfil y ajustes --- */
+.avatar {
+    flex-shrink: 0;
+    width: var(--size-tap);
+    height: var(--size-tap);
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    color: var(--color-text);
+    font-size: var(--font-lg-size);
+    transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.avatar svg {
+    width: var(--icon-md);
+    height: var(--icon-md);
+}
+
+.avatar:hover {
+    background: var(--color-surface-2);
+}
+
+/* En Perfil, el avatar se rellena (inverso) */
+.avatar[aria-current="page"] {
+    background: var(--color-inverse-bg);
+    color: var(--color-inverse-text);
+}

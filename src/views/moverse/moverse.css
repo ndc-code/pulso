@@ -1,0 +1,264 @@
+/* ============================================
+   Views — Moverse
+   ============================================ */
+
+/* --- 1. Tira de la semana (components/week-strip) + flechas --- */
+.move-week__nav {
+    align-items: center;
+}
+
+.move-week__arrows {
+    display: flex;
+    gap: var(--gap-xs);
+}
+
+.move-week__arrow {
+    border-color: transparent;
+}
+
+.move-week__arrow--next svg {
+    transform: rotate(180deg);
+}
+
+/* --- 2. Card de la semana (como "Steps" de gauge-ui) --- */
+.move-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-lg);
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface-2);
+}
+
+.move-card__top {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--gap-md);
+}
+
+.move-card__main {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-lg);
+}
+
+/* Dial: arco naranja sobre un track gris, con el número en el centro */
+.move-dial {
+    position: relative;
+    color: var(--color-accent-fill);
+}
+
+.move-dial .gauge__track {
+    stroke: var(--color-divider);
+    opacity: 1;
+}
+
+.move-dial .gauge__arc {
+    stroke-linecap: round;
+}
+
+.move-dial__value {
+    position: absolute;
+    top: 76px; /* la mitad del dial (152px): el centro del círculo */
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--color-text);
+    white-space: nowrap;
+}
+
+.move-dial__of {
+    font-size: var(--font-xs-size);
+    line-height: var(--font-xs-line);
+    color: var(--color-text-muted);
+}
+
+/* Datos al costado: label a la izquierda, valor a la derecha */
+.move-readouts {
+    flex: 1;
+    min-width: 130px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+}
+
+.move-readouts div {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--gap-md);
+    font-size: var(--font-sm-size);
+    line-height: var(--font-sm-line);
+}
+
+.move-readouts dt {
+    color: var(--color-text-muted);
+}
+
+.move-readouts dd {
+    font-variant-numeric: tabular-nums;
+}
+
+/* --- 3. Sesiones del día --- */
+.move-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.move-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-lg);
+    padding-block: var(--spacing-lg);
+    border-top: 1px solid var(--color-divider);
+}
+
+.move-item:first-child {
+    border-top: 1px solid var(--color-rule);
+}
+
+.move-item__body {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--gap-sm);
+    min-width: 0;
+}
+
+.move-item__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--gap-xs);
+}
+
+.move-tag {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface-2);
+    font-size: var(--font-sm-size);
+    line-height: var(--font-sm-line);
+}
+
+.move-item__title {
+    font-size: var(--font-2xl-size);
+    line-height: var(--font-2xl-line);
+    letter-spacing: var(--font-2xl-tracking);
+}
+
+.move-item__delete {
+    min-height: auto;
+    padding-block: var(--spacing-xs);
+    font-size: var(--font-sm-size);
+    color: var(--color-text-muted);
+}
+
+/* Círculo grande: repetir la sesión hoy (o registrar, en naranja) */
+.move-item__action {
+    flex-shrink: 0;
+    width: 88px;
+    height: 88px;
+    display: grid;
+    place-items: center;
+    border-radius: var(--radius-full);
+    background: var(--color-inverse-bg);
+    color: var(--color-inverse-text);
+    font-size: var(--font-sm-size);
+    transition: opacity var(--transition-fast);
+}
+
+.move-item__action:hover {
+    opacity: 0.85;
+}
+
+.move-item__action--accent {
+    background: var(--color-accent-fill);
+    color: var(--color-on-accent);
+}
+
+.move-item__action svg {
+    width: var(--icon-lg);
+    height: var(--icon-lg);
+}
+
+/* --- Calendario de puntos (últimas semanas) --- */
+.dots {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+}
+
+.dots__months,
+.dots__grid {
+    display: grid;
+    grid-template-columns: repeat(var(--weeks), 1fr);
+    justify-items: center;
+}
+
+.dots__months {
+    justify-items: start;
+    font-size: var(--font-xs-size);
+    line-height: var(--font-xs-line);
+    color: var(--color-text-muted);
+    text-transform: capitalize;
+}
+
+/* Una columna por semana: las 7 filas se llenan de arriba a abajo */
+.dots__grid {
+    grid-template-rows: repeat(7, 10px);
+    grid-auto-flow: column;
+    row-gap: var(--spacing-xs);
+    align-items: center;
+}
+
+.dots__dot {
+    width: 4px;
+    height: 4px;
+    border-radius: var(--radius-full);
+    background: var(--color-divider);
+}
+
+.dots__dot.is-active {
+    width: 7px;
+    height: 7px;
+    background: var(--color-text);
+}
+
+.dots__dot.is-today {
+    width: 8px;
+    height: 8px;
+    background: var(--color-accent-fill);
+}
+
+.dots__dot.is-future {
+    background: transparent;
+}
+
+/* --- Hoja: registrar sesión --- */
+.workout-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xl);
+}
+
+.workout-form__duration {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+    border: none;
+}
+
+.workout-form__stepper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.workout-form__value {
+    display: flex;
+    align-items: baseline;
+    gap: var(--gap-sm);
+}

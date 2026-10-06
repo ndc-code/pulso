@@ -1,0 +1,75 @@
+/* ============================================
+   Components — Week Strip
+   ============================================ */
+
+.week-strip {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+}
+
+.week-strip__day {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--gap-xs);
+}
+
+.week-strip__letter {
+    font-size: var(--font-xs-size);
+    line-height: var(--font-xs-line);
+    letter-spacing: var(--font-xs-tracking);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-muted);
+}
+
+/* Hoy se distingue por su letra, aunque el círculo esté en otro día */
+.week-strip__day.is-today .week-strip__letter {
+    color: var(--color-accent);
+}
+
+.week-strip__number {
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    border-radius: var(--radius-full);
+    font-size: var(--font-lg-size);
+    letter-spacing: var(--font-lg-tracking);
+    font-variant-numeric: tabular-nums;
+    transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.week-strip__day.is-highlighted .week-strip__number {
+    background: var(--color-accent-fill);
+    color: var(--color-on-accent);
+}
+
+.week-strip__day.is-future .week-strip__number {
+    color: var(--color-text-muted);
+}
+
+/* Botón (Moverse): hover sobre el número */
+button.week-strip__day:not(:disabled):not(.is-highlighted):hover .week-strip__number {
+    background: var(--color-surface-2);
+}
+
+button.week-strip__day:disabled {
+    cursor: default;
+}
+
+/* Punto: lleno = completo / con actividad; aro = algo hecho */
+.week-strip__dot {
+    width: 6px;
+    height: 6px;
+    border-radius: var(--radius-full);
+}
+
+.week-strip__dot[data-level="full"] {
+    background: var(--color-accent-fill);
+}
+
+.week-strip__dot[data-level="partial"] {
+    box-shadow: inset 0 0 0 1.5px var(--color-accent-fill);
+}

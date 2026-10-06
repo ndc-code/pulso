@@ -1,0 +1,48 @@
+/* ============================================
+   Components — Toast
+   ============================================ */
+
+/* Aviso breve abajo ("Hábito guardado"). Va encima de la barra inferior. */
+
+.toast-region {
+    position: fixed;
+    inset: auto var(--gutter) calc(var(--size-nav) + env(safe-area-inset-bottom) + var(--spacing-xl));
+    z-index: var(--z-toast);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--gap-sm);
+    pointer-events: none;
+}
+
+.toast {
+    padding: var(--spacing-md) var(--spacing-lg);
+    border-radius: var(--radius-full);
+    background: var(--color-inverse-bg);
+    color: var(--color-inverse-text);
+    font-size: var(--font-sm-size);
+    line-height: var(--font-sm-line);
+    font-weight: var(--font-weight-medium);
+    transition: opacity var(--transition-normal), transform var(--transition-normal);
+}
+
+@starting-style {
+    .toast {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+}
+
+.toast.is-leaving {
+    opacity: 0;
+}
+
+/* ============================================
+RESPONSIVE
+============================================ */
+
+@media (min-width: 1024px) {
+    .toast-region {
+        inset: auto var(--gutter) var(--spacing-xl) calc(var(--size-rail) + var(--gutter));
+    }
+}

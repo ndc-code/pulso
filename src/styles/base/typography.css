@@ -1,0 +1,123 @@
+/* ============================================
+   Base — Typography
+   ============================================ */
+
+/* Estilo tipográfico: todo en regular. La jerarquía la dan el tamaño
+   y el tracking: títulos y números grandes y cerrados, textos chicos. */
+
+body {
+    font-size: var(--font-base-size);
+    line-height: var(--font-base-line);
+    letter-spacing: var(--font-base-tracking);
+    font-weight: var(--font-weight-regular);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: var(--font-primary);
+    font-weight: var(--font-weight-regular);
+    color: var(--color-headings);
+}
+
+h1 {
+    font-size: var(--font-3xl-size);
+    line-height: var(--font-3xl-line);
+    letter-spacing: var(--font-3xl-tracking);
+}
+
+h2 {
+    font-size: var(--font-xl-size);
+    line-height: var(--font-xl-line);
+    letter-spacing: var(--font-xl-tracking);
+}
+
+h3 {
+    font-size: var(--font-lg-size);
+    line-height: var(--font-lg-line);
+    letter-spacing: var(--font-lg-tracking);
+}
+
+h4,
+h5,
+h6 {
+    font-size: var(--font-base-size);
+    line-height: var(--font-base-line);
+}
+
+p,
+li {
+    font-size: var(--font-base-size);
+    line-height: var(--font-base-line);
+    color: var(--color-text);
+}
+
+strong {
+    font-weight: var(--font-weight-medium);
+}
+
+/* --- Números grandes (el protagonista de cada pantalla) --- */
+.num {
+    font-weight: var(--font-weight-regular);
+    font-variant-numeric: tabular-nums;
+}
+
+.num--sm {
+    font-size: var(--num-sm-size);
+    line-height: var(--num-sm-line);
+    letter-spacing: var(--num-sm-tracking);
+}
+
+.num--md {
+    font-size: var(--num-md-size);
+    line-height: var(--num-md-line);
+    letter-spacing: var(--num-md-tracking);
+}
+
+.num--lg {
+    font-size: var(--num-lg-size);
+    line-height: var(--num-lg-line);
+    letter-spacing: var(--num-lg-tracking);
+}
+
+.num--xl {
+    font-size: var(--num-xl-size);
+    line-height: var(--num-xl-line);
+    letter-spacing: var(--num-xl-tracking);
+}
+
+/* Eyebrow: label chico en mayúsculas ("ESTA SEMANA") */
+.eyebrow {
+    font-size: var(--font-xs-size);
+    line-height: var(--font-xs-line);
+    letter-spacing: var(--font-xs-tracking);
+    font-weight: var(--font-weight-medium);
+    text-transform: uppercase;
+    color: var(--color-eyebrow);
+}
+
+/* Texto de apoyo chico, al lado de un número grande */
+.label {
+    font-size: var(--font-sm-size);
+    line-height: var(--font-sm-line);
+    color: var(--color-text-muted);
+}
+
+.text-muted {
+    color: var(--color-text-muted);
+}
+
+/* ============================================
+RESPONSIVE
+============================================ */
+
+@media (min-width: 1024px) {
+    h1 {
+        font-size: var(--font-4xl-size);
+        line-height: var(--font-4xl-line);
+        letter-spacing: var(--font-4xl-tracking);
+    }
+}

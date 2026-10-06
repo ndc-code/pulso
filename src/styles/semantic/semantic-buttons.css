@@ -1,0 +1,14 @@
+/* ============================================
+   Semantic — Buttons
+   ============================================ */
+
+:root {
+
+    --btn-size: var(--font-sm-size);
+    --btn-line: var(--font-sm-line);
+    --btn-height: var(--size-tap);
+    --btn-padding-x: var(--spacing-lg);
+    --btn-radius: var(--radius-full);
+    --btn-transition: var(--transition-fast);
+
+}

@@ -1,0 +1,99 @@
+/* ============================================
+   Components — Button
+   ============================================ */
+
+/* Pills planas.
+   .btn--primary   relleno inverso (negro en claro, blanco en oscuro)
+   .btn--ghost     borde fino del color del texto
+   .btn--accent    relleno naranja (registrar, sumar: la acción del momento)
+   .btn--text      solo texto ("Editar")
+   .btn--icon      círculo de 44px para un ícono solo (lleva aria-label) */
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--gap-sm);
+    min-height: var(--btn-height);
+    padding-inline: var(--btn-padding-x);
+    border: 1px solid transparent;
+    border-radius: var(--btn-radius);
+    font-size: var(--btn-size);
+    line-height: var(--btn-line);
+    font-weight: var(--font-weight-medium);
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color var(--btn-transition), border-color var(--btn-transition), color var(--btn-transition), opacity var(--btn-transition);
+}
+
+.btn svg {
+    width: var(--icon-md);
+    height: var(--icon-md);
+    flex-shrink: 0;
+}
+
+.btn--primary {
+    background: var(--color-btn-primary-bg);
+    color: var(--color-btn-primary-text);
+}
+
+.btn--ghost,
+.btn--secondary {
+    border-color: var(--color-btn-ghost-border);
+    color: var(--color-btn-ghost-text);
+}
+
+.btn--accent {
+    background: var(--color-accent-fill);
+    color: var(--color-on-accent);
+}
+
+.btn--text {
+    min-height: var(--size-tap);
+    padding-inline: 0;
+    color: var(--color-text);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+}
+
+.btn--icon {
+    width: var(--btn-height);
+    padding: 0;
+    border-color: var(--color-border);
+    border-radius: var(--radius-full);
+    color: var(--color-text);
+}
+
+/* Ícono con acento (el "+"): relleno naranja, sin borde */
+.btn--icon.btn--accent {
+    border-color: transparent;
+    background: var(--color-accent-fill);
+    color: var(--color-on-accent);
+}
+
+.btn--primary:hover,
+.btn--accent:hover {
+    opacity: 0.85;
+}
+
+.btn--ghost:hover,
+.btn--secondary:hover,
+.btn--icon:not(.btn--accent):hover {
+    background: var(--color-surface-2);
+}
+
+.btn--block {
+    width: 100%;
+}
+
+/* Botones que envuelven un input oculto (ej: "Importar" con <input type=file>) */
+.btn:has(:focus-visible) {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+}
+
+.btn:disabled,
+.btn[aria-disabled="true"] {
+    opacity: var(--opacity-disabled);
+    pointer-events: none;
+}

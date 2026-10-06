@@ -1,0 +1,10 @@
+/* ============================================
+   Semantic — Accordion
+   ============================================ */
+
+:root {
+
+    --accordion-title-size: var(--font-lg-size);
+    --accordion-title-line: var(--font-lg-line);
+
+}

@@ -1,0 +1,15 @@
+/* ============================================
+   Tokens — Radius
+   ============================================ */
+
+/* Formas planas: secciones sin radio, controles en pill, círculos para estados */
+
+:root {
+
+    --radius-none: 0;
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 16px;    /* hojas modales (arriba) */
+    --radius-full: 999px; /* pills, círculos */
+
+}
