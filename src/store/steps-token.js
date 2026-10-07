@@ -5,7 +5,7 @@
 // La clave del Atajo de pasos en Supabase (tabla import_token).
 // Solo se guarda el hash: la clave en texto se muestra una vez y listo.
 //
-//   await hasStepsToken();           // ¿ya conectó Salud alguna vez?
+//   await hasStepsToken();           // true / false / null (null = no se pudo saber)
 //   const token = await createStepsToken();   // nueva clave (invalida la anterior)
 
 import { getClient } from "./supabase.js";
@@ -19,7 +19,7 @@ export async function hasStepsToken() {
   const { data, error } = await client.from("import_token").select("user_id").maybeSingle();
   if (error) {
     console.warn("[steps-token] no se pudo consultar la clave", error);
-    return false;
+    return null; // no se pudo saber: quien llama no debe suponer que no hay clave
   }
   return data !== null;
 }

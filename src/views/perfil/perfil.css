@@ -8,6 +8,13 @@
     gap: var(--gap-sm);
 }
 
+/* Texto + clave dentro de un role="status": mantiene el aire de la card */
+.perfil__key {
+    display: flex;
+    flex-direction: column;
+    gap: var(--card-gap);
+}
+
 /* Clave del Atajo: se tiene que poder leer y copiar entera */
 .perfil__token {
     font-family: ui-monospace, "SF Mono", Menlo, monospace;

@@ -26,13 +26,15 @@ const GUIDE = [
 
 export function mountHealthCard(section) {
   let token = null; // la clave recién generada: se muestra solo en esta visita
+  let lastUserId = currentUser()?.id ?? null; // para distinguir un cambio de usuario de un refresco de sesión
+  let busy = false; // ignora toques repetidos mientras se genera la clave
 
   const paint = async () => {
     if (!currentUser()) {
       section.hidden = true;
       return;
     }
-    const connected = token !== null || (await hasStepsToken());
+    const connected = token !== null || (await hasStepsToken()) === true;
     section.hidden = false;
     section.innerHTML = `
       <h2 class="card__title">Pasos desde Salud</h2>
@@ -44,14 +46,18 @@ export function mountHealthCard(section) {
   };
 
   section.addEventListener("click", async (event) => {
-    if (event.target.closest("[data-new-token]")) {
-      const replacing = token !== null || (await hasStepsToken());
-      if (replacing && !confirm("La clave anterior deja de funcionar y vas a tener que pegar la nueva en el Atajo. ¿Seguimos?")) return;
+    if (event.target.closest("[data-new-token]") && !busy) {
+      busy = true;
       try {
+        // Si no se pudo saber (null), por las dudas se pide confirmación
+        const replacing = token !== null || (await hasStepsToken()) !== false;
+        if (replacing && !confirm("La clave anterior deja de funcionar y vas a tener que pegar la nueva en el Atajo. ¿Seguimos?")) return;
         token = await createStepsToken();
-        paint();
+        await paint();
       } catch (error) {
         toast(error.message);
+      } finally {
+        busy = false;
       }
     }
 
@@ -68,8 +74,12 @@ export function mountHealthCard(section) {
   });
 
   paint();
-  return onAuthChange(() => {
-    token = null;
+  return onAuthChange((session) => {
+    // Un refresco de sesión (al volver de Atajos) no debe borrar la clave a medio copiar:
+    // solo se descarta si cambió el usuario o se cerró la sesión.
+    const userId = session?.user?.id ?? null;
+    if (userId === null || userId !== lastUserId) token = null;
+    lastUserId = userId;
     paint();
   });
 }
@@ -82,8 +92,10 @@ function introHTML(connected) {
 
 function tokenHTML(token) {
   return `
-    <p class="card__text">Tu clave. Se muestra una sola vez:</p>
-    <code class="perfil__token">${escapeHTML(token)}</code>
+    <div class="perfil__key" role="status">
+      <p class="card__text">Tu clave. Se muestra una sola vez:</p>
+      <code class="perfil__token">${escapeHTML(token)}</code>
+    </div>
     <button class="btn btn--accent" type="button" data-copy>
       ${SHORTCUT_URL ? "Copiar clave y abrir el Atajo" : "Copiar clave"}
     </button>
