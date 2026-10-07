@@ -48,6 +48,7 @@ src/
 │   ├── auth.js         Google sign-in session
 │   ├── sync.js         push/pull with Supabase (outbox, cursors, first login)
 │   ├── account.js      wires it together: start sync on session, login, logout
+│   ├── steps-token.js  key for the iPhone Shortcut that sends steps (hash in import_token)
 │   ├── defaults.js     initial value per key + suggested habits
 │   ├── seed.js         first run: saves the suggested habits
 │   ├── habits.js       habit reads/writes (context loader, logs, water, save/archive/reorder)

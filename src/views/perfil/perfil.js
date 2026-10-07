@@ -15,6 +15,7 @@ import { segmented } from "../../components/segmented/segmented.js";
 import { chipGroup } from "../../components/chip/chip.js";
 import { toast } from "../../components/toast/toast.js";
 import { mountAccountCard } from "./account-card.js";
+import { mountHealthCard } from "./health-card.js";
 
 export const title = "Perfil";
 export const subtitle = "Ajustes y metas";
@@ -46,6 +47,8 @@ export async function render(root) {
 
   root.innerHTML = `
     <section class="card content-reveal-position-sm" data-account></section>
+
+    <section class="card content-reveal-position-sm" data-health-connect hidden></section>
 
     <section class="card content-reveal-position-sm">
       <h2 class="card__title">Vos</h2>
@@ -150,6 +153,7 @@ export async function render(root) {
   });
 
   const offAccount = mountAccountCard(root.querySelector("[data-account]"));
+  const offHealth = mountHealthCard(root.querySelector("[data-health-connect]"));
 
   // Si se importan datos o cambian los hábitos, actualizar el contador
   const off = subscribe("habit", (value) => {
@@ -159,6 +163,7 @@ export async function render(root) {
   return () => {
     off();
     offAccount();
+    offHealth();
   };
 }
 

@@ -7,3 +7,25 @@
     grid-template-columns: 1fr 1fr;
     gap: var(--gap-sm);
 }
+
+/* Clave del Atajo: se tiene que poder leer y copiar entera */
+.perfil__token {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: var(--font-sm-size);
+    line-height: var(--font-sm-line);
+    color: var(--color-text);
+    word-break: break-all;
+    user-select: all;
+}
+
+/* Guía de pasos numerada (el reset quita los números de las listas) */
+.perfil__guide {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+    padding-left: 20px;
+    list-style: decimal;
+    font-size: var(--card-body-size);
+    line-height: var(--card-body-line);
+    color: var(--color-text-muted);
+}
