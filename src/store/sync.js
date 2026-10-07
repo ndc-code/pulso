@@ -34,11 +34,16 @@ import {
 
 const PAGE = 1000;          // Supabase devuelve como máximo 1000 filas por pedido
 const PUSH_DELAY = 1000;    // ms de espera para juntar cambios seguidos
+const DELETE_CHUNK = 100;   // ids por pedido al borrar (van en la URL, que tiene un límite)
 
 let client = null;
 let userId = null;
 let lastSyncAt = null;
 let lastError = null;
+let pushFailed = false;                // alguna tabla no se pudo subir la última vez
+// Sube al cerrar sesión o parar: una bajada que ya estaba en curso se da
+// cuenta (su número quedó viejo) y deja de escribir.
+let generation = 0;
 let syncing = null;                    // syncNow() en curso
 let pushing = null;                    // push() en curso
 let pushAgain = false;                 // llegaron cambios mientras subía
@@ -61,15 +66,18 @@ export async function start(session, { confirmReplace }) {
   // userId recién se fija cuando termina el primer login: hasta entonces
   // isActive() es false y nada se sube a una cuenta que todavía no se revisó
   const id = session.user.id;
+  const gen = generation;
 
   try {
-    if (!(await firstLoginIfNeeded(id, confirmReplace))) return "cancelled";
+    if (!(await firstLoginIfNeeded(id, confirmReplace, gen))) return "cancelled";
   } catch (error) {
     console.warn("[sync] no se pudo preparar la cuenta", error);
     lastError = error;
     notifyStatus();
     return "error";
   }
+  // Se cerró la sesión mientras se preparaba la cuenta: no se arranca
+  if (gen !== generation) return "cancelled";
 
   userId = id;
   listenOnce();
@@ -80,6 +88,7 @@ export async function start(session, { confirmReplace }) {
 // Deja de sincronizar sin tocar los datos (por ejemplo, si la sesión vence)
 export function stop() {
   userId = null;
+  generation++;
   notifyStatus();
 }
 
@@ -88,7 +97,7 @@ export function stop() {
 /* ---------------------------------------- */
 
 // Devuelve false si la persona canceló
-async function firstLoginIfNeeded(id, confirmReplace) {
+async function firstLoginIfNeeded(id, confirmReplace, gen) {
   const state = await local.read("_sync");
   if (state?.user_id === id) return true;
 
@@ -101,17 +110,28 @@ async function firstLoginIfNeeded(id, confirmReplace) {
       if (value != null) entries.push(...outboxEntriesFor(key, undefined, value));
     }
     await mutateOutbox(() => entries);
-  } else {
-    // La cuenta ya tiene datos: manda la nube
-    const data = {};
-    for (const key of COLLECTION_KEYS) data[key] = await local.read(key);
-    if (hasLocalUserData(data) && !(await confirmReplace())) return false;
-
-    for (const key of [...COLLECTION_KEYS, ...DOC_KEYS]) await local.remove(key);
-    await mutateOutbox(() => []);
+    await local.write("_sync", { user_id: id, cursors: {} });
+    return true;
   }
 
-  await local.write("_sync", { user_id: id, cursors: {} });
+  // La cuenta ya tiene datos: manda la nube
+  const data = {};
+  for (const key of COLLECTION_KEYS) data[key] = await local.read(key);
+  if (hasLocalUserData(data) && !(await confirmReplace())) return false;
+
+  for (const key of [...COLLECTION_KEYS, ...DOC_KEYS]) await local.remove(key);
+  await mutateOutbox(() => []);
+  // Sin "_sync" el dispositivo no está vinculado: lo que se toque mientras
+  // baja no se anota en la cola (lo que baja es la verdad)
+  await local.remove("_sync");
+  // La pantalla de antes se vuelve a pintar vacía, para no editar datos viejos
+  window.dispatchEvent(new Event("pulso:refresh"));
+
+  // Primera bajada completa, todavía sin userId. pull() escribe "_sync" al
+  // terminar: recién ahí queda vinculado. Si falla, tira error y no queda
+  // nada a medias: la próxima vez que se abra la app se repite todo
+  // (los hábitos sembrados no cuentan como datos, así que no se duplican).
+  if (await pull(id, gen)) window.dispatchEvent(new Event("pulso:refresh"));
   return true;
 }
 
@@ -170,14 +190,24 @@ async function doPush() {
   if (!isActive() || !navigator.onLine) return;
   await outboxChain;
   const queue = (await local.read("_outbox")) ?? [];
-  if (!queue.length) return;
+  if (!queue.length) {
+    pushFailed = false;
+    return;
+  }
 
   const sent = [];
+  let failed = false;
   for (const [table, entries] of groupByTable(queue)) {
     const { error } = await sendTable(table, entries);
-    if (error) console.warn(`[sync] no se pudo subir "${table}"`, error);
-    else sent.push(...entries);
+    if (error) {
+      console.warn(`[sync] no se pudo subir "${table}"`, error);
+      failed = true;
+    } else {
+      sent.push(...entries);
+    }
   }
+  // Si una tabla falla siempre, el estado de Perfil lo muestra (no solo "N sin subir")
+  pushFailed = failed;
 
   await mutateOutbox((current) => removeSent(current, sent));
   notifyStatus();
@@ -207,13 +237,16 @@ async function sendTable(table, entries) {
     const result = await client.from(table).upsert(upserts, { onConflict: "user_id,id" });
     if (result.error) return result;
   }
-  if (deletes.length) {
-    // Borrado suave: si la fila nunca llegó al servidor, no pasa nada
-    return client
+  // Borrado suave: si la fila nunca llegó al servidor, no pasa nada.
+  // Los ids van en la URL: se mandan de a DELETE_CHUNK (importar un backup
+  // viejo puede borrar cientos de filas de una vez).
+  for (let from = 0; from < deletes.length; from += DELETE_CHUNK) {
+    const result = await client
       .from(table)
       .update({ deleted_at: new Date().toISOString() })
       .eq("user_id", userId)
-      .in("id", deletes);
+      .in("id", deletes.slice(from, from + DELETE_CHUNK));
+    if (result.error) return result;
   }
   return { error: null };
 }
@@ -229,9 +262,14 @@ async function pendingQueue() {
   return (await local.read("_outbox")) ?? [];
 }
 
-// Devuelve true si cambió algo local
-async function pull() {
-  const state = (await local.read("_sync")) ?? { user_id: userId, cursors: {} };
+// Baja lo de la cuenta `owner` y al final guarda "_sync" (con los cursores).
+// Devuelve true si cambió algo local. `gen` es el número de generation al
+// empezar: si cambió (se cerró la sesión), no escribe nada más y devuelve false.
+async function pull(owner, gen) {
+  const saved = await local.read("_sync");
+  // Los cursores solo valen para la misma cuenta; sin "_sync" baja todo
+  const state = { user_id: owner, cursors: saved?.user_id === owner ? { ...saved.cursors } : {} };
+  const stale = () => gen !== generation;
   let changed = false;
 
   for (const table of COLLECTION_KEYS) {
@@ -243,6 +281,7 @@ async function pull() {
     const pending = new Set(queue.filter((entry) => entry.table === table).map((entry) => entry.id));
     const before = (await local.read(table)) ?? [];
     let rows = mergeRemote(before, remote, pending);
+    if (stale()) return false;
 
     if (table === "steps_log") {
       const newestIds = remote.filter((row) => !row.deleted_at).map((row) => row.id);
@@ -265,12 +304,14 @@ async function pull() {
     if (!DOC_KEYS.includes(doc.key)) continue;
     if (docQueue.some((entry) => entry.table === "user_doc" && entry.id === doc.key)) continue;
     if (!sameValue(await local.read(doc.key), doc.value)) {
+      if (stale()) return false;
       await local.write(doc.key, doc.value);
       changed = true;
     }
   }
   if (docs.length) state.cursors.user_doc = latestUpdatedAt(docs);
 
+  if (stale()) return false;
   await local.write("_sync", state);
   return changed;
 }
@@ -303,9 +344,11 @@ export function syncNow() {
   if (!isActive()) return Promise.resolve();
 
   syncing ??= (async () => {
+    const owner = userId;
+    const gen = generation;
     try {
       await push();
-      const changed = await pull();
+      const changed = await pull(owner, gen);
       lastSyncAt = new Date().toISOString();
       lastError = null;
       // Redibuja la vista y el header con lo que llegó
@@ -339,7 +382,7 @@ function listenOnce() {
 export async function getStatus() {
   await outboxChain;
   const queue = (await local.read("_outbox")) ?? [];
-  return { pending: queue.length, lastSyncAt, online: navigator.onLine, error: lastError !== null };
+  return { pending: queue.length, lastSyncAt, online: navigator.onLine, error: lastError !== null || pushFailed };
 }
 
 export function onStatusChange(callback) {
@@ -358,6 +401,10 @@ function notifyStatus() {
 // Borra los datos de este dispositivo (los de la cuenta quedan en Supabase)
 export async function clearLocalData() {
   userId = null;
+  generation++;
+  // Una sincronización en curso deja de escribir (ver pull); se la espera
+  // para que no vuelva a guardar nada después de borrar
+  await syncing?.catch(() => {});
   await outboxChain;
   for (const key of [...COLLECTION_KEYS, ...DOC_KEYS, "_outbox", "_sync"]) await local.remove(key);
 }
