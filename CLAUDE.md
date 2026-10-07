@@ -63,7 +63,7 @@ src/
 ├── content/            static copy with sources (science recommendations)
 ├── styles/             tokens → semantic → base → variants
 └── assets/             icons, images, fonts
-tests/                  node:test files for src/utils
+tests/                  node:test files for src/utils and supabase/functions
 supabase/               migrations/ (SQL) and functions/ (Edge Functions)
 ```
 

@@ -24,10 +24,18 @@ const GUIDE = [
   "Elegí el atajo «Pulso pasos». Listo: los pasos llegan solos a Ritmo.",
 ];
 
+// La clave recién generada vive fuera de mountHealthCard: si Perfil se vuelve
+// a pintar (un "pulso:refresh" al bajar datos) se sigue viendo. Se muestra
+// solo mientras la página esté abierta, y se descarta si cambia el usuario
+// o se cierra la sesión.
+let token = null;
+let tokenUserId = null; // de quién es la clave
+
 export function mountHealthCard(section) {
-  let token = null; // la clave recién generada: se muestra solo en esta visita
-  let lastUserId = currentUser()?.id ?? null; // para distinguir un cambio de usuario de un refresco de sesión
   let busy = false; // ignora toques repetidos mientras se genera la clave
+
+  // Montado con otro usuario (o sin sesión): la clave guardada no es de esta persona
+  if (token !== null && (currentUser()?.id ?? null) !== tokenUserId) token = null;
 
   const paint = async () => {
     if (!currentUser()) {
@@ -53,6 +61,7 @@ export function mountHealthCard(section) {
         const replacing = token !== null || (await hasStepsToken()) !== false;
         if (replacing && !confirm("La clave anterior deja de funcionar y vas a tener que pegar la nueva en el Atajo. ¿Seguimos?")) return;
         token = await createStepsToken();
+        tokenUserId = currentUser()?.id ?? null;
         await paint();
       } catch (error) {
         toast(error.message);
@@ -78,8 +87,7 @@ export function mountHealthCard(section) {
     // Un refresco de sesión (al volver de Atajos) no debe borrar la clave a medio copiar:
     // solo se descarta si cambió el usuario o se cerró la sesión.
     const userId = session?.user?.id ?? null;
-    if (userId === null || userId !== lastUserId) token = null;
-    lastUserId = userId;
+    if (userId === null || userId !== tokenUserId) token = null;
     paint();
   });
 }

@@ -17,6 +17,7 @@ import { todayKey } from "../utils/dates.js";
 import { toast } from "../components/toast/toast.js";
 
 let starting = null;
+let warnedError = false; // el aviso de error sale una sola vez por carga de la página
 
 export async function initAccount() {
   onAuthChange((session) => {
@@ -51,7 +52,12 @@ function startSync(session) {
     .start(session, { confirmReplace })
     .then(async (result) => {
       if (result === "cancelled") await signOut();
-      if (result === "error") toast("No se pudo conectar con tu cuenta. Se reintenta la próxima vez que abras la app.");
+      // Cada evento de sesión (por ejemplo, el refresco de cada hora) reintenta;
+      // el aviso no se repite
+      if (result === "error" && !warnedError) {
+        warnedError = true;
+        toast("No se pudo conectar con tu cuenta. Se vuelve a intentar más tarde.");
+      }
     })
     .finally(() => {
       starting = null;
