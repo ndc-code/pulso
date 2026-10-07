@@ -7,9 +7,11 @@
 //   2. tema (antes de pintar las vistas)
 //   3. header (saludo, fecha, avatar)
 //   4. router (pinta la sección del hash actual)
+//   5. cuenta (sesión de Google y sincronización)
 
 import { get, subscribe } from "./store/store.js";
 import { ensureSeed } from "./store/seed.js";
+import { initAccount } from "./store/account.js";
 import { applyTheme } from "./utils/theme.js";
 import { todayKey } from "./utils/dates.js";
 import { initHeader } from "./layout/header/header.js";
@@ -22,10 +24,16 @@ async function start() {
   const profile = await get("profile");
   applyTheme(profile.theme);
   subscribe("profile", (value) => applyTheme(value.theme));
+  // Lo que baja de la cuenta (un tema elegido en otro dispositivo) se guarda
+  // sin pasar por subscribe: se vuelve a aplicar en cada "pulso:refresh"
+  window.addEventListener("pulso:refresh", async () => applyTheme((await get("profile")).theme));
 
   await initHeader();
   startRouter(document.querySelector("#view"));
   watchDayChange();
+
+  // Cuenta y sincronización (no se espera: la app ya está pintada con lo local)
+  initAccount().catch((error) => console.warn("[account]", error));
 }
 
 // Si la app queda abierta y pasa la medianoche, "hoy" cambió:

@@ -2,20 +2,36 @@
    Views — Perfil
    ============================================ */
 
-// Perfil y ajustes (spec 4.6): nombre, objetivo, metas, hábitos, tema y datos.
+// Perfil y ajustes (spec 4.6), en dos tabs:
+//   Cuenta  → cuenta (Google y sincronización), vos (nombre y objetivo) y conexiones (pasos del iPhone)
+//   App     → metas, hábitos, apariencia y tus datos (exportar e importar)
+// Los dos paneles están siempre en la página y el que no se ve lleva `hidden`:
+// así cambiar de tab no pierde lo que se estaba escribiendo.
 // Todo se guarda apenas cambia; no hay botón "Guardar".
 
 import { get, set, subscribe } from "../../store/store.js";
 import { exportData, importData } from "../../store/backup.js";
 import { todayKey } from "../../utils/dates.js";
 import { icon } from "../../utils/icons.js";
+import { downloadJSON } from "../../utils/download.js";
 import { field, setFieldError } from "../../components/field/field.js";
 import { segmented } from "../../components/segmented/segmented.js";
 import { chipGroup } from "../../components/chip/chip.js";
 import { toast } from "../../components/toast/toast.js";
+import { tabs, bindTabKeys } from "../../components/tabs/tabs.js";
+import { mountAccountCard } from "./account-card.js";
+import { mountHealthCard } from "./health-card.js";
 
 export const title = "Perfil";
 export const subtitle = "Ajustes y metas";
+
+const TABS = [
+  { value: "cuenta", label: "Cuenta" },
+  { value: "app", label: "App" },
+];
+
+// Fuera de render: el tab elegido se recuerda al salir y volver a Perfil
+let currentTab = "cuenta";
 
 const GOAL_OPTIONS = [
   { value: "move", label: "Moverme más" },
@@ -43,56 +59,83 @@ export async function render(root) {
   const habits = (await get("habit")) ?? [];
 
   root.innerHTML = `
-    <section class="card content-reveal-position-sm">
-      <h2 class="card__title">Vos</h2>
-      ${field({ id: "perfil-name", label: "Nombre", value: profile.name, placeholder: "¿Cómo te llamás?", autocomplete: "given-name" })}
-      ${chipGroup({ name: "goal", legend: "Objetivo principal", type: "radio", values: profile.goal ? [profile.goal] : [], options: GOAL_OPTIONS })}
-    </section>
+    ${tabs({ id: "perfil", value: currentTab, label: "Secciones de Perfil", options: TABS, panelPerTab: true })}
 
-    <section class="card content-reveal-position-sm">
-      <h2 class="card__title">Metas</h2>
-      ${GOALS.map((goal) =>
-        field({
-          id: `goal-${goal.key}`,
-          label: goal.label,
-          type: "number",
-          value: profile[goal.key],
-          suffix: goal.suffix,
-          hint: goal.hint,
-          attrs: { min: goal.min, max: goal.max, step: 1, "data-goal": goal.key },
-        }),
-      ).join("")}
-    </section>
+    <div class="perfil-panel" id="perfil-panel-cuenta" role="tabpanel" aria-labelledby="perfil-tab-cuenta" ${currentTab === "cuenta" ? "" : "hidden"}>
+      <section class="card content-reveal-position-sm" data-account></section>
 
-    <section class="card content-reveal-position-sm">
-      <h2 class="card__title">Hábitos</h2>
-      <a class="list-row" href="#/perfil/habitos">
-        <span class="list-row__icon">${icon("check")}</span>
-        <span class="list-row__body">
-          <span class="list-row__title">Gestionar hábitos</span>
-          <span class="list-row__detail" data-habit-count>${activeCount(habits)}</span>
-        </span>
-        ${icon("chevron-left", "list-row__chevron")}
-      </a>
-    </section>
+      <section class="card content-reveal-position-sm">
+        <h2 class="card__title">Vos</h2>
+        ${field({ id: "perfil-name", label: "Nombre", value: profile.name, placeholder: "¿Cómo te llamás?", autocomplete: "given-name" })}
+        ${chipGroup({ name: "goal", legend: "Objetivo principal", type: "radio", values: profile.goal ? [profile.goal] : [], options: GOAL_OPTIONS })}
+      </section>
 
-    <section class="card content-reveal-position-sm">
-      <h2 class="card__title">Apariencia</h2>
-      ${segmented({ name: "theme", legend: "Tema", value: profile.theme, options: THEME_OPTIONS })}
-    </section>
+      <section class="card card--flush content-reveal-position-sm" data-health-connect></section>
+    </div>
 
-    <section class="card content-reveal-position-sm">
-      <h2 class="card__title">Tus datos</h2>
-      <p class="card__text">Viven solo en este dispositivo. Exportalos de vez en cuando para tener una copia.</p>
-      <div class="perfil__data-actions">
-        <button class="btn btn--ghost" type="button" data-export>${icon("download")}Exportar</button>
-        <label class="btn btn--ghost">
-          ${icon("upload")}Importar
-          <input class="visually-hidden" type="file" accept="application/json,.json" data-import />
-        </label>
-      </div>
-    </section>
+    <div class="perfil-panel" id="perfil-panel-app" role="tabpanel" aria-labelledby="perfil-tab-app" ${currentTab === "app" ? "" : "hidden"}>
+      <section class="card content-reveal-position-sm">
+        <h2 class="card__title">Metas</h2>
+        ${GOALS.map((goal) =>
+          field({
+            id: `goal-${goal.key}`,
+            label: goal.label,
+            type: "number",
+            value: profile[goal.key],
+            suffix: goal.suffix,
+            hint: goal.hint,
+            attrs: { min: goal.min, max: goal.max, step: 1, "data-goal": goal.key },
+          }),
+        ).join("")}
+      </section>
+
+      <section class="card content-reveal-position-sm">
+        <h2 class="card__title">Hábitos</h2>
+        <a class="list-row" href="#/perfil/habitos">
+          <span class="list-row__icon">${icon("check")}</span>
+          <span class="list-row__body">
+            <span class="list-row__title">Gestionar hábitos</span>
+            <span class="list-row__detail" data-habit-count>${activeCount(habits)}</span>
+          </span>
+          ${icon("chevron-left", "list-row__chevron")}
+        </a>
+      </section>
+
+      <section class="card content-reveal-position-sm">
+        <h2 class="card__title">Apariencia</h2>
+        ${segmented({ name: "theme", legend: "Tema", value: profile.theme, options: THEME_OPTIONS })}
+      </section>
+
+      <section class="card content-reveal-position-sm">
+        <h2 class="card__title">Tus datos</h2>
+        <p class="card__text">Exportá una copia de tus datos de vez en cuando, o importá una que ya tengas.</p>
+        <div class="perfil__data-actions">
+          <button class="btn btn--ghost" type="button" data-export>${icon("download")}Exportar</button>
+          <label class="btn btn--ghost">
+            ${icon("upload")}Importar
+            <input class="visually-hidden" type="file" accept="application/json,.json" data-import />
+          </label>
+        </div>
+      </section>
+    </div>
   `;
+
+  /* --- Tabs: muestra el panel elegido y esconde el otro --- */
+  root.addEventListener("click", (event) => {
+    const tab = event.target.closest("[data-tab]");
+    if (!tab) return;
+    currentTab = tab.dataset.tab;
+    root.querySelectorAll("[data-tab]").forEach((button) => {
+      const selected = button.dataset.tab === currentTab;
+      button.setAttribute("aria-selected", String(selected));
+      button.tabIndex = selected ? 0 : -1;
+    });
+    root.querySelectorAll(".perfil-panel").forEach((panel) => {
+      panel.hidden = panel.id !== `perfil-panel-${currentTab}`;
+    });
+    tab.focus();
+  });
+  bindTabKeys(root);
 
   /* --- Nombre: se guarda mientras escribís (el saludo se actualiza en vivo) --- */
   root.querySelector("#perfil-name").addEventListener("input", (event) => {
@@ -124,13 +167,7 @@ export async function render(root) {
 
   /* --- Exportar: descarga un .json --- */
   root.querySelector("[data-export]").addEventListener("click", async () => {
-    const backup = await exportData();
-    const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = `pulso-backup-${todayKey()}.json`;
-    link.click();
-    URL.revokeObjectURL(link.href);
+    downloadJSON(await exportData(), `pulso-backup-${todayKey()}.json`);
   });
 
   /* --- Importar: lee el archivo, confirma y reemplaza --- */
@@ -151,12 +188,19 @@ export async function render(root) {
     }
   });
 
+  const offAccount = mountAccountCard(root.querySelector("[data-account]"));
+  const offHealth = mountHealthCard(root.querySelector("[data-health-connect]"));
+
   // Si se importan datos o cambian los hábitos, actualizar el contador
   const off = subscribe("habit", (value) => {
     root.querySelector("[data-habit-count]").textContent = activeCount(value ?? []);
   });
 
-  return off;
+  return () => {
+    off();
+    offAccount();
+    offHealth();
+  };
 }
 
 function activeCount(habits) {

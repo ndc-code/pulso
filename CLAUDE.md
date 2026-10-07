@@ -37,11 +37,18 @@ Vanilla HTML, CSS and JS (ES modules). GSAP 3.14.1 + ScrollTrigger + SplitText v
 index.html              app shell: header, <main id="view">, bottom nav (static markup)
 DESIGN.md               design system: tokens, roles, components, do/don't
 src/
-├── main.js             entry: theme → header → router
+├── main.js             entry: theme → header → router → account
+├── config.js           Supabase URL + publishable key
 ├── router.js           hash router (#/hoy … #/perfil, #/perfil/habitos)
 ├── store/
 │   ├── store.js        THE data API: get, set, subscribe + add/update/remove for collections — all async
-│   ├── local.js        localStorage adapter (the only file that touches localStorage)
+│   ├── synced.js       adapter used by store.js: local.js + queue of changes for Supabase
+│   ├── local.js        localStorage adapter (the only file that touches localStorage, incl. the Supabase session)
+│   ├── supabase.js     Supabase client (supabase-js loaded with dynamic import from the CDN)
+│   ├── auth.js         Google sign-in session
+│   ├── sync.js         push/pull with Supabase (outbox, cursors, first login)
+│   ├── account.js      wires it together: start sync on session, login, logout
+│   ├── steps-token.js  key for the iPhone Shortcut that sends steps (hash in import_token)
 │   ├── defaults.js     initial value per key + suggested habits
 │   ├── seed.js         first run: saves the suggested habits
 │   ├── habits.js       habit reads/writes (context loader, logs, water, save/archive/reorder)
@@ -56,7 +63,8 @@ src/
 ├── content/            static copy with sources (science recommendations)
 ├── styles/             tokens → semantic → base → variants
 └── assets/             icons, images, fonts
-tests/                  node:test files for src/utils
+tests/                  node:test files for src/utils and supabase/functions
+supabase/               migrations/ (SQL) and functions/ (Edge Functions)
 ```
 
 ### Habits and `source`
@@ -65,7 +73,7 @@ A habit's value either comes from its own `habit_log` (manual) or from another p
 
 ### Data rule (critical for the Supabase migration)
 
-**No view, component or layout file touches `localStorage` (or any storage) directly.** Everything goes through `src/store/store.js`. Later `local.js` is swapped for `supabase.js` with the same `read / write / remove` signature. Store keys are the entity names from spec section 6 (`profile`, `habit`, `habit_log`, `workout`, …).
+**No view, component or layout file touches `localStorage` (or any storage) directly.** Everything goes through `src/store/store.js`, which writes through `synced.js`: data is saved locally first (`local.js`) and, with a session, the changed rows are queued and pushed to Supabase by `sync.js`; `sync.js` also pulls remote changes on open, focus and reconnect. Each collection key maps to a Supabase table `(id, user_id, date, data jsonb, updated_at, deleted_at)`; object keys (`profile`, `objetivos`, `lab_range`, `entreno_actual`) live in `user_doc`. A new store key must be added to `COLLECTION_KEYS` or `DOC_KEYS` in `src/utils/sync.js` (and, if it's a collection, get a table via a new migration). Spec: `docs/superpowers/specs/2026-10-06-supabase-sync-design.md`.
 
 ### Views
 
