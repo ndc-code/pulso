@@ -222,13 +222,22 @@ Lo arma el dueño una vez en su iPhone y lo comparte con un link de iCloud, que 
 4. *Formatear fecha*: hoy, formato `yyyy-MM-dd`.
 5. *Obtener contenido de URL*: POST a la función, headers `x-pulso-key: <clave>` y `Content-Type: application/json`, cuerpo JSON `{ date, steps }`.
 
-### 5.4 Perfil: bloque "Conectar con Salud"
+### 5.4 Perfil › Cuenta › Conexiones: guía "Conectá tu iPhone"
 
-Solo con sesión iniciada.
+Perfil tiene dos tabs (actualizado el 2026-10-07):
+- **Cuenta:** Cuenta (Google y sincronización), Vos (nombre y objetivo) y **Conexiones**.
+- **App:** Metas, Hábitos, Apariencia y Tus datos.
 
-1. "Conectar con Salud" → genera la clave, la copia al portapapeles y abre `SHORTCUT_URL`. La clave queda visible en pantalla con un botón "Copiar" por si el portapapeles falla.
-2. Guía corta, paso a paso: agregar el Atajo → pegar la clave → permitir Salud → Atajos › Automatización › Nueva › Hora del día (12:00, 18:00, 23:30) › Ejecutar de inmediato › elegir "Pulso pasos".
-3. Si ya hay clave: «Conectado» + "Generar otra clave" (invalida la anterior).
+Conexiones muestra "Pasos del iPhone" con una guía de 6 pasos numerados (texto en `src/content/steps-guide.js`). Cada paso dice su estado también en texto («Hecho», «Ahora»):
+
+1. Entrá con Google (en el bloque Cuenta).
+2. Generá tu clave → botón "Generar clave"; la clave se muestra una sola vez.
+3. Instalá el Atajo → "Copiar clave y abrir el Atajo" (copia y abre `SHORTCUT_URL` en el mismo toque).
+4. Pegá la clave y permití Salud.
+5. Hacelo automático (Atajos › Automatización › + › Hora del día › 23:30 › Ejecutar de inmediato › "Pulso pasos").
+6. Probalo → muestra el último dato que llegó («Último dato: 8.123 pasos · hoy»).
+
+Qué paso está hecho lo decide `connectSteps` (`src/utils/connect-steps.js`): 1 con sesión, 2 con clave, del 3 al 6 cuando llega el primer dato del Atajo. Para distinguirlo de la carga a mano, la Edge Function guarda `source: "salud"` en la fila y Ritmo `source: "manual"`. Con todo hecho, arriba dice «Conectado. Último dato: …» y la guía queda plegada en "Ver los pasos de nuevo". "Generar otra clave" invalida la anterior (con confirmación).
 
 La hoja manual de Ritmo queda igual. Si un día se carga a mano, la próxima corrida del Atajo pisa ese número.
 

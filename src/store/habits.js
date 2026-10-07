@@ -57,8 +57,9 @@ export async function setWaterGlasses(date, glasses) {
   }
 }
 
-// Pasos de un día (el total, no se suman): { date, steps }. Con 0 se borra.
-// Por ahora se cargan a mano desde Hoy; después llegan desde Salud.
+// Pasos de un día (el total, no se suman): { date, steps, source }. Con 0 se borra.
+// Esta es la carga a mano desde Hoy (source "manual"); los que manda el Atajo
+// de iPhone llegan por la Edge Function import-steps con source "salud".
 export async function setSteps(date, steps) {
   const logs = await get("steps_log");
   const log = logs.find((row) => row.date === date);
@@ -66,9 +67,9 @@ export async function setSteps(date, steps) {
   if (steps <= 0) {
     if (log) await remove("steps_log", log.id);
   } else if (log) {
-    await update("steps_log", log.id, { steps });
+    await update("steps_log", log.id, { steps, source: "manual" });
   } else {
-    await add("steps_log", { date, steps });
+    await add("steps_log", { date, steps, source: "manual" });
   }
 }
 

@@ -25,14 +25,110 @@
     user-select: all;
 }
 
-/* Guía de pasos numerada (el reset quita los números de las listas) */
-.perfil__guide {
+/* Cada tab es un panel con los bloques separados por aire, como la vista */
+.perfil-panel {
     display: flex;
     flex-direction: column;
+    gap: var(--gap-lg);
+}
+
+/* ---------------------------------------- */
+/* Conexiones: guía "Conectá tu iPhone" */
+/* ---------------------------------------- */
+
+.perfil__connect-title {
+    font-size: var(--card-title-size);
+    line-height: var(--card-title-line);
+}
+
+/* Un bloque por paso: número · título + texto + acción */
+.perfil__step {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--gap-md);
+    padding-block: var(--card-padding);
+}
+
+/* Número del paso: aro gris (por hacer), inverso (ahora), naranja con check (hecho) */
+.perfil__step-badge {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    font-size: var(--font-sm-size);
+    color: var(--color-text-muted);
+}
+
+.perfil__step-badge svg {
+    width: 16px;
+    height: 16px;
+    stroke-width: 2;
+}
+
+.perfil__step--current .perfil__step-badge {
+    border-color: var(--color-btn-primary-bg);
+    background: var(--color-btn-primary-bg);
+    color: var(--color-btn-primary-text);
+}
+
+.perfil__step--done .perfil__step-badge {
+    border-color: var(--color-status-good);
+    background: var(--color-status-good);
+    color: var(--color-on-status);
+}
+
+.perfil__step-body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
     gap: var(--gap-sm);
-    padding-left: 20px;
-    list-style: decimal;
+}
+
+.perfil__step-title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--gap-sm);
     font-size: var(--card-body-size);
     line-height: var(--card-body-line);
+    font-weight: var(--font-weight-medium);
+}
+
+/* "Hecho" / "Ahora": el estado también en texto, no solo en el color del número */
+.perfil__step-label {
+    font-size: var(--font-sm-size);
+    line-height: var(--font-sm-line);
+    font-weight: var(--font-weight-regular);
     color: var(--color-text-muted);
+}
+
+.perfil__step--todo .perfil__step-title {
+    color: var(--color-text-muted);
+}
+
+/* El último dato que llegó del Atajo */
+.perfil__step-result {
+    font-size: var(--card-body-size);
+    line-height: var(--card-body-line);
+    color: var(--color-text);
+}
+
+/* Guía plegada cuando ya está conectado (<details> no se lleva bien con
+   flex en todos los navegadores: el aire va como margen del summary) */
+.perfil__connect-more summary {
+    list-style: none;
+    cursor: pointer;
+}
+
+.perfil__connect-more summary::-webkit-details-marker {
+    display: none;
+}
+
+.perfil__connect-more[open] summary {
+    margin-bottom: var(--card-gap);
 }

@@ -9,6 +9,7 @@
 //   body    { "date": "2026-10-06", "steps": 8123 }
 //
 // Guarda el TOTAL del día (no suma): si el Atajo corre varias veces, queda el último.
+// Marca la fila con source: "salud" (la guía de Perfil la usa para saber que ya llegó un dato).
 // Usa la service role key (variable de entorno de Supabase) para escribir en
 // nombre del dueño de la clave; nunca está en el repo.
 
@@ -62,14 +63,14 @@ Deno.serve(async (req) => {
   if (existing) {
     ({ error: saveError } = await supabase
       .from("steps_log")
-      .update({ data: { ...existing.data, steps } })
+      .update({ data: { ...existing.data, steps, source: "salud" } })
       .eq("user_id", owner.user_id)
       .eq("id", existing.id));
   } else {
     const id = crypto.randomUUID();
     ({ error: saveError } = await supabase
       .from("steps_log")
-      .insert({ id, user_id: owner.user_id, date, data: { id, date, steps } }));
+      .insert({ id, user_id: owner.user_id, date, data: { id, date, steps, source: "salud" } }));
   }
   if (saveError) return reply(500, { error: "No se pudieron guardar los pasos." });
 
