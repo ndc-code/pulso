@@ -76,6 +76,13 @@ test("toRemoteRow: date sale de date o de fecha (Fuerza)", () => {
   assert.equal(toRemoteRow({ id: "h", name: "Ritmo" }).date, null);
 });
 
+test("toRemoteRow: una fecha que no es YYYY-MM-DD va como null (Postgres no la acepta)", () => {
+  assert.equal(toRemoteRow({ id: "a", date: "" }).date, null);
+  assert.equal(toRemoteRow({ id: "b", date: "2026-10-06T10:00" }).date, null);
+  assert.equal(toRemoteRow({ id: "c", fecha: "ayer" }).date, null);
+  assert.equal(toRemoteRow({ id: "d", date: "2026-10-06" }).date, "2026-10-06");
+});
+
 test("outboxEntriesFor: colección → una entrada por fila", () => {
   const row = { id: "w", date: "2026-10-06", glasses: 2 };
   assert.deepEqual(outboxEntriesFor("water_log", [], [row]), [
@@ -184,6 +191,11 @@ test("hasLocalUserData: cuenta registros, no hábitos ni perfil", () => {
   assert.equal(hasLocalUserData({}), false);
 });
 
+test("hasLocalUserData: rutinas y ejercicios propios cuentan (nada los siembra)", () => {
+  assert.equal(hasLocalUserData({ rutina: [{ id: "r" }] }), true);
+  assert.equal(hasLocalUserData({ ejercicio: [{ id: "e" }] }), true);
+});
+
 /* ---------------------------------------- */
 /* Estado */
 /* ---------------------------------------- */
@@ -196,6 +208,8 @@ test("syncStatusText", () => {
   assert.equal(syncStatusText({ ...base, online: false, pending: 2 }, now), "Sin conexión · 2 cambios sin subir");
   assert.equal(syncStatusText({ ...base, pending: 1 }, now), "1 cambio sin subir");
   assert.equal(syncStatusText({ ...base, error: true }, now), "No se pudo sincronizar");
+  assert.equal(syncStatusText({ ...base, error: true, pending: 3 }, now), "No se pudo sincronizar · 3 cambios sin subir");
+  assert.equal(syncStatusText({ ...base, error: true, pending: 1, online: false }, now), "Sin conexión · 1 cambio sin subir");
   assert.equal(syncStatusText(base, now), "Sincronizando…");
   assert.equal(syncStatusText({ ...base, lastSyncAt: "2026-10-06T11:59:30Z" }, now), "Sincronizado recién");
   assert.equal(syncStatusText({ ...base, lastSyncAt: "2026-10-06T11:58:00Z" }, now), "Sincronizado hace 2 min");

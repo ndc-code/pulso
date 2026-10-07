@@ -58,9 +58,14 @@ export function diffRows(prev, next) {
 }
 
 // Fila de la app → columnas de la tabla. `date` sirve para filtrar por día
-// (Fuerza la llama `fecha`); el resto va entero en `data`.
+// (Fuerza la llama `fecha`); el resto va entero en `data`. Si no es un día
+// "YYYY-MM-DD" va null: Postgres rechazaría la fila entera (y la tabla
+// quedaría trabada sin subir). El valor original sigue en `data`.
+const DAY = /^\d{4}-\d{2}-\d{2}$/;
+
 export function toRemoteRow(row) {
-  return { id: row.id, date: row.date ?? row.fecha ?? null, data: row };
+  const day = row.date ?? row.fecha;
+  return { id: row.id, date: DAY.test(day) ? day : null, data: row };
 }
 
 // Lo que hay que anotar en la cola cuando el store guarda `next` en `key`
@@ -146,10 +151,11 @@ export function cursorWithMargin(iso, seconds = 60) {
 }
 
 // Claves con datos que carga la persona (no cuentan los hábitos sembrados
-// ni el perfil por defecto)
+// ni el perfil por defecto). Rutinas y ejercicios no se siembran: si hay,
+// los armó la persona.
 export const USER_DATA_KEYS = [
   "habit_log", "water_log", "steps_log", "workout", "meal", "sleep",
-  "mood", "lab_result", "body", "sesion_fuerza",
+  "mood", "lab_result", "body", "sesion_fuerza", "rutina", "ejercicio",
 ];
 
 export function hasLocalUserData(data) {
@@ -162,11 +168,12 @@ export function hasLocalUserData(data) {
 
 const changes = (count) => (count === 1 ? "1 cambio" : `${count} cambios`);
 
-// Texto del estado para el bloque "Cuenta" de Perfil
+// Texto del estado para el bloque "Cuenta" de Perfil. Un error gana a los
+// pendientes: si una tabla no sube, que se vea que algo falla.
 export function syncStatusText({ pending, lastSyncAt, online, error }, now = new Date()) {
   if (!online) return pending ? `Sin conexión · ${changes(pending)} sin subir` : "Sin conexión";
+  if (error) return pending ? `No se pudo sincronizar · ${changes(pending)} sin subir` : "No se pudo sincronizar";
   if (pending) return `${changes(pending)} sin subir`;
-  if (error) return "No se pudo sincronizar";
   if (!lastSyncAt) return "Sincronizando…";
 
   const minutes = Math.floor((now - new Date(lastSyncAt)) / 60_000);
